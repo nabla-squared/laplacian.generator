@@ -1,0 +1,123 @@
+entities:
+  - name: property
+    namespace: laplacian.metamodel
+    properties:
+     - name: name
+       type: string
+
+     - name: identifier
+       optional: true
+       type: string
+       domain_type_name: identifier
+       default_value:
+         name
+
+     - name: primary_key
+       type: boolean
+       optional: true
+       default_value: |
+         false
+
+     - name: type
+       type: string
+       domain_type_name: base_type
+
+     - name: domain_type_name
+       description: 制約型名
+       type: string
+       optional: true
+
+     - name: size
+       description: the maximum allowed size of this property
+       type: number
+       optional: true
+       default_value: |
+         when(type) {
+             "string" -> 200
+             else -> throw IllegalStateException(
+                 "The size of $type type field can not be defined."
+             )
+         }
+
+     - name: optional
+       type: boolean
+       optional: true
+       default_value: |
+         false
+
+     - name: description
+       type: string
+       optional: true
+       default_value: |
+         if (type == "boolean") "Defines this ${entity.name} is $name or not." else "The $name of this ${entity.name}."
+
+     - name: default_value
+       description: |
+         デフォルト値
+       type: string
+       optional: true
+
+     - name: example_value
+       type: string
+       optional: true
+       default_value: |
+         defaultValue ?: when(type) {
+           "string" -> "\"hogehoge\""
+           "number" -> "0"
+           "boolean" -> "false"
+           else -> "null"
+         }
+
+     - name: table_column_name
+       type: string
+       optional: true
+       default_value: |
+         identifier.lowerUnderscorize()
+
+     - name: snippet
+       type: string
+       optional: true
+
+     - name: multiple
+       type: boolean
+       optional: true
+       default_value: |
+         false
+
+     - name: property_name
+       type: string
+       snippet: >
+         identifier.lowerCamelize()
+
+     - name: class_name
+       type: string
+       snippet: |
+         (if (type == "number") "Int" else type.upperCamelize()).let {
+             if (multiple) "List<$it>" else it
+         }
+
+     - name: nullable
+       description: |
+         Null値が許容されるかどうか
+       type: boolean
+       snippet: |
+         optional && (defaultValue == null)
+
+    relationships:
+      - name: entity
+        reference_entity_name: entity
+        inherited: true
+        cardinality: '1'
+
+      - name: domain
+        reference_entity_name: value_domain
+        cardinality: 0..1
+        aggregate: true
+
+      - name: domain_type
+        reference_entity_name: value_domain_type
+        cardinality: 0..1
+        mappings:
+          - from: domain_type_name
+            to: name
+

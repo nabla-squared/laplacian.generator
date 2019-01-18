@@ -1,0 +1,19 @@
+{{#*inline "MODEL_CLASS_NAME"}}{{upper-camel project.name}}Model{{/inline}}
+
+package {{project.namespace}}
+import laplacian.util.*
+import laplacian.ModelLoader
+import java.io.File
+
+/**
+ * A loader class for {{> MODEL_CLASS_NAME}}.
+ */
+class {{> MODEL_CLASS_NAME}}Loader : ModelLoader<{{> MODEL_CLASS_NAME}}> {
+    /**
+     * load a model object from the given yaml files.
+     */
+    override fun load(files: Iterable<File>): {{> MODEL_CLASS_NAME}} {
+        val model: Model = YamlLoader.readObjects(files)
+        return {{> MODEL_CLASS_NAME}}(model)
+    }
+}

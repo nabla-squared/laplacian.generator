@@ -1,0 +1,33 @@
+package {{entity.namespace}}.model
+{{#each entity.relating_external_entities as |external_entity|}}
+import {{external_entity.namespace}}.model.{{external_entity.class_name}}
+{{/each}}
+import laplacian.util.*
+
+/**
+ * A container for records of {{entity.name}}
+ */
+class {{entity.class_name}}List(
+    list: List<{{entity.class_name}}>,
+    val model: Model
+) : List<{{entity.class_name}}> by list {
+    {{#each entity.queries as |query|}}
+    /**
+     * {{#if query.description}}{{query.description}}{{else}}{{query.name}}{{/if}}
+     */
+    val {{lower-camel query.name}}: {{query.type}}
+    {{#if query.oneliner}}
+        get() = {{shift query.snippet 12}}
+    {{else}}
+        get() {
+            {{shift query.snippet 12}}
+        }
+    {{/if}}
+    {{/each}}
+    {{#if entity.supportsNamespace}}
+    val inNamespace: List<{{entity.class_name}}>
+        get() = filter {
+            it.namespace.startsWith(model.retrieve<String>("project.namespace")!!)
+        }
+    {{/if}}
+}

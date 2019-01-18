@@ -1,0 +1,8 @@
+{
+  "yaml.schemas": {
+    "./schema/metamodel.json": [
+      "model/**/*.yml",
+      "model/*.yml"
+    ]
+  }
+}

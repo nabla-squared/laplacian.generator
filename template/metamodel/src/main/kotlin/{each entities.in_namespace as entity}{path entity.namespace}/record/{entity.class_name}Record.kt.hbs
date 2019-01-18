@@ -1,0 +1,104 @@
+package {{entity.namespace}}.record
+import {{entity.namespace}}.model.{{entity.class_name}}
+{{#if entity.top_level}}
+import {{entity.namespace}}.model.{{entity.class_name}}List
+{{/if}}
+{{#each entity.relating_entities as |relating_entity|}}
+import {{relating_entity.namespace}}.model.{{relating_entity.class_name}}
+{{#neq entity.namespace relating_entity.namespace}}
+import {{relating_entity.namespace}}.record.{{relating_entity.class_name}}Record
+{{/neq}}
+{{/each}}
+import laplacian.util.*
+
+/**
+ * {{entity.description}}
+ */
+data class {{entity.class_name}}Record (
+    private val _record: Record,
+    private val _model: Model{{#if entity.inherited}},{{/if}}
+{{#each entity.inheritedFrom as |e|}}
+    /**
+     * the {{e.name}} which aggregates this {{entity.name}}
+     */
+    override val {{e.propertyName}}: {{e.class_name}}{{#if e.nullable}} = null{{/if}}{{#unless @last}},{{/unless}}
+{{/each}}
+): {{entity.class_name}}, Record by _record {
+{{#each entity.properties as |property|}}
+    {{#unless property.snippet}}
+    /**
+     * {{property.description}}
+     */
+    override val {{property.property_name}}: {{property.class_name}}{{#if property.nullable}}? by _record{{/if}}
+        {{#unless property.nullable}}
+        {{#if property.default_value}}
+        get() = getOrThrow("{{property.property_name}}") {
+            {{shift property.default_value 12}}
+        }
+        {{else}}
+        get() = getOrThrow("{{property.property_name}}")
+        {{/if}}
+        {{/unless}}
+    {{/unless}}
+{{/each}}
+{{#each entity.relationships as |relationship|}}
+    {{#unless relationship.snippet}}
+    {{#unless relationship.inherited}}
+    /**
+     * {{#if relationship.description}}{{relationship.description}}{{else}}{{relationship.name}}{{/if}}
+     */
+    override val {{relationship.property_name}}: {{relationship.class_name}}
+    {{#if relationship.aggregate}}
+        {{#if relationship.multiple}}
+        = {{relationship.reference_entity.class_name}}Record.from(getList("{{name}}"{{#if relationship.allows_empty}}, emptyList(){{/if}}), _model{{#if relationship.bidirectional}}, this{{/if}})
+        {{else}}
+        {{#if relationship.nullable}}
+        = getOrNull<Record>("{{relationship.name}}")?.let{ {{relationship.reference_entity.class_name}}Record(it.normalizeCamelcase(), _model{{#if relationship.bidirectional}}, this{{/if}}) }
+        {{else}}
+        = {{relationship.reference_entity.class_name}}Record(getOrThrow<Record>("{{name}}").normalizeCamelcase(), _model{{#if relationship.bidirectional}}, this{{/if}})
+        {{/if}}
+        {{/if}}
+    {{else}}
+        get() = {{relationship.reference_entity.class_name}}Record.from(_model).{{#if relationship.multiple}}filter{{else}}find{{/if}} {
+        {{#each relationship.mappings as |mapping|}}
+            {{#lower-camel}}it.{{mapping.to}} == {{mapping.from}}{{/lower-camel}}{{#unless @last}} &&{{/unless}}
+        {{/each}}
+        }{{#unless allows_empty}}{{#if multiple}}.takeUnless{ it.isEmpty() }{{/if}} ?: throw IllegalStateException(
+            "There is no {{relationship.reference_entity.name}} which meets the following condition(s): "
+        {{#each relationship.mappings as |mapping|}}
+            + "{{entity.class_name}}.{{mapping.from}} == {{relationship.reference_entity.name}}.{{mapping.to}} (=${{lower-camel mapping.from}}) "
+        {{/each}}
+            + "Possible values are: " + {{relationship.reference_entity.class_name}}Record.from(_model).map {
+              "({{#block-join relationship.mappings as |mapping|}}${ it.{{lower-camel mapping.to}} }{{/block-join}})"
+            }.joinToString()
+        ){{/unless}}
+    {{/if}}
+    {{/unless}}
+    {{/unless}}
+{{/each}}
+    companion object {
+        /**
+         * creates record list from list of map
+         */
+        {{#if entity.topLevel}}
+        fun from(model: Model): {{entity.class_name}}List {
+            val entities = model.getList<Record>("{{plural entity.name}}", emptyList()).map {
+                {{entity.class_name}}Record(it.normalizeCamelcase(), model)
+            }
+            return {{entity.class_name}}List(entities, model)
+        }
+        {{else}}
+        {{#if entity.inheritedFrom}}
+        {{#each entity.inheritedFrom as |relationship|}}
+        fun from(records: RecordList, model: Model, {{relationship.property_name}}: {{relationship.class_name}}{{#if relationship.nullable}} = null{{/if}}) = records.map {
+            {{entity.class_name}}Record(it.normalizeCamelcase(), model, {{relationship.property_name}} = {{relationship.property_name}})
+        }
+        {{/each}}
+        {{else}}
+        fun from(records: RecordList, model: Model) = records.map {
+            {{entity.class_name}}Record(it.normalizeCamelcase(), model)
+        }
+        {{/if}}
+        {{/if}}
+    }
+}

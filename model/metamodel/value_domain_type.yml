@@ -1,0 +1,29 @@
+value_domain_types:
+  - name: identifier
+    namespace: laplacian.metamodel
+    description: 主要言語で識別子として使用可能な文字列
+    type: string
+    domain:
+      pattern: |
+        [_$a-zA-Z][_$a-zA-Z0-9]*
+
+  - name: namespace
+    namespace: laplacian.metamodel
+    description: 名前空間
+    type: string
+    domain:
+      pattern: |
+        [_a-zA-Z][_$a-zA-Z0-9]*(\.[_a-zA-Z][_$a-zA-Z0-9]*)*
+
+  - name: base_type
+    namespace: laplacian.metamodel
+    description: 基本型
+    type: string
+    domain:
+      choices:
+        - label: 文字列
+          value: string
+        - label: 真偽値
+          value: boolean
+        - label: 数値
+          value: number

@@ -1,0 +1,30 @@
+package {{entity.namespace}}.model
+{{#each entity.relating_external_entities as |external_entity|}}
+import {{external_entity.namespace}}.model.{{external_entity.class_name}}
+{{/each}}
+
+import laplacian.util.*
+
+/**
+ * {{entity.description}}
+ */
+interface {{entity.class_name}} {
+    {{#each entity.properties as |property|}}
+    /**
+     * {{property.description}}
+     */
+    val {{property.property_name}}: {{property.class_name}}{{#if property.nullable}}?{{/if}}
+    {{#if property.snippet}}
+        get() = {{shift property.snippet 8}}
+    {{/if}}
+    {{/each}}
+    {{#each entity.relationships as |relationship|}}
+    /**
+     * {{relationship.description}}
+     */
+    val {{relationship.property_name}}: {{relationship.class_name}}
+    {{#if relationship.snippet}}
+        get() = {{shift relationship.snippet 8}}
+    {{/if}}
+    {{/each}}
+}

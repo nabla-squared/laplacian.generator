@@ -1,0 +1,11 @@
+package {{project.namespace}}
+{{#each entities.top_level as |entity|}}
+import laplacian.util.*
+import {{entity.namespace}}.model.{{entity.class_name}}List
+import {{entity.namespace}}.record.{{entity.class_name}}Record
+{{/each}}
+class {{upper-camel project.name}}Model(model: Model): Map<String, Any?> by model {
+    {{#each entities.top_level as |entity|}}
+    val {{plural entity.name}}: {{entity.class_name}}List = {{entity.class_name}}Record.from(model)
+    {{/each}}
+}

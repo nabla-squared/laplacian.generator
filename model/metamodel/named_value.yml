@@ -1,0 +1,10 @@
+entities:
+  - name: named_value
+    value_object: true
+    namespace: laplacian.metamodel
+    properties:
+      - name: name
+        type: string
+
+      - name: expression
+        type: string

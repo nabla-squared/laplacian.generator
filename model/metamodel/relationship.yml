@@ -1,0 +1,110 @@
+entities:
+  - name: relationship
+    namespace: laplacian.metamodel
+    properties:
+      - name: name
+        type: string
+
+      - name: identifier
+        optional: true
+        type: string
+        domain_type_name: identifier
+        default_value: |
+          name.lowerUnderscorize()
+
+      - name: cardinality
+        type: string
+        domain:
+          choices:
+            - label: One
+              value: |
+                1
+            - label: Zero or one
+              value: |
+                0..1
+            - label: Zero or more
+              value: |
+                *
+            - label: One or more
+              value: |
+                1..*
+
+      - name: reference_entity_name
+        type: string
+
+      - name: aggregate
+        type: boolean
+        optional: true
+        default_value: |
+          false
+
+      - name: inherited
+        type: boolean
+        optional: true
+        default_value: |
+          false
+
+      - name: description
+        type: string
+        optional: true
+        default_value: |
+          name
+
+      - name: snippet
+        type: string
+        optional: true
+
+      - name: class_name
+        type: string
+        snippet: >
+          if (multiple) "List<${referenceEntity.className}>" else (referenceEntity.className + if (nullable) "?" else "")
+
+      - name: multiple
+        type: boolean
+        snippet: >
+          cardinality.contains("""(\*|N|\.\.[2-9][0-9]+)""".toRegex())
+
+      - name: allows_empty
+        type: boolean
+        snippet: >
+          cardinality == "N" || cardinality == "*" || cardinality.contains("""(0\.\.)""".toRegex())
+
+      - name: nullable
+        type: boolean
+        snippet: >
+          !multiple && allowsEmpty
+
+      - name: property_name
+        type: string
+        snippet: >
+          identifier.lowerCamelize()
+
+      - name: bidirectional
+        type: boolean
+        snippet: |
+          aggregate && referenceEntity.relationships.any {
+              it.inherited && (it.referenceEntity.fqn == this.entity.fqn)
+          }
+
+      - name: recursive
+        type: boolean
+        snippet: |
+          aggregate && (referenceEntity.fqn == entity.fqn)
+
+    relationships:
+      - name: entity
+        reference_entity_name: entity
+        cardinality: '1'
+        inherited: true
+
+      - name: mappings
+        reference_entity_name: property_mapping
+        cardinality: '*'
+        aggregate: true
+
+      - name: reference_entity
+        reference_entity_name: entity
+        cardinality: '1'
+        mappings:
+          - from: reference_entity_name
+            to: name
