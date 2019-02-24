@@ -1,44 +1,24 @@
-import laplacian.gradle.task.ProjectTemplate
-import org.gradle.api.tasks.bundling.Jar
-import laplacian.metamodel.MetamodelModelLoader
-
 group = "laplacian"
 version = "1.0.0"
 
-buildscript {
-    repositories {
-        maven {
-            url = uri("../maven2/")
-        }
-        maven {
-            url = uri("https://bitbucket.org/nabla2/maven2/raw/master/")
-        }
-    }
-    dependencies {
-        classpath("laplacian:laplacian-gradle-plugin:1.0.0")
-    }
+plugins {
+	`maven-publish`
+    `java-gradle-plugin`
+    kotlin("jvm") version "1.3.10"
 }
-
-defaultTasks = listOf("build")
 
 repositories {
     jcenter()
 }
 
-plugins {
-    kotlin("jvm") version "1.3.10"
-	`maven-publish`
-}
-
 dependencies {
-    compile(gradleApi())
-    compile(kotlin("stdlib"))
-    compile(kotlin("reflect"))
-    compile("org.yaml:snakeyaml:1.22")
-    compile("com.github.jknack:handlebars:4.1.0")
-    compile("org.atteo:evo-inflector:1.2.2")
-    testCompile("org.junit.jupiter:junit-jupiter-api:5.2.0")
-    testCompile("org.junit.jupiter:junit-jupiter-engine:5.2.0")
+    implementation(kotlin("stdlib"))
+    implementation(kotlin("reflect"))
+    implementation("org.yaml:snakeyaml:1.22")
+    implementation("com.github.jknack:handlebars:4.1.0")
+    implementation("org.atteo:evo-inflector:1.2.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.2.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.2.0")
 }
 
 val sourcesJar by tasks.creating(Jar::class.java) {
@@ -50,26 +30,14 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-val generateMetamodel by tasks.creating(ProjectTemplate::class.java) {
-    model {
-        loader(MetamodelModelLoader())
-        dir("model")
-        include("**/*.yml")
-    }
-    template {
-        from("template/metamodel/src")
-        into("src")
-    }
-    template {
-        from("template/metamodel/schema")
-        into("schema")
-    }
-    template {
-        from("template/metamodel/vscode")
-        into(".vscode")
+gradlePlugin {
+    plugins {
+        create("laplacianPlugin") {
+            id = "laplacian.generator"
+            implementationClass = "laplacian.gradle.GeneratorPlugin"
+        }
     }
 }
-
 publishing {
     repositories {
         maven {

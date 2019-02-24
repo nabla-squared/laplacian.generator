@@ -1,6 +1,6 @@
 package laplacian.gradle.filter
 
-import laplacian.gradle.task.ProjectTemplate
+import laplacian.gradle.task.generate.ExecutionContext
 import laplacian.util.handlebars
 import laplacian.util.stripBlankLines
 import java.io.FilterReader
@@ -14,7 +14,7 @@ class HandlebarsFilter(val reader :Reader): FilterReader(reader) {
 
     lateinit var expanded: Reader
 
-    fun setExecutionContext(exec: ProjectTemplate.ExecutionContext) {
+    fun setExecutionContext(exec: ExecutionContext) {
         val model = exec.currentModel
         expanded = StringReader(template.handlebars().apply(model).stripBlankLines())
     }

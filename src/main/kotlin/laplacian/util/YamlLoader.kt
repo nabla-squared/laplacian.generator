@@ -16,7 +16,7 @@ class YamlLoader {
             }
         }
 
-        private fun <T>  readObjects(parser: Yaml, file: File): Map<String, T> {
+        private fun <T> readObjects(parser: Yaml, file: File): Map<String, T> {
             try {
                 return parser.load(file.reader()) as Map<String, T>
             }

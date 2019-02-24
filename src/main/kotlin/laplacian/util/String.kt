@@ -68,8 +68,8 @@ class StringHelper(private val fn: (str: String, opts: Options) -> String): Help
 
 class DefineHelper: Helper<Any> {
     override fun apply(context: Any, options: Options): Any {
-        var name = ""
-        var value: Any? = null
+        val name: String
+        val value: Any?
         val buffer = when (options.tagType) {
             TagType.VAR -> {
                 name = context.toString()
@@ -156,19 +156,19 @@ fun String.dquote(): String =
 fun createTemplate(forPath: Boolean = false): Handlebars {
     val template = Handlebars()
         .with(EscapingStrategy.NOOP)
-        .registerHelper("lower-camel", identifierHelper{t, opts -> t.lowerCamelize()})
-        .registerHelper("upper-camel", identifierHelper{t, opts -> t.upperCamelize()})
-        .registerHelper("hyphen", identifierHelper{t, opts -> t.lowerHyphenize()})
-        .registerHelper("lower-underscore", identifierHelper{t, opts -> t.lowerUnderscorize()})
-        .registerHelper("upper-underscore", identifierHelper{t, opts -> t.upperUnderscorize()})
-        .registerHelper("path", StringHelper{t, opts -> t.pathify()})
-        .registerHelper("plural", identifierHelper{t, opts -> t.pluralize()})
+        .registerHelper("lower-camel", identifierHelper{t, _ -> t.lowerCamelize()})
+        .registerHelper("upper-camel", identifierHelper{t, _ -> t.upperCamelize()})
+        .registerHelper("hyphen", identifierHelper{t, _ -> t.lowerHyphenize()})
+        .registerHelper("lower-underscore", identifierHelper{t, _ -> t.lowerUnderscorize()})
+        .registerHelper("upper-underscore", identifierHelper{t, _ -> t.upperUnderscorize()})
+        .registerHelper("path", StringHelper{t, _ -> t.pathify()})
+        .registerHelper("plural", identifierHelper{t, _ -> t.pluralize()})
         .registerHelper("shift", StringHelper{ t, opts ->
             val width = opts.hash.getOrElse("width"){opts.params[0]} as Int
             t.shift(width)
         })
-        .registerHelper("trim", StringHelper{ t, opts -> t.trim()})
-        .registerHelper("dquote", StringHelper{ t, opts -> t.dquote()})
+        .registerHelper("trim", StringHelper{ t, _ -> t.trim()})
+        .registerHelper("dquote", StringHelper{ t, _ -> t.dquote()})
         .registerHelper("block-join", JoinHelper.INSTANCE)
         .registerHelper("define", DefineHelper.INSTANCE)
         .registerHelpers(StringHelpers::class.java)
