@@ -11,16 +11,18 @@ open class LaplacianGenerateExtension constructor(
     private val project: Project
 ) {
     @Nested
-    val modelSpec = project.objects.property(ModelSpec::class.java)
+    val modelSpec = project.objects
+                   .property(ModelSpec::class.java)
+                   .value(ModelSpec(project))
 
     fun model(configuration: ModelSpec.() -> Unit) {
-        val spec = ModelSpec(project)
+        val spec = modelSpec.get()
         spec.apply(configuration)
-        modelSpec.set(spec)
     }
 
     @Nested
-    val templateDirSpecs = project.objects.listProperty(TemplateDirSpec::class.java)
+    val templateDirSpecs = project.objects
+                          .listProperty(TemplateDirSpec::class.java)
 
     fun templateDir(configuration: TemplateDirSpec.() -> Unit) {
         val spec = TemplateDirSpec(project)
@@ -29,7 +31,8 @@ open class LaplacianGenerateExtension constructor(
     }
 
     @Nested
-    val templateFileSpecs = project.objects.listProperty(TemplateFileSpec::class.java)
+    val templateFileSpecs = project.objects
+                           .listProperty(TemplateFileSpec::class.java)
 
     fun templateFile(confguration: TemplateFileSpec.() -> Unit) {
         val spec = TemplateFileSpec(project)
@@ -38,7 +41,8 @@ open class LaplacianGenerateExtension constructor(
     }
 
     @Nested
-    val templateModuleSpecs = project.objects.listProperty(TemplateModuleSpec::class.java)
+    val templateModuleSpecs = project.objects
+                             .listProperty(TemplateModuleSpec::class.java)
 
     fun templateModule(confguration: TemplateModuleSpec.() -> Unit) {
         val spec = TemplateModuleSpec(project)

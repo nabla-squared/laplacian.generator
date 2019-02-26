@@ -16,12 +16,17 @@ class GeneratorPlugin: Plugin<Project> {
             it.description = "The artifacts that contain laplacian model files."
             it.isVisible = false
         }
-        project.configurations.create("template") {
+        val templates = project.configurations.create("template") {
             it.description = "The artifacts which contain laplacian generation template."
             it.isVisible = false
         }
         val extension = project.extensions.create(TASK_NAME, LaplacianGenerateExtension::class.java, project)
         project.tasks.register(TASK_NAME, LaplacianGenerateTask::class.java).configure {
+            templates.allDependencies.forEach { dependency ->
+                extension.templateModule {
+                    from(dependency)
+                }
+            }
             extension.applyTo(it)
         }
     }

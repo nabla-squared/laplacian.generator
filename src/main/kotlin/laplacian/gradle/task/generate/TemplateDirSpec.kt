@@ -7,13 +7,17 @@ import laplacian.gradle.task.LaplacianGenerateTask.Companion.TEMPLATE_PATTERN
 import org.gradle.api.Project
 import org.gradle.api.file.*
 import org.gradle.api.tasks.InputDirectory
+import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 
 open class TemplateDirSpec(
     private val project: Project
 ) {
+    @Optional
     @OutputDirectory
-    val into = project.objects.directoryProperty()
+    val into = project.objects
+              .directoryProperty()
+              .value(project.layout.projectDirectory)
 
     @InputDirectory
     val from = project.objects.directoryProperty()

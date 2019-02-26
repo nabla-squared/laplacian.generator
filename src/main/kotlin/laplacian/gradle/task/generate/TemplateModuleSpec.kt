@@ -5,24 +5,35 @@ import laplacian.gradle.task.LaplacianGenerateTask.Companion.REPLACED_FILE_NAME
 import laplacian.gradle.task.LaplacianGenerateTask.Companion.TEMPLATE_GLOB
 import laplacian.gradle.task.LaplacianGenerateTask.Companion.TEMPLATE_PATTERN
 import org.gradle.api.Project
+import org.gradle.api.artifacts.Dependency
 import org.gradle.api.file.CopySpec
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 
 open class TemplateModuleSpec(
     private val project: Project
 ) {
+    @Optional
     @OutputDirectory
-    val into = project.objects.property(String::class.java)
+    val into = project.objects
+              .property(String::class.java)
+              .value("./")
 
     @Input
     val from = project.objects.property(String::class.java)
 
     @InputFile
     val fromModule = from.map { name ->
-        val generators = project.configurations.getByName("template")
-        generators.files.find { it.name.startsWith(name) } ?: throw IllegalStateException(
+        val templates = project.configurations.getByName("template")
+        val matchesPath = name.contains("/")
+        templates.files.find { file ->
+            if (matchesPath)
+                file.absolutePath.contains(name)
+            else
+                file.name!!.contentEquals(name)
+        } ?: throw IllegalStateException(
             "Unknown dependency: $name"
         )
     }
@@ -33,6 +44,13 @@ open class TemplateModuleSpec(
 
     fun from(moduleName: String) {
         from.set(moduleName)
+    }
+
+    fun from(module: Dependency) {
+        val group = module.group
+        val name = module.name
+        val version = module.version
+        from.set("${group}/${name}/${version}/${name}-${version}.jar")
     }
 
     fun applyTo(copySpec: CopySpec, filterOpts: Map<String, Any>) {
