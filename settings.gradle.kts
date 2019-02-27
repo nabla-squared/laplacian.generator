@@ -1,8 +1,8 @@
 rootProject.name = "laplacian.generator"
 pluginManagement {
     repositories {
-        maven(url = "../maven2/")
-        maven(url = "https://bitbucket.org/nabla2/maven2/raw/master/")
+        maven { url = uri("../mvn-repo/") }
+        maven { url = uri("https://github.com/nabla-squared/raw/mvn-repo/") }
         gradlePluginPortal()
         jcenter()
     }
