@@ -51,7 +51,6 @@ open class LaplacianGenerateExtension constructor(
     }
 
     fun applyTo(task: LaplacianGenerateTask) {
-        if (!modelSpec.isPresent) return
         task.modelSpec.set(modelSpec)
         task.templateDirSpecs.set(templateDirSpecs)
         task.templateFileSpecs.set(templateFileSpecs)

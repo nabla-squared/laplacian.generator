@@ -40,10 +40,11 @@ gradlePlugin {
         }
     }
 }
+
 publishing {
     repositories {
         maven {
-            url = uri("$projectDir/../maven2/")
+            url = uri("$projectDir/../mvn-repo/")
         }
     }
     publications.create("mavenJava", MavenPublication::class.java) {

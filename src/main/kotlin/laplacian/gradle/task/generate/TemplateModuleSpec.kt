@@ -22,17 +22,25 @@ open class TemplateModuleSpec(
               .value("./")
 
     @Input
-    val from = project.objects.property(String::class.java)
+    val from = project.objects
+              .property(String::class.java)
+              .value("template")
+
+    @Input
+    val configurationName = project.objects.property(String::class.java)
+
+    val configuration = configurationName.map {
+        project.configurations.getByName(it)
+    }
 
     @InputFile
     val fromModule = from.map { name ->
-        val templates = project.configurations.getByName("template")
         val matchesPath = name.contains("/")
-        templates.files.find { file ->
+        configuration.get().files.find { file ->
             if (matchesPath)
-                file.absolutePath.contains(name)
+                file.absolutePath.endsWith(name)
             else
-                file.name!!.contentEquals(name)
+                file.name!!.contains(name)
         } ?: throw IllegalStateException(
             "Unknown dependency: $name"
         )
@@ -46,11 +54,20 @@ open class TemplateModuleSpec(
         from.set(moduleName)
     }
 
+    fun from(configuration: String, moduleName: String) {
+        configurationName.set(configuration)
+        from(moduleName)
+    }
+
     fun from(module: Dependency) {
-        val group = module.group
         val name = module.name
         val version = module.version
-        from.set("${group}/${name}/${version}/${name}-${version}.jar")
+        from.set("/${name}-${version}.jar")
+    }
+
+    fun from(configuration: String, module: Dependency) {
+        configurationName.set(configuration)
+        from(module)
     }
 
     fun applyTo(copySpec: CopySpec, filterOpts: Map<String, Any>) {

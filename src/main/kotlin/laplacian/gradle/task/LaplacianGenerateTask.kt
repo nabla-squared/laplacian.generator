@@ -8,7 +8,9 @@ import java.io.File
 open class LaplacianGenerateTask: AbstractCopyTask() {
 
     @Nested
-    val modelSpec = project.objects.property(ModelSpec::class.java)
+    val modelSpec = project.objects
+                   .property(ModelSpec::class.java)
+                   .value(ModelSpec(project))
 
     @Nested
     val templateDirSpecs = project.objects.listProperty(TemplateDirSpec::class.java)
