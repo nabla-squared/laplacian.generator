@@ -1,7 +1,7 @@
 How to create a new module
 ===========================
 
-At first, create the following 2 files in the root directory of the newly created project folder:
+At first, on the root directory of the newly created project folder, create the module definition file in the following format:
 
 **laplacian-module.yml**:
 
@@ -17,5 +17,4 @@ Then, run the following command in the terminal:
 ```bash
 bash <(curl -s https://git.io/fhxcl)
 ````
-
 
