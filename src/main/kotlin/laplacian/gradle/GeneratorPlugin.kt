@@ -14,16 +14,17 @@ class GeneratorPlugin: Plugin<Project> {
         const val GENERATE_TASK_NAME = "laplacianGenerate"
         const val MODULE_TASK_NAME = "laplacianModule"
         const val MODULE_TEMPLATE = "laplacian:laplacian.template.module-base:1.0.0"
+        const val CONFIGURATION_TEMPLATE = "template"
+        const val CONFIGURATION_MODULE = "laplacianModuleTemplate"
     }
 
     override fun apply(project: Project) {
+        setupConfigurationForTemplate(project)
+        setupConfigurationForModule(project)
+    }
 
-        val moduleTemplate = project.configurations.create("laplacianModuleTemplate") {
-            it.description = "The artifacts that contain laplacian model files."
-            it.isVisible = false
-            project.dependencies.add(it.name, MODULE_TEMPLATE)
-        }
-        val templates = project.configurations.create("template") {
+    private fun setupConfigurationForTemplate(project: Project) {
+        val templates = project.configurations.create(CONFIGURATION_TEMPLATE) {
             it.description = "The artifacts which contain laplacian generation template."
             it.isVisible = false
         }
@@ -31,10 +32,18 @@ class GeneratorPlugin: Plugin<Project> {
         project.tasks.register(GENERATE_TASK_NAME, LaplacianGenerateTask::class.java).configure { task ->
             templates.allDependencies.forEach { dependency ->
                 extension.templateModule {
-                    from(dependency)
+                    from(templates.name, dependency)
                 }
             }
             extension.applyTo(task)
+        }
+    }
+
+    private fun setupConfigurationForModule(project: Project) {
+        val moduleTemplate = project.configurations.create(CONFIGURATION_MODULE) {
+            it.description = "The artifacts that contain laplacian model files."
+            it.isVisible = false
+            project.dependencies.add(it.name, MODULE_TEMPLATE)
         }
         project.tasks.register(MODULE_TASK_NAME, LaplacianGenerateTask::class.java).configure { task ->
             task.modelSpec.set(
