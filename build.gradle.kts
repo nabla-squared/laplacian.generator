@@ -8,8 +8,8 @@ plugins {
 }
 
 repositories {
-    maven { url = uri("../mvn-repo/") }
-    maven { url = uri("https://raw.github.com/nabla-squared/mvn-repo/master/") }
+    maven(url = "../mvn-repo/")
+    maven(url = "https://raw.github.com/nabla-squared/mvn-repo/master/")
     jcenter()
 }
 

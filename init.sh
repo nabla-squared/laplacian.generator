@@ -32,4 +32,5 @@ pluginManagement {
 END_OF_FILE
 
 gradle laplacianModule --stacktrace
+mkdir -p src/main/resources
 
