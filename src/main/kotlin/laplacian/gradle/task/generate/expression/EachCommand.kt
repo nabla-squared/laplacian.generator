@@ -1,6 +1,7 @@
 package laplacian.gradle.task.generate.expression
 
 import com.github.jknack.handlebars.Context
+import laplacian.util.handlebarsForPath
 import java.lang.IllegalStateException
 
 class EachCommand(
@@ -11,7 +12,7 @@ class EachCommand(
     override lateinit var next: ExpressionProcessor
 
     override fun eval(path: String, context: Context) {
-        val items: Any? = context.get(itemsExpr)
+        val items: Any? = VarExpression(itemsExpr).eval(context)
         val list =
             if (items is Array<*>) {
                 listOf(*items)

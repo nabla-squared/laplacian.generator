@@ -11,7 +11,7 @@ interface ExpressionProcessor {
 
     companion object {
 
-        private val COMMAND_EXPR = """(.*?)\{\s*(each|if|unless|with)\s+([^\s}]+)(\s+as\s+([-_a-zA-Z0-9$]+))?\s*}""".toRegex()
+        private val COMMAND_EXPR = """(.*?)\{\s*(each|if|unless|with)\s+([^}]+?)(\s+as\s+([-_a-zA-Z0-9$]+))?\s*}""".toRegex()
 
 
         fun process(path: String, context: Map<String, Any?>): List<Pair<String, Context>> {

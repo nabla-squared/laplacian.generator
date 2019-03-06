@@ -24,9 +24,18 @@ class IfProcessorTest {
     }
 
     @Test
-    fun it_effects_conversely_when_the_keyword_unless_is_used_instead_of_if() {
+    fun it_affects_conversely_when_the_keyword_unless_is_used_instead_of_if() {
         val model = mapOf("use_json" to true)
         val expr = "{unless use_json}data.json"
+        val expect = emptyList<String>()
+        val actual = ExpressionProcessor.process(expr, model).map{it.first}
+        assertEquals(expect, actual)
+    }
+
+    @Test
+    fun it_allows_to_use_a_subexpression_as_a_condition() {
+        val model = mapOf("use_json" to true)
+        val expr = "{if (not use_json)}data.json"
         val expect = emptyList<String>()
         val actual = ExpressionProcessor.process(expr, model).map{it.first}
         assertEquals(expect, actual)

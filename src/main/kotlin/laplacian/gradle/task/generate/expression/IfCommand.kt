@@ -3,14 +3,14 @@ package laplacian.gradle.task.generate.expression
 import com.github.jknack.handlebars.Context
 
 class IfCommand(
-    val itemsExpr: String,
+    val conditionExpr: String,
     val negativeFlg: Boolean = false
 ): ExpressionProcessor {
 
     override lateinit var next: ExpressionProcessor
 
     override fun eval(path: String, context: Context) {
-        val condition: Any? = context.get(itemsExpr)
+        val condition: Any? = VarExpression(conditionExpr).eval(context)
         if (negativeFlg) {
             if (!truthy(condition)) {
                 next.eval(path, context)
