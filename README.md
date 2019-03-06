@@ -15,6 +15,6 @@ version: "1.0.0"   # the version of this module
 Then, run the following command in the terminal:
 
 ```bash
-bash <(curl -s https://git.io/fhxcl)
+bash <(curl -Ls https://git.io/fhxcl)
 ````
 
