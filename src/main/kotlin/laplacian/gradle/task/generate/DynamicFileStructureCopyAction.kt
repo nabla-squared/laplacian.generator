@@ -1,6 +1,7 @@
 package laplacian.gradle.task.generate
 
 import laplacian.gradle.task.generate.expression.ExpressionProcessor
+import org.gradle.api.GradleException
 import org.gradle.api.internal.file.CopyActionProcessingStreamAction
 import org.gradle.api.internal.file.copy.CopyAction
 import org.gradle.api.internal.file.copy.CopyActionProcessingStream
@@ -17,7 +18,13 @@ class DynamicFileStructureCopyAction(
 
     override fun execute(stream: CopyActionProcessingStream): WorkResult {
         val action = InternalAction(fileResolver, executionContext)
-        stream.process(action)
+        try {
+            stream.process(action)
+        }
+        catch (e: GradleException) {
+            if (e.cause is GradleException) throw e.cause as GradleException
+            throw e
+        }
         return WorkResults.didWork(action.didWork)
     }
 

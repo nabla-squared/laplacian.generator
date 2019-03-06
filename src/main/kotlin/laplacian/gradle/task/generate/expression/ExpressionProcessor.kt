@@ -2,6 +2,7 @@ package laplacian.gradle.task.generate.expression
 
 import com.github.jknack.handlebars.Context
 import laplacian.util.*
+import org.gradle.api.GradleException
 
 interface ExpressionProcessor {
 
@@ -63,8 +64,8 @@ interface ExpressionProcessor {
                 processors.first().eval("", context)
             }
             catch (e: RuntimeException) {
-                throw IllegalStateException(
-                    "A problem occurred while processing the macro in a file at: ${path}", e
+                throw GradleException(
+                    "A problem occurred while expanding path: $path, cause: ${e.message}", e
                 )
             }
 
