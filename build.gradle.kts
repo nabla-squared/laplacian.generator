@@ -4,7 +4,7 @@ version = "1.0.0"
 plugins {
 	`maven-publish`
     `java-gradle-plugin`
-    kotlin("jvm") version "1.3.10"
+    kotlin("jvm") version "1.3.21"
 }
 
 repositories {
@@ -26,10 +26,6 @@ dependencies {
 val sourcesJar by tasks.creating(Jar::class.java) {
     classifier = "sources"
 	from(sourceSets.main.get().allSource)
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
 }
 
 gradlePlugin {
