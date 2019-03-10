@@ -15,31 +15,53 @@ class GeneratorPlugin: Plugin<Project> {
         const val MODULE_TASK_NAME = "laplacianModule"
         const val MODULE_TEMPLATE = "laplacian:laplacian.template.module-base:1.0.0"
         const val CONFIGURATION_TEMPLATE = "template"
+        const val CONFIGURATION_MODEL = "model"
         const val CONFIGURATION_MODULE = "laplacianModuleTemplate"
     }
 
     override fun apply(project: Project) {
-        setupConfigurationForTemplate(project)
-        setupConfigurationForModule(project)
+        registerGeneratorTask(project)
+        setupModelConfiguration(project)
+        setupTemplateConfiguration(project)
+        registerModuleTask(project)
     }
 
-    private fun setupConfigurationForTemplate(project: Project) {
-        val templates = project.configurations.create(CONFIGURATION_TEMPLATE) {
-            it.description = "The artifacts which contain laplacian generation template."
+    private fun registerGeneratorTask(project: Project) {
+        project.extensions.create(
+            GENERATE_TASK_NAME, LaplacianGenerateExtension::class.java, project
+        )
+        project.tasks.register(
+            GENERATE_TASK_NAME, LaplacianGenerateTask::class.java
+        )
+    }
+
+    private fun setupModelConfiguration(project: Project) {
+        val configuration = project.configurations.create(CONFIGURATION_MODEL) {
+            it.description = "The artifacts which contain laplacian model definitions."
             it.isVisible = false
         }
-        val extension = project.extensions.create(GENERATE_TASK_NAME, LaplacianGenerateExtension::class.java, project)
-        project.tasks.register(GENERATE_TASK_NAME, LaplacianGenerateTask::class.java).configure { task ->
-            templates.allDependencies.forEach { dependency ->
+        val extension = project.extensions.getByType(LaplacianGenerateExtension::class.java)
+        project.tasks.named(GENERATE_TASK_NAME, LaplacianGenerateTask::class.java).configure { task ->
+        }
+    }
+
+    private fun setupTemplateConfiguration(project: Project) {
+        val configuration = project.configurations.create(CONFIGURATION_TEMPLATE) {
+            it.description = "The artifacts which contain laplacian generation templates."
+            it.isVisible = false
+        }
+        val extension = project.extensions.getByType(LaplacianGenerateExtension::class.java)
+        project.tasks.named(GENERATE_TASK_NAME, LaplacianGenerateTask::class.java).configure { task ->
+            configuration.allDependencies.forEach { dependency ->
                 extension.templateModule {
-                    from(templates.name, dependency)
+                    from(configuration.name, dependency)
                 }
             }
             extension.applyTo(task)
         }
     }
 
-    private fun setupConfigurationForModule(project: Project) {
+    private fun registerModuleTask(project: Project) {
         val moduleTemplate = project.configurations.create(CONFIGURATION_MODULE) {
             it.description = "The artifacts that contain laplacian model files."
             it.isVisible = false

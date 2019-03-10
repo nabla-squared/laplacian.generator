@@ -192,16 +192,15 @@ class NormalizedPropertyNameValueResolver(
 }
 
 class TemplateWrapper(private val template: Template) : Template by template {
-
     companion object {
-        fun createContext(obj:Any) = Context.newBuilder(obj).resolver(
+        fun createContext(model: Any, vararg resolvers: ValueResolver) = Context.newBuilder(model).resolver(
+            *resolvers,
             NormalizedPropertyNameValueResolver.INSTANCE,
             FieldValueResolver.INSTANCE,
             MapValueResolver.INSTANCE,
             MethodValueResolver.INSTANCE
         ).build()
     }
-
     override fun apply(context: Any?): String = template.apply(createContext(context!!))
 }
 

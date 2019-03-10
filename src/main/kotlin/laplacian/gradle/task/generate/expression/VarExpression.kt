@@ -6,11 +6,11 @@ import laplacian.util.handlebars
 
 class VarExpression(
     val expression: String,
-    val template: Template? = if (expression.startsWith("(")) {
-        """{{define "$TEMP_VAR_NAME" $expression }}""".handlebars()
-    } else {
-        null
-    }
+    val template: Template? =
+        if (expression.startsWith("(")) {
+            """{{define "$TEMP_VAR_NAME" $expression }}""".handlebars()
+        }
+        else { null }
 ) {
     fun eval(context: Context): Any? {
         if (template == null) {

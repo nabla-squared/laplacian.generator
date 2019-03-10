@@ -12,8 +12,8 @@ import org.gradle.internal.file.PathToFileResolver
 import java.io.File
 
 class DynamicFileStructureCopyAction(
-    val fileResolver: PathToFileResolver,
-    val executionContext: ExecutionContext
+    private val fileResolver: PathToFileResolver,
+    private val executionContext: ExecutionContext
 ): CopyAction {
 
     override fun execute(stream: CopyActionProcessingStream): WorkResult {
@@ -22,15 +22,18 @@ class DynamicFileStructureCopyAction(
             stream.process(action)
         }
         catch (e: GradleException) {
+            if (e.cause == null) throw e
             if (e.cause is GradleException) throw e.cause as GradleException
-            throw e
+            throw GradleException(
+                "An error occurred while expanding the template: ${(e.cause as Throwable).message}", e.cause
+            )
         }
         return WorkResults.didWork(action.didWork)
     }
 
     class InternalAction (
-        val fileResolver: PathToFileResolver,
-        val executionContext: ExecutionContext
+        private val fileResolver: PathToFileResolver,
+        private val executionContext: ExecutionContext
     ): CopyActionProcessingStreamAction {
 
         var didWork: Boolean = false
