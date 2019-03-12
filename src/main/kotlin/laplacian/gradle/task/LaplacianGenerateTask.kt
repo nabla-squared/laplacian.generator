@@ -35,8 +35,8 @@ open class LaplacianGenerateTask: AbstractCopyTask() {
         rootSpec.exclude(".gradle/")
         rootSpec.exclude(".git/")
         val context = executionContext.get()
-        context.build()
         modelSpec.get().applyTo(context)
+        context.build()
         val filterOpts = mapOf("executionContext" to context)
         templateDirSpecs.get().forEach { spec ->
             spec.applyTo(rootSpec.addChild(), filterOpts)
