@@ -24,10 +24,11 @@ open class TemplateModuleSpec(
     @Input
     val from = project.objects
               .property(String::class.java)
-              .value("template")
 
     @Input
-    val configurationName = project.objects.property(String::class.java)
+    val configurationName = project.objects
+                           .property(String::class.java)
+                           .value("template")
 
     val configuration = configurationName.map {
         project.configurations.getByName(it)

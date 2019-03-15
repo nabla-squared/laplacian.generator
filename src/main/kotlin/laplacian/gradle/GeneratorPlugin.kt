@@ -41,7 +41,12 @@ class GeneratorPlugin: Plugin<Project> {
             it.isVisible = false
         }
         val extension = project.extensions.getByType(LaplacianGenerateExtension::class.java)
-        project.tasks.named(GENERATE_TASK_NAME, LaplacianGenerateTask::class.java).configure { task ->
+        project.tasks.named(GENERATE_TASK_NAME, LaplacianGenerateTask::class.java).configure {
+            configuration.allDependencies.forEach { dependency ->
+                extension.model {
+                    module(dependency)
+                }
+            }
         }
     }
 
