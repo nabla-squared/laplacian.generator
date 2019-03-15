@@ -12,7 +12,7 @@ class YamlLoader {
             val parser = Yaml()
             val result: Map<String, T> = mutableMapOf()
             return files.fold(result) { acc, file ->
-                mergeObjectGraph(acc, readObjects<T>(parser, file))
+                mergeObjectGraph(acc, readObjects<T>(parser, file), file) as Map<String, T>
             }
         }
 
@@ -27,24 +27,34 @@ class YamlLoader {
             }
         }
 
-        private fun <T> mergeObjectGraph(one: T, another: T): T {
+        private fun mergeObjectGraph(one: Any, another: Any, file: File, path: String = ""): Any {
             if (one is Map<*, *> && another is Map<*, *>) {
-                return (one + another.map{ entry ->
+                return one + another.map{ entry ->
                     val k = entry.key
-                    if (one.contains(k)) {
-                         k to mergeObjectGraph(one[k], entry.value)
+                    val anotherValue = entry.value
+                    val value = one[k]
+                    when {
+                        (value == null) -> k to anotherValue
+                        (anotherValue == null) -> k to value
+                        else -> k to mergeObjectGraph(
+                            value,
+                            anotherValue,
+                            file,
+                            path + (if (path.isEmpty()) "" else ".") + k
+                        )
                     }
-                    else {
-                       entry.toPair()
-                    }
-                }) as T
+                }
             }
             if (one is List<*> && another is List<*>) {
-                return (one + another) as T
+                return one + another
             }
-            else throw IllegalArgumentException(
-                "Member type mismatch: ${one} and ${another}"
-            )
+            else {
+                throw java.lang.IllegalStateException(
+                    "While merging the model file (${file.absolutePath})," +
+                    " the following model items at '${if (path.isEmpty()) "root" else path}' conflict" +
+                    ": $one and $another"
+                )
+            }
         }
 
     }
