@@ -14,7 +14,7 @@ open class ModelSpec(
     val modelEntryResolvers = project.objects.listProperty(ModelEntryResolver::class.java)
 
     @InputFiles
-    val modelFiles = project.files("model")
+    val modelFiles = project.files("model", "laplacian-module.yml", "laplacian-module.yaml")
 
     @Optional
     @Input
@@ -54,6 +54,7 @@ open class ModelSpec(
             it.include("**/*.yaml", "**/*.yml")
         }
         executionContext.modelFiles.addAll(yamlFiles)
+        executionContext.modelEntryResolvers.add(ProjectEntryResolver())
         executionContext.modelEntryResolvers.addAll(modelEntryResolvers.get())
     }
 }

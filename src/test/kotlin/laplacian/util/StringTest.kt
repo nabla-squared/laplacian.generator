@@ -46,16 +46,13 @@ class StringTest {
     @Test
     fun test_pathify() {
         assertEquals(
-                "hoge/fuga/piyo", "HogeFugaPiyo".pathify()
+                "hoge/fuga_piyo", "Hoge.FugaPiyo".pathify()
         )
         assertEquals(
                 "hoge/fuga/piyo", "hoge.fuga.piyo".pathify()
         )
         assertEquals(
-                "hoge/fugapiyo", "HOGE FUGA-PIYO".pathify()
-        )
-        assertEquals(
-                "hoge/fuga/piyo", "hoge fuga piyo".pathify()
+                "hoge/fuga_piyo", "HOGE.FUGA-PIYO".pathify()
         )
     }
 
