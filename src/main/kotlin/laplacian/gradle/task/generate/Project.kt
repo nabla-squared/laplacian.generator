@@ -1,6 +1,6 @@
 package laplacian.gradle.task.generate
 
-import java.lang.IllegalStateException
+import laplacian.util.*
 
 class Project(
     model: Map<String, Any?>
@@ -11,7 +11,10 @@ class Project(
         } as String
     }
     val namespace: String
-        get() = listOfNotNull(
-            required("group"), required("name"), get("subname")
-        ).joinToString(".")
+        get() = if (containsKey("namespace"))
+                getString("namespace")
+            else
+                listOfNotNull(
+                    required("group"), required("type"), required("name"), get("subname")
+                ).map{ it.toString().lowerUnderscorize() }.joinToString(".")
 }
