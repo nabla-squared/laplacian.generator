@@ -4,17 +4,21 @@ import laplacian.util.*
 
 class Project(
     model: Map<String, Any?>
-): Map<String, Any?> by model {
-    private fun required(key: String): String {
-        return getOrElse(key) {
-            throw IllegalStateException("$key is required in a project definition.")
-        } as String
-    }
+): Module(model) {
+
     val namespace: String
         get() = if (containsKey("namespace"))
                 getString("namespace")
             else
-                listOfNotNull(
-                    required("group"), required("type"), required("name"), get("subname")
-                ).map{ it.toString().lowerUnderscorize() }.joinToString(".")
+                moduleSignature().map(String::lowerUnderscorize).joinToString(".")
+
+    val models: List<Module>
+        get() = model
+               .getList<Map<String, Any?>>("models", emptyList())
+               .map{ Module(it + ("type" to "model")) }
+
+    val templates: List<Module>
+        get() = model
+               .getList<Map<String, Any?>>("templates", emptyList())
+               .map{ Module(it + ("type" to "template")) }
 }

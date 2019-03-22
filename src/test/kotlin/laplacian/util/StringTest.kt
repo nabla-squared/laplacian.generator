@@ -205,7 +205,7 @@ class StringTest {
 
     @Test
     fun test_helper_usage_in_subexpressions() {
-        assertEquals("HOGE/FUGA/PIYO", "{{upper (path this)}}".handlebars().apply("hoge fuga piyo"))
+        assertEquals("HOGE/FUGA/PIYO", "{{upper (path this)}}".handlebars().apply("hoge.fuga.piyo"))
     }
 
     @Test
