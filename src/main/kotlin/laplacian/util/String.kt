@@ -68,9 +68,12 @@ class StringHelper(private val fn: (str: String, opts: Options) -> String): Help
 }
 
 class DefineHelper: Helper<Any> {
-    override fun apply(context: Any, options: Options): Any {
+    override fun apply(context: Any?, options: Options): Any {
         val name: String
         val value: Any?
+        if (context == null) throw java.lang.IllegalArgumentException(
+            "Invalid #define tag: variable name must not be null."
+        )
         val buffer = when (options.tagType) {
             TagType.VAR -> {
                 name = context.toString()
