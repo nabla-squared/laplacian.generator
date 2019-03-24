@@ -9,7 +9,7 @@ class ProjectTest {
     fun test_default_namespace_construction() {
         val projectModel = Project(project)
         assertEquals(
-            "laplacian.example.test_project",
+            "laplacian.test_project",
             Project(projectModel).namespace
         )
         assertEquals(0, projectModel.models.size)
@@ -17,14 +17,14 @@ class ProjectTest {
     }
     private val project = mapOf(
         "group" to "laplacian",
-        "type" to "example",
+        "type" to "model",
         "name" to "test-project"
     )
 
     @Test
     fun test_namespace_of_project_with_subname() {
          assertEquals(
-            "laplacian.example.test_project.sub_name",
+            "laplacian.test_project.sub_name",
             Project(projectWithSubname).namespace
         )
     }
@@ -32,7 +32,7 @@ class ProjectTest {
     @Test
     fun test_module_id_is_a_namespace_with_tokens_separated_with_hyphen() {
         assertEquals(
-            "laplacian.example.test-project.sub-name",
+            "laplacian.model.test-project.sub-name",
             Project(projectWithSubname).moduleId
         )
     }

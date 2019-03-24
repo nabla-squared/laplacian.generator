@@ -10,7 +10,9 @@ class Project(
         get() = if (containsKey("namespace"))
                 getString("namespace")
             else
-                moduleSignature().map(String::lowerUnderscorize).joinToString(".")
+                listOfNotNull(
+                    required("group"), required("name"), get("subname")
+                ).map{ it.toString().lowerUnderscorize() }.joinToString(".")
 
     val models: List<Module>
         get() = model

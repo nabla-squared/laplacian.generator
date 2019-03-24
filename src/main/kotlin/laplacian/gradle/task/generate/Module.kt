@@ -4,7 +4,7 @@ import laplacian.util.*
 open class Module(
     val model: Map<String, Any?>
 ): Map<String, Any?> by model {
-    private fun required(key: String): String {
+    fun required(key: String): String {
         return getOrElse(key) {
             throw IllegalStateException("$key is required in the model definition.")
         } as String
