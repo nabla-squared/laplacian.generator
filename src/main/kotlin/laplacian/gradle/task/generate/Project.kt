@@ -17,7 +17,9 @@ class Project(
         get() = model
                .getList<Map<String, Any?>>("plugins", emptyList())
                .map{ Module(it + ("type" to "plugin")) }
-
+    val pluginsExcludingSelf: List<Module>
+        get() = plugins
+               .filter{ it.moduleId != this.moduleId }
     val models: List<Module>
         get() = model
                .getList<Map<String, Any?>>("models", emptyList())

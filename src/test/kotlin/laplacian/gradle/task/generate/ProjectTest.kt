@@ -59,4 +59,24 @@ class ProjectTest {
         )
     }
     private val projectDefinedExplicitNamespace = project + ("namespace" to "com.exmaple.namespace")
+
+    @Test
+    fun test_list_dependent_plugins_excluding_self() {
+        val project = Project(plugin_project)
+        assertEquals(4, project.plugins.size)
+        assertEquals(3, project.pluginsExcludingSelf.size)
+    }
+    private val dependengPlugins = listOf(
+        mapOf("name" to "plugin-1", "group" to "external", "version" to "2.0.0"),
+        mapOf("name" to "plugin-1", "group" to "external", "version" to "2.0.0"),
+        mapOf("name" to "plugin-2", "group" to "external", "version" to "1.0.0"),
+        mapOf("name" to "test-plugin", "group" to "laplacian", "version" to "1.0.0")
+    )
+    private val plugin_project = mapOf(
+        "group" to "laplacian",
+        "type" to "plugin",
+        "name" to "test-plugin",
+        "version" to "1.0.1",
+        "plugins" to dependengPlugins
+    )
 }
