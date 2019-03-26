@@ -20,12 +20,13 @@ class ModelSpec(
     }
 
     fun applyTo(executionContext: ExecutionContext) {
-        loadFromModules()
-        val yamlFiles = files.asFileTree.matching {
-            it.include("**/*.yaml", "**/*.yml")
+        base.forEachFileSets { files ->
+            val yamlFiles = files.asFileTree.matching {
+                it.include("**/*.yaml", "**/*.yml")
+            }
+            executionContext.modelFiles.addAll(yamlFiles)
+            executionContext.modelEntryResolvers.add(ProjectEntryResolver())
+            executionContext.modelEntryResolvers.addAll(modelEntryResolvers.get())
         }
-        executionContext.modelFiles.addAll(yamlFiles)
-        executionContext.modelEntryResolvers.add(ProjectEntryResolver())
-        executionContext.modelEntryResolvers.addAll(modelEntryResolvers.get())
     }
 }

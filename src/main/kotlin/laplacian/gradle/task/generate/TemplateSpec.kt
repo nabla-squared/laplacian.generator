@@ -18,25 +18,26 @@ class TemplateSpec(
 
     @Optional
     @OutputDirectory
-    val into = project.objects.directoryProperty()
+    val into = project.objects
+              .property(String::class.java)
+              .value("./")
 
-    fun into(dest: Any) {
-        into.set(project.file(dest))
+    fun into(path: String) {
+        into.set(path)
     }
 
     fun applyTo(copySpec: CopySpec, filterOpts: Map<String, Any>) {
-        loadFromModules()
-        val targetDir = into.asFile.getOrElse(project.file("/"))
-        val templateFiles = files.asFileTree
-        copySpec.into(targetDir)
-        copySpec.from(templateFiles) {
-            it.exclude(*TEMPLATE_GLOB, "META-INF/**")
-        }
-        copySpec.from(templateFiles) {
-            it.include(*TEMPLATE_GLOB)
-            it.exclude("META-INF/**")
-            it.filter(filterOpts, HandlebarsFilter::class.java)
-            it.rename(TEMPLATE_PATTERN, REPLACED_FILE_NAME)
+        base.forEachFileSets { templateFiles ->
+            copySpec.into(into.get())
+            copySpec.from(templateFiles) {
+                it.exclude(*TEMPLATE_GLOB, "META-INF/**")
+            }
+            copySpec.from(templateFiles) {
+                it.include(*TEMPLATE_GLOB)
+                it.exclude("META-INF/**")
+                it.filter(filterOpts, HandlebarsFilter::class.java)
+                it.rename(TEMPLATE_PATTERN, REPLACED_FILE_NAME)
+            }
         }
     }
 }

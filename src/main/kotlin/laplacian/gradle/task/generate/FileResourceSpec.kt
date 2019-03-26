@@ -4,6 +4,8 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.file.CopySpec
+import org.gradle.api.file.FileCollection
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
@@ -16,6 +18,6 @@ interface FileResourceSpec {
     val configuration: Provider<Configuration>
     fun from(vararg paths: Any)
     fun module(module: Dependency)
-    fun loadFromModules()
+    fun forEachFileSets(consumer: (fileSet: FileCollection) -> Unit)
 }
 
