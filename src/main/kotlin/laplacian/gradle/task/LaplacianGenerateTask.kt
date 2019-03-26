@@ -3,7 +3,6 @@ package laplacian.gradle.task
 import laplacian.gradle.task.generate.*
 import org.gradle.api.internal.file.copy.*
 import org.gradle.api.tasks.*
-import java.io.File
 
 open class LaplacianGenerateTask: AbstractCopyTask() {
 
@@ -13,13 +12,7 @@ open class LaplacianGenerateTask: AbstractCopyTask() {
                    .value(ModelSpec(project))
 
     @Nested
-    val templateDirSpecs = project.objects.listProperty(TemplateDirSpec::class.java)
-
-    @Nested
-    val templateFileSpecs = project.objects.listProperty(TemplateFileSpec::class.java)
-
-    @Nested
-    val templateModuleSpecs = project.objects.listProperty(TemplateModuleSpec::class.java)
+    val templateSpecs = project.objects.listProperty(TemplateSpec::class.java)
 
     val executionContext = project.objects.property(ExecutionContext::class.java)
         .value(ExecutionContext())
@@ -38,13 +31,7 @@ open class LaplacianGenerateTask: AbstractCopyTask() {
         modelSpec.get().applyTo(context)
         context.build()
         val filterOpts = mapOf("executionContext" to context)
-        templateDirSpecs.get().forEach { spec ->
-            spec.applyTo(rootSpec.addChild(), filterOpts)
-        }
-        templateFileSpecs.get().forEach { spec ->
-            spec.applyTo(rootSpec.addChild(), filterOpts)
-        }
-        templateModuleSpecs.get().forEach { spec ->
+        templateSpecs.get().forEach { spec ->
             spec.applyTo(rootSpec.addChild(), filterOpts)
         }
     }

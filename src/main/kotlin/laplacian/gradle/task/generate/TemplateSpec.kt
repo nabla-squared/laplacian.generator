@@ -6,39 +6,35 @@ import laplacian.gradle.task.LaplacianGenerateTask.Companion.TEMPLATE_GLOB
 import laplacian.gradle.task.LaplacianGenerateTask.Companion.TEMPLATE_PATTERN
 import org.gradle.api.Project
 import org.gradle.api.file.*
-import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 
-open class TemplateDirSpec(
-    private val project: Project
-) {
+class TemplateSpec(
+    project: Project,
+    val base: FileResourceSpec = FileResourceSpecBase(
+        project, arrayOf("template"), "template"
+    )
+) : FileResourceSpec by base  {
+
     @Optional
     @OutputDirectory
-    val into = project.objects
-              .directoryProperty()
-              .value(project.layout.projectDirectory)
+    val into = project.objects.directoryProperty()
 
-    @InputDirectory
-    val from = project.objects.directoryProperty()
-
-    fun into(path: String) {
-        into.set(project.layout.projectDirectory.dir(path))
-    }
-
-    fun from(path: String) {
-        from.set(project.layout.projectDirectory.dir(path))
+    fun into(dest: Any) {
+        into.set(project.file(dest))
     }
 
     fun applyTo(copySpec: CopySpec, filterOpts: Map<String, Any>) {
-        val intoDir = into.get().asFile
-        val fromDir = from.get().asFile
-        copySpec.into(intoDir)
-        copySpec.from(fromDir) {
-             it.exclude(*TEMPLATE_GLOB)
+        loadFromModules()
+        val targetDir = into.asFile.getOrElse(project.file("/"))
+        val templateFiles = files.asFileTree
+        copySpec.into(targetDir)
+        copySpec.from(templateFiles) {
+            it.exclude(*TEMPLATE_GLOB, "META-INF/**")
         }
-        copySpec.from(fromDir) {
+        copySpec.from(templateFiles) {
             it.include(*TEMPLATE_GLOB)
+            it.exclude("META-INF/**")
             it.filter(filterOpts, HandlebarsFilter::class.java)
             it.rename(TEMPLATE_PATTERN, REPLACED_FILE_NAME)
         }

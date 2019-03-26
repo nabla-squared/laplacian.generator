@@ -3,7 +3,7 @@ package laplacian.gradle
 import laplacian.gradle.task.LaplacianGenerateTask
 import laplacian.gradle.task.LaplacianGenerateExtension
 import laplacian.gradle.task.generate.ModelSpec
-import laplacian.gradle.task.generate.TemplateModuleSpec
+import laplacian.gradle.task.generate.TemplateSpec
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import java.lang.IllegalStateException
@@ -58,8 +58,8 @@ class GeneratorPlugin: Plugin<Project> {
         val extension = project.extensions.getByType(LaplacianGenerateExtension::class.java)
         project.tasks.named(GENERATE_TASK_NAME, LaplacianGenerateTask::class.java).configure { task ->
             configuration.allDependencies.forEach { dependency ->
-                extension.templateModule {
-                    from(configuration.name, dependency)
+                extension.template {
+                    module(dependency)
                 }
             }
             extension.applyTo(task)
@@ -82,13 +82,14 @@ class GeneratorPlugin: Plugin<Project> {
                     if (moduleDef.files.all{!it.exists()}) throw IllegalStateException(
                         "A file which is named laplacian-module.ya?ml is needed in the root directory of this project. "
                     )
-                    files(moduleDef)
+                    from(moduleDef)
                 }
             )
-            task.templateModuleSpecs.add(
-                TemplateModuleSpec(project).apply {
+            task.templateSpecs.add(
+                TemplateSpec(project).apply {
+                    configurationName.set(moduleTemplate.name)
                     moduleTemplate.allDependencies.forEach { dependency ->
-                        from(moduleTemplate.name, dependency)
+                        module(dependency)
                     }
                 }
             )
