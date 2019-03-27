@@ -8,20 +8,16 @@ open class LaplacianGenerateTask: AbstractCopyTask() {
 
     @Nested
     val modelSpec = project.objects
-                   .property(ModelSpec::class.java)
-                   .value(ModelSpec(project))
+       .property(ModelSpec::class.java)
+       .value(ModelSpec(project))
 
     @Nested
-    val templateSpecs = project.objects.listProperty(TemplateSpec::class.java)
+    val templateSpecs = project.objects
+       .listProperty(TemplateSpec::class.java)
 
-    val executionContext = project.objects.property(ExecutionContext::class.java)
-        .value(ExecutionContext())
-
-    companion object {
-        val TEMPLATE_GLOB = arrayOf("**/*.hbs.*", "**/*.hbs")
-        val TEMPLATE_PATTERN = """(.*)(?:\.hbs\.(.+)|\.(.+)\.hbs)$""".toPattern()
-        const val REPLACED_FILE_NAME = "$1.$2$3"
-    }
+    val executionContext = project.objects
+       .property(ExecutionContext::class.java)
+       .value(ExecutionContext())
 
     fun prepare() {
         rootSpec.into(project.projectDir)

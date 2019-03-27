@@ -51,6 +51,4 @@ class DynamicFileStructureCopyAction(
             if (copied) didWork = true
         }
     }
-
-
 }

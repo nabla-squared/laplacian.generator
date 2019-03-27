@@ -19,7 +19,7 @@ dependencies {
     implementation("org.yaml:snakeyaml:1.22")
     implementation("com.github.jknack:handlebars:4.1.0")
     implementation("org.atteo:evo-inflector:1.2.2")
-//    implementation("net.sourceforge.plantuml:plantuml:1.2019.3")
+    implementation("net.sourceforge.plantuml:plantuml:1.2019.3")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.2.0")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.2.0")
 }

@@ -1,9 +1,7 @@
 package laplacian.gradle.task.generate
 
 import laplacian.gradle.filter.HandlebarsFilter
-import laplacian.gradle.task.LaplacianGenerateTask.Companion.REPLACED_FILE_NAME
-import laplacian.gradle.task.LaplacianGenerateTask.Companion.TEMPLATE_GLOB
-import laplacian.gradle.task.LaplacianGenerateTask.Companion.TEMPLATE_PATTERN
+import laplacian.gradle.filter.PlantUmlFilter
 import org.gradle.api.Project
 import org.gradle.api.file.*
 import org.gradle.api.tasks.Optional
@@ -15,6 +13,15 @@ class TemplateSpec(
         project, arrayOf("template"), "template"
     )
 ) : FileResourceSpec by base  {
+
+    companion object {
+        val TEMPLATE_GLOB = arrayOf("**/*.hbs.*", "**/*.hbs")
+        val TEMPLATE_PATTERN = """(.*)(?:\.hbs\.(.+)|\.(.+)\.hbs)$""".toPattern()
+        val REPLACED_FILE_NAME = "$1.$2$3"
+        val PLANT_UML_GLOB = arrayOf("**/*.puml", "**/*.xsd")
+        val PLANT_UML_PATTERN = """(.*)\.(puml|xsd)$""".toPattern()
+        val PLANT_UML_REPLACED = "$1.svg"
+    }
 
     @Optional
     @OutputDirectory
@@ -37,6 +44,11 @@ class TemplateSpec(
                 it.exclude("META-INF/**")
                 it.filter(filterOpts, HandlebarsFilter::class.java)
                 it.rename(TEMPLATE_PATTERN, REPLACED_FILE_NAME)
+            }
+            copySpec.from(templateFiles) {
+                it.include(*PLANT_UML_GLOB)
+                it.filter(PlantUmlFilter::class.java)
+                it.rename(PLANT_UML_PATTERN, PLANT_UML_REPLACED)
             }
         }
     }
