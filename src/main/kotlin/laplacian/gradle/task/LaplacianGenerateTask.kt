@@ -26,9 +26,8 @@ open class LaplacianGenerateTask: AbstractCopyTask() {
         val context = executionContext.get()
         modelSpec.get().applyTo(context)
         context.build()
-        val filterOpts = mapOf("executionContext" to context)
         templateSpecs.get().forEach { spec ->
-            spec.applyTo(rootSpec.addChild(), filterOpts)
+            spec.applyTo(rootSpec.addChild(), context)
         }
     }
 

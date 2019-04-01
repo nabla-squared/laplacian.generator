@@ -6,6 +6,7 @@ import com.github.jknack.handlebars.context.MapValueResolver
 import laplacian.util.RecordList
 import laplacian.util.TemplateWrapper
 import laplacian.util.YamlLoader
+import org.gradle.api.file.FileCopyDetails
 import java.io.File
 
 class ExecutionContext(
@@ -13,6 +14,7 @@ class ExecutionContext(
     val modelEntryResolvers: MutableList<ModelEntryResolver> = mutableListOf()
 ) {
     lateinit var baseModel: Context
+    lateinit var fileCopyDetails: FileCopyDetails
 
     fun build() {
         val entries = YamlLoader.readObjects<Any?>(modelFiles)

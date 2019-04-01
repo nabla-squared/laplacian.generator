@@ -8,11 +8,11 @@ class Project(
 
     val namespace: String
         get() = if (containsKey("namespace"))
-                getString("namespace")
-            else
-                listOfNotNull(
-                    required("group"), required("name"), get("subname")
-                ).map{ it.toString().lowerUnderscorize() }.joinToString(".")
+                    getString("namespace")
+                else
+                    listOfNotNull(
+                        required("group"), required("name"), get("subname")
+                    ).map{ it.toString().lowerUnderscorize() }.joinToString(".")
     val plugins: List<Module>
         get() = model
                .getList<Map<String, Any?>>("plugins", emptyList())
