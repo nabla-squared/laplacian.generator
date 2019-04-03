@@ -26,16 +26,16 @@ open class Module(
     val version: String
         get() = required("version")
 
-    val isTemplate: Boolean
+    val forTemplate: Boolean
         get() = (type == "template")
 
-    val isModel: Boolean
+    val forModel: Boolean
         get() = (type == "model")
 
-    val isPlugin: Boolean
+    val forPlugin: Boolean
         get() = (type == "plugin")
 
-    val isProject: Boolean
+    val forProject: Boolean
         get() = (type == "project")
 
     val description: String

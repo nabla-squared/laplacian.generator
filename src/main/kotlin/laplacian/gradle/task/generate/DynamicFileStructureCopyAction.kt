@@ -42,7 +42,7 @@ class DynamicFileStructureCopyAction(
             val target = fileResolver.resolve(details.relativePath.pathString)
             val expandedPaths = ExpressionProcessor.process(
                 target.absolutePath,
-                executionContext.baseModel
+                executionContext.currentModel
             )
             val copied = expandedPaths.all { (path, context) ->
                 executionContext.currentModel = context
