@@ -79,4 +79,16 @@ class ProjectTest {
         "version" to "1.0.1",
         "plugins" to dependengPlugins
     )
+
+    @Test
+    fun test_description() {
+        val with_description = Project(project_with_description)
+        assertEquals("PROJECT_DESCRIPTION", with_description.description)
+        val without_description = Project(plugin_project)
+        assertEquals(
+            "LAPLACIAN/TEST-PLUGIN - a laplacian plugin project",
+            without_description.description
+        )
+    }
+    private val project_with_description = plugin_project + mapOf("description" to "PROJECT_DESCRIPTION");
 }
