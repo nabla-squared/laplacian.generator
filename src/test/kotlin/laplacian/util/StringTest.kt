@@ -110,6 +110,33 @@ class StringTest {
         assertEquals(expect, actual)
     }
 
+     @Test
+    fun test_strip_blank_lines() {
+        val withDocument = """
+        |/**
+        | * say hogehoge
+        | */
+        |fun hogehoge() {
+        |    println("hogehoge")
+        |${"    "}
+        |    println("fugafuga")
+        |
+        |}
+        """.trimMargin()
+        val actual = withDocument.stripBlankLines()
+        val expect = """
+        |/**
+        | * say hogehoge
+        | */
+        |fun hogehoge() {
+        |    println("hogehoge")
+        |    println("fugafuga")
+        |
+        |}
+        """.trimMargin()
+        assertEquals(expect, actual)
+    }
+
     @Test
     fun test_shift_a_text_block() {
         val codeBlock = """

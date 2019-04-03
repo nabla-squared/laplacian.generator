@@ -37,14 +37,14 @@ fun String.upperHyphenize() = joinTokens(this, "-", true)
 fun String.pathify() = split("""\.+""".toRegex()).map{ it.lowerUnderscorize() }.joinToString("/")
 
 fun String.stripBlankLines() =
-        this.replace("""\n\s*\n""".toRegex(), "\n")
-            .replace("""\s*\n+$""".toRegex(RegexOption.MULTILINE), "")
-            .replace("""^\s*\n""".toRegex(RegexOption.MULTILINE), "")
-val DOC_COMMENT = """(/\*\*[\s\S]*?\*+/|^\s*#.*$)""".toRegex(RegexOption.MULTILINE)
+        this.replace("""(^|\n)[ \t]+(?=$|\n)""".toRegex(), "").trim()
+
+val DOC_COMMENT = """(/\*\*[\s\S]*?\*+/|([ \t]*#.*(\n|$)){2,})""".toRegex()
 
 fun String.stripDocComments() =
         this.replace(DOC_COMMENT, "")
             .stripBlankLines()
+            .trim()
 
 fun String.pluralize() = English.plural(this)
 
