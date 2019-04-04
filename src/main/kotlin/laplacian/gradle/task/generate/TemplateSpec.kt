@@ -13,6 +13,13 @@ class TemplateSpec(
     )
 ) : FileResourceSpec by base  {
 
+    companion object {
+        val EXCLUDED_PATTERNS = listOf(
+            """^META-INF/""".toRegex(),
+            """(^|[./])partial(?=[./]).*\.hbs(\.|$)""".toRegex()
+        )
+    }
+
     @Optional
     @OutputDirectory
     val into = project.objects
@@ -24,28 +31,31 @@ class TemplateSpec(
     }
 
     fun applyTo(copySpec: CopySpec, context: ExecutionContext) {
-        val fileCopyPipeline = listOf(
+        copySpec.includeEmptyDirs = false
+        copySpec.into(into.get())
+        copySpec.eachFile { detail ->
+            doForEachFile(detail, context)
+        }
+        base.forEachFileSets { templateFiles ->
+            copySpec.from(templateFiles)
+        }
+    }
+
+    private fun doForEachFile(fileCopyDetails: FileCopyDetails, context: ExecutionContext) {
+        context.currentTemplate = fileCopyDetails.file
+        if (EXCLUDED_PATTERNS.any{ it.containsMatchIn(fileCopyDetails.sourcePath) }) {
+            fileCopyDetails.exclude()
+            return
+        }
+        val pipeline = listOf(
             HandlebarsCopyHandler(context),
             PlantUmlCopyHandler()
-        )
-        base.forEachFileSets { templateFiles ->
-            copySpec.into(into.get())
-            copySpec.from(templateFiles) {
-                it.eachFile { fileCopyDetails ->
-                    context.fileCopyDetails = fileCopyDetails
-                    if (fileCopyDetails.sourcePath.startsWith("META-INF/")) {
-                        fileCopyDetails.exclude()
-                        return@eachFile
-                    }
-                    val pipeline = fileCopyPipeline.filter { handler ->
-                        handler.handle(fileCopyDetails)
-                    }
-                    fileCopyDetails.filter(
-                        mapOf("fileCopyPipeline" to pipeline),
-                        FileCopyPipelineFilter::class.java
-                    )
-                }
-            }
+        ).filter { handler ->
+            handler.handle(fileCopyDetails)
         }
+        fileCopyDetails.filter(
+            mapOf("fileCopyPipeline" to pipeline),
+            FileCopyPipelineFilter::class.java
+        )
     }
 }

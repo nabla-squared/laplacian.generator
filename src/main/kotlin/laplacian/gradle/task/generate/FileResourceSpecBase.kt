@@ -44,6 +44,7 @@ class FileResourceSpecBase(
         moduleNames.get().forEach { path ->
             val archive = configuration.files.find{ it.absolutePath.endsWith(path) }
             val content = project.zipTree(archive).asFileTree
+            content.forEach { it.absolutePath } // a workaround extract the all files in the archive
             consumer(content)
         }
     }

@@ -25,9 +25,10 @@ class HandlebarsCopyHandler(
 
     override fun copy(reader: Reader, out: OutputStream) {
         val template = reader.readText()
+        val baseDir = context.currentTemplate.parentFile
         out.bufferedWriter().use {
             it.write(
-                template.handlebars().apply(context.currentModel).stripBlankLines()
+                template.handlebars(baseDir).apply(context.currentModel).stripBlankLines()
             )
         }
     }

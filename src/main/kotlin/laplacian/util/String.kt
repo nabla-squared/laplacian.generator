@@ -7,7 +7,9 @@ import com.github.jknack.handlebars.context.MapValueResolver
 import com.github.jknack.handlebars.context.MethodValueResolver
 import com.github.jknack.handlebars.helper.ConditionalHelpers
 import com.github.jknack.handlebars.helper.StringHelpers
+import com.github.jknack.handlebars.io.FileTemplateLoader
 import org.atteo.evo.inflector.English
+import java.io.File
 
 val SEPARATOR = """([-./_\s]+|(?<=[a-z])(?=[A-Z]))""".toRegex()
 
@@ -69,19 +71,19 @@ class StringHelper(private val fn: (str: String, opts: Options) -> String): Help
 
 class DefineHelper: Helper<Any> {
     override fun apply(context: Any?, options: Options): Any {
-        val name: String
+        val path: String
         val value: Any?
         if (context == null) throw java.lang.IllegalArgumentException(
             "Invalid #define tag: variable name must not be null."
         )
         val buffer = when (options.tagType) {
             TagType.VAR -> {
-                name = context.toString()
+                path = context.toString()
                 value = options.params[0]
                 ""
             }
             TagType.SECTION -> {
-                name = context.toString()
+                path = context.toString()
                 value = options.fn()
                 options.buffer()
             }
@@ -89,7 +91,9 @@ class DefineHelper: Helper<Any> {
                 "Unsupported tag type: ${options.tagType}"
             )
         }
-        options.context.combine(name, value)
+        val name = path.replace("../", "")
+        val c = if (path.startsWith("../")) options.context.parent() else options.context
+        c.combine(name, value)
         return buffer
     }
     companion object {
@@ -135,11 +139,15 @@ fun identifierHelper(wide: Boolean = false, fn: (str: String, opts: Options) -> 
 val IDENTIFIER_TOKEN = """[-_a-zA-Z][-_a-zA-Z0-9$]*""".toRegex()
 val IDENTIFIER_TOKEN_WIDE = """[-_a-zA-Z][-./_a-zA-Z0-9$]*""".toRegex()
 
-fun String.handlebars(): Template {
-    val template = HANDLEBARS.compileInline(this)
+fun String.handlebars(basePath: File? = null): Template {
+    val handlebars = createTemplate()
+    if (basePath != null) {
+        handlebars.with(FileTemplateLoader(basePath))
+    }
+    val template = handlebars.compileInline(this)
     return TemplateWrapper(template)
 }
-val HANDLEBARS = createTemplate()
+//val HANDLEBARS = createTemplate()
 
 fun String.handlebarsForPath(): Template {
     val template = HANDLEBARS_FOR_PATH.compileInline(this)

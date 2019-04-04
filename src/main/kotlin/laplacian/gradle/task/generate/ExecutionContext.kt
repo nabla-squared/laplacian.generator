@@ -14,7 +14,7 @@ class ExecutionContext(
     val modelEntryResolvers: MutableList<ModelEntryResolver> = mutableListOf()
 ) {
     lateinit var baseModel: Context
-    lateinit var fileCopyDetails: FileCopyDetails
+    lateinit var currentTemplate: File
 
     fun build() {
         val entries = YamlLoader.readObjects<Any?>(modelFiles)

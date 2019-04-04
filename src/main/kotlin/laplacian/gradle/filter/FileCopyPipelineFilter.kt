@@ -1,6 +1,5 @@
 package laplacian.gradle.filter
 
-import laplacian.gradle.task.generate.ExecutionContext
 import java.io.*
 import java.nio.CharBuffer
 
