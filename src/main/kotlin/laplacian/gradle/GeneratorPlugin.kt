@@ -2,10 +2,12 @@ package laplacian.gradle
 
 import laplacian.gradle.task.LaplacianGenerateTask
 import laplacian.gradle.task.LaplacianGenerateExtension
+import laplacian.gradle.task.LaplacianModuleTask
 import laplacian.gradle.task.generate.ModelSpec
 import laplacian.gradle.task.generate.TemplateSpec
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.slf4j.LoggerFactory
 import java.lang.IllegalStateException
 
 class GeneratorPlugin: Plugin<Project> {
@@ -17,6 +19,7 @@ class GeneratorPlugin: Plugin<Project> {
         const val CONFIGURATION_TEMPLATE = "template"
         const val CONFIGURATION_MODEL = "model"
         const val CONFIGURATION_MODULE = "laplacianModuleTemplate"
+        val LOG = LoggerFactory.getLogger(GeneratorPlugin::class.java)
     }
 
     override fun apply(project: Project) {
@@ -72,7 +75,7 @@ class GeneratorPlugin: Plugin<Project> {
             it.isVisible = false
             project.dependencies.add(it.name, MODULE_TEMPLATE)
         }
-        project.tasks.register(MODULE_TASK_NAME, LaplacianGenerateTask::class.java).configure { task ->
+        project.tasks.register(MODULE_TASK_NAME, LaplacianModuleTask::class.java).configure { task ->
             task.modelSpec.set(
                 ModelSpec(project).apply {
                     val moduleDef = project.files(
@@ -85,13 +88,14 @@ class GeneratorPlugin: Plugin<Project> {
                     from(moduleDef)
                 }
             )
-            task.templateSpecs.add(
+            task.templateSpecs.set(listOf(
                 TemplateSpec(project).apply {
+                    files.setFrom()
                     configurationName.set(moduleTemplate.name)
                     moduleTemplate.allDependencies.forEach { dependency ->
                         module(dependency)
                     }
-                }
+                })
             )
             task.prepare()
         }

@@ -1,3 +1,3 @@
 package laplacian.gradle.task
 
-class LaplacianModuleTask: LaplacianGenerateTask()
+open class LaplacianModuleTask: LaplacianGenerateTask()

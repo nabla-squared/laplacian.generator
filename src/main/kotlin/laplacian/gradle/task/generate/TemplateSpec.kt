@@ -5,6 +5,7 @@ import org.gradle.api.Project
 import org.gradle.api.file.*
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
+import org.slf4j.LoggerFactory
 
 class TemplateSpec(
     project: Project,
@@ -13,11 +14,14 @@ class TemplateSpec(
     )
 ) : FileResourceSpec by base  {
 
+    override fun toString() = base.toString()
+
     companion object {
         val EXCLUDED_PATTERNS = listOf(
             """^META-INF/""".toRegex(),
             """(^|[./])partial(?=[./]).*\.hbs(\.|$)""".toRegex()
         )
+        val LOG = LoggerFactory.getLogger(TemplateSpec::class.java)
     }
 
     @Optional
@@ -34,9 +38,11 @@ class TemplateSpec(
         copySpec.includeEmptyDirs = false
         copySpec.into(into.get())
         copySpec.eachFile { detail ->
+            if (LOG.isInfoEnabled) LOG.info("Processing a template: ${detail.sourceName} -> ${detail.name}")
             doForEachFile(detail, context)
         }
         base.forEachFileSets { templateFiles ->
+            if (LOG.isInfoEnabled) LOG.info("Template files: ${templateFiles.map{ it.absolutePath }}")
             copySpec.from(templateFiles)
         }
     }

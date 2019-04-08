@@ -28,6 +28,11 @@ class Project(
                .getList<Map<String, Any?>>("models", emptyList())
                .map{ Module(it + ("type" to "model")) }
 
+    val modelsExcludingSelf: List<Module>
+        get() = models
+               .filter{ it.moduleId != this.moduleId }
+
+
     val templates: List<Module>
         get() = model
                .getList<Map<String, Any?>>("templates", emptyList())

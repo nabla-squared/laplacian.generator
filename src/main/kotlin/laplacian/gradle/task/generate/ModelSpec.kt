@@ -12,6 +12,8 @@ class ModelSpec(
     )
 ) : FileResourceSpec by base {
 
+    override fun toString() = base.toString()
+
     @Input
     val modelEntryResolvers = project.objects.listProperty(ModelEntryResolver::class.java)
 
