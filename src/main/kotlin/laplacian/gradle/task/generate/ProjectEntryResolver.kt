@@ -1,5 +1,6 @@
 package laplacian.gradle.task.generate
 
+import laplacian.gradle.task.generate.model.Project
 import laplacian.util.RecordList
 import java.lang.IllegalStateException
 

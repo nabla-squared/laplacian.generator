@@ -1,4 +1,4 @@
-package laplacian.gradle.task.generate
+package laplacian.gradle.task.generate.model
 
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.*

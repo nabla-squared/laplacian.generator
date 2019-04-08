@@ -1,4 +1,4 @@
-package laplacian.gradle.task.generate
+package laplacian.gradle.task.generate.model
 
 import laplacian.util.*
 
@@ -31,7 +31,6 @@ class Project(
     val modelsExcludingSelf: List<Module>
         get() = models
                .filter{ it.moduleId != this.moduleId }
-
 
     val templates: List<Module>
         get() = model

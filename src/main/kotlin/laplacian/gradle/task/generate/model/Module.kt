@@ -1,4 +1,4 @@
-package laplacian.gradle.task.generate
+package laplacian.gradle.task.generate.model
 import laplacian.util.*
 
 open class Module(
@@ -15,7 +15,7 @@ open class Module(
         get() = required("name")
 
     val type: String
-        get() = required("type")
+        get() = getOrDefault("type", "generator").toString()
 
     val group: String
         get() = required("group")
@@ -35,8 +35,8 @@ open class Module(
     val forPlugin: Boolean
         get() = (type == "plugin")
 
-    val forProject: Boolean
-        get() = (type == "project")
+    val forGenerator: Boolean
+        get() = (type == "generator")
 
     val description: String
         get() = model.getOrElse("description") {
