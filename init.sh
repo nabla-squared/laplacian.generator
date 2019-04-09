@@ -5,7 +5,7 @@ set -e
 BUILD_GRADLE=./build.gradle.kts
 BUILD_SETTINGS=./settings.gradle.kts
 
-set -x
+##set -x
 
 cat > $BUILD_GRADLE <<'END_OF_FILE'
 plugins {
@@ -32,5 +32,6 @@ pluginManagement {
 END_OF_FILE
 
 gradle laplacianModule --stacktrace
-mkdir -p src/main/resources
+mkdir -p model
+mkdir -p template
 
