@@ -1,6 +1,6 @@
 Laplacian Generator
 ===========================
-A small utility that generates arbitary directry tree structure and files using templates.
+A tiny utility that generates files with arbitary directry tree structure using [Handlebars](http://jknack.github.io/handlebars.java/) templates.
 
 Getting Started
 ----------------
@@ -33,15 +33,12 @@ $ tree
 The **model** direcotry is where we place some yaml files applied to the **templates**, which reside in the **template** directory.
 
 ### Adding a model file
-Firstly, add the following model file under the 'model' directory.
+Firstly, add the following model file under the **model** directory.
 
 ```console
-$ tree model
-model
-└── sample-presentation.yml # ADD
-````
+$ vim model/sample-presentation.yml
+```
 
-**model/sample-presentation.yml**
 ```yaml
 presentation:
   title: An introduction to Laplacian generator
@@ -55,6 +52,12 @@ presentation:
     - The first step
     - The second step
 ```
+
+```console
+$ tree model
+model
+└── sample-presentation.yml
+````
 
 ### Creating a template
 
@@ -104,7 +107,7 @@ $ tree
 
 ### Using a markup in file path
 
-Our **presentation** direcotry must contains a directory whose name is the title of the presentation replacing  all the whitespaces to hyphen.
+Our **presentation** direcotry must contain a directory whose name is the title of the presentation replacing all the whitespaces to hyphen.
 
 ```console
 $ tree presentation
@@ -115,7 +118,7 @@ presentation
 Laplacian generator allows to use the subset of Handlebars markups in file path.
 Any portions enclosed by curly braces ({...}) are evaluated by the Handlebars template engine while generating.
 
-In this case, add the following directory including.
+In this case, add the following directory.
 
 ```console
 $ mkdir -p template/\{hyphen\ presentation.title\}
@@ -131,7 +134,7 @@ template
 
 Next, create the following template which generates the html containing the links to each pages.
 
-If the extension of a template contains ".hbs." or ends with ".hbs", its content are processed by the Handlebars template engine.
+If the extension of a template contains **".hbs."** or ends with **".hbs"**, its content is processed by the Handlebars template engine.
 
 ```console
 $ vim template/presentation/\{hyphen\ presentation.title\}/index.html.hbs
@@ -171,9 +174,9 @@ presentation
     └── index.html
 ```
 
-### Using the 'each' helper
+### Using the `each` helper
 
-Next, to create a html file per each page, it is necessary to use the "each" helper.
+Next, to create a html file per each page, it is necessary to use the `each` helper.
 
 ```console
 $ mkdir -p template/\{hyphen\ presentation.title\}/pages
