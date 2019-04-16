@@ -6,7 +6,7 @@ BUILD_SETTINGS=./settings.gradle.kts
 REPO=https://github.com/nabla-squared/laplacian.generator/raw/master
 GRADLEW_DIR=gradle/wrapper
 
-set -x
+#set -x
 
 cat > $BUILD_GRADLE <<END_OF_FILE
 plugins {

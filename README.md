@@ -27,7 +27,12 @@ $ tree
 ├── template/
 ├── laplacian-module.yml
 ├── build.gradle.kts
-└── settings.gradle.kts
+├── settings.gradle.kts
+├── gradlew
+└── gradle/
+    └── wrapper
+        ├── gradle-wrapper.jar
+        └── gradle-wrapper.properties
 ```
 
 The **model** direcotry is where we place some yaml files applied to the **templates**, which reside in the **template** directory.
@@ -87,7 +92,7 @@ template
 Then, run the following command at the project root to apply the template.
 
 ```console
-$ gradle lG
+$ ./gradlew lG
 ```
 
 You will find a new directory added to the project root, which is copied from the template directory.
@@ -166,7 +171,7 @@ template
 Run the command again to see the generated index html files.
 
 ```console
-$ gradle lG
+$ ./gradlew lG
 
 $ tree presentation
 presentation
@@ -212,7 +217,7 @@ template
 Run the following command to see the result of the template.
 
 ```console
-$ gradle lG
+$ ./gradlew lG
 
 $ tree presentation
 presentation
