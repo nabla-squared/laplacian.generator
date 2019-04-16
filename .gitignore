@@ -4,7 +4,6 @@ out/
 .idea
 *.log
 *.iml
-*.jar
 *.swp
 .DS_Store
 target/

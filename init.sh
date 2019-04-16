@@ -46,7 +46,7 @@ END_OF_FILE
 && mkdir -p $GRADLEW_DIR \
 && curl -o gradlew $HOST/gradlew \
 && curl -o $GRADLEW_DIR/gradle-wrapper.jar $HOST/$GRADLE_DIR/gradle-wrapper.jar \
-&& curl -o $GRADLEW_DIR/gradle-wrapper.property $HOST/$GRADLE_DIR/gradle-wrapper.properties \
+&& curl -o $GRADLEW_DIR/gradle-wrapper.properties $HOST/$GRADLE_DIR/gradle-wrapper.properties \
 && chmod 755 gradlew
 
 ./gradlew lM --stacktrace
