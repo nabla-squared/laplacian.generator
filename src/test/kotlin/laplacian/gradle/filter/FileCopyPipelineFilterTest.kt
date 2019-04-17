@@ -11,7 +11,7 @@ import java.io.StringReader
 class FileCopyPipelineFilterTest {
 
     val duplicate = object : FileCopyHandler {
-        override fun handle(details: FileCopyDetails) = true
+        override fun handle(details: FileCopyDetails, context: ExecutionContext) = true
         override fun copy(reader: Reader, out: OutputStream) {
             out.bufferedWriter().use {
                 val content = reader.readText()
@@ -21,7 +21,7 @@ class FileCopyPipelineFilterTest {
     }
 
     val capitalize = object : FileCopyHandler {
-        override fun handle(details: FileCopyDetails) = true
+        override fun handle(details: FileCopyDetails, context: ExecutionContext) = true
         override fun copy(reader: Reader, out: OutputStream) {
             out.bufferedWriter().use {
                 val content = reader.readText().toUpperCase()

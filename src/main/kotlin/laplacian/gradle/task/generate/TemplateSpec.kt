@@ -54,10 +54,11 @@ class TemplateSpec(
             return
         }
         val pipeline = listOf(
-            HandlebarsCopyHandler(context),
-            PlantUmlCopyHandler()
+            HandlebarsCopyHandler(),
+            PlantUmlCopyHandler(),
+            IncludesHandler()
         ).filter { handler ->
-            handler.handle(fileCopyDetails)
+            handler.handle(fileCopyDetails, context)
         }
         fileCopyDetails.filter(
             mapOf("fileCopyPipeline" to pipeline),

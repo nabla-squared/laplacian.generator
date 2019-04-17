@@ -1,5 +1,6 @@
 package laplacian.gradle.filter
 
+import laplacian.gradle.task.generate.ExecutionContext
 import net.sourceforge.plantuml.FileFormat
 import net.sourceforge.plantuml.FileFormatOption
 import net.sourceforge.plantuml.SourceStringReader
@@ -13,7 +14,7 @@ class PlantUmlCopyHandler: FileCopyHandler {
         val PLANT_UML_PATTERN = """(.*)\.(puml|xsd)$""".toRegex()
     }
 
-    override fun handle(details: FileCopyDetails): Boolean {
+    override fun handle(details: FileCopyDetails, context: ExecutionContext): Boolean {
         val m = PLANT_UML_PATTERN.matchEntire(details.name)
         if (m == null) return false
         val baseName = m.groups[1]!!.value
