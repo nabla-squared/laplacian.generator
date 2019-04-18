@@ -32,7 +32,7 @@ pluginManagement {
 }
 END_OF_FILE
 
-[ ! -f laplacian-module.y?ml ] \
+[ ! -f laplacian-module.y*l ] \
 && cat > laplacian-module.yml <<END_OF_FILE
 project:
   group: my-group
