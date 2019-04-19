@@ -3,7 +3,7 @@
 set -e
 BUILD_GRADLE=./build.gradle.kts
 BUILD_SETTINGS=./settings.gradle.kts
-REPO=https://github.com/nabla-squared/laplacian.generator/raw/master
+REPO=https://raw.github.com/nabla-squared/mvn-repo/master
 GRADLEW_DIR=gradle/wrapper
 
 #set -x
