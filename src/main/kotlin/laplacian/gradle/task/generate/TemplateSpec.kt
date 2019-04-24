@@ -56,7 +56,8 @@ class TemplateSpec(
         val pipeline = listOf(
             HandlebarsCopyHandler(),
             PlantUmlCopyHandler(),
-            IncludesHandler()
+            IncludesHandler(),
+            ExecPermissionHandler()
         ).filter { handler ->
             handler.handle(fileCopyDetails, context)
         }
