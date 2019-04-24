@@ -4,8 +4,8 @@ set -e
 BUILD_GRADLE=./build.gradle.kts
 BUILD_SETTINGS=./settings.gradle.kts
 REPO=https://raw.github.com/nabla-squared/mvn-repo/master
+RAW_HOST=https://raw.githubusercontent.com/nabla-squared/laplacian.generator/master
 GRADLEW_DIR=gradle/wrapper
-
 #set -x
 
 cat > $BUILD_GRADLE <<END_OF_FILE
@@ -43,9 +43,9 @@ END_OF_FILE
 
 [ ! -f gradlew ] \
 && mkdir -p $GRADLEW_DIR \
-&& curl -Ls -o gradlew $REPO/gradlew \
-&& curl -Ls -o $GRADLEW_DIR/gradle-wrapper.jar $REPO/$GRADLEW_DIR/gradle-wrapper.jar \
-&& curl -Ls -o $GRADLEW_DIR/gradle-wrapper.properties $REPO/$GRADLEW_DIR/gradle-wrapper.properties \
+&& curl -Ls -o gradlew $RAW_HOST/gradlew \
+&& curl -Ls -o $GRADLEW_DIR/gradle-wrapper.jar $RAW_HOST/$GRADLEW_DIR/gradle-wrapper.jar \
+&& curl -Ls -o $GRADLEW_DIR/gradle-wrapper.properties $RAW_HOST/$GRADLEW_DIR/gradle-wrapper.properties \
 && chmod 755 gradlew
 
 ./gradlew lM --stacktrace
