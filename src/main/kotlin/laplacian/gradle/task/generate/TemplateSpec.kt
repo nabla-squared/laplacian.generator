@@ -61,9 +61,11 @@ class TemplateSpec(
         ).filter { handler ->
             handler.handle(fileCopyDetails, context)
         }
-        fileCopyDetails.filter(
-            mapOf("fileCopyPipeline" to pipeline),
-            FileCopyPipelineFilter::class.java
-        )
+        if (pipeline.isNotEmpty()) {
+            fileCopyDetails.filter(
+                mapOf("fileCopyPipeline" to pipeline),
+                FileCopyPipelineFilter::class.java
+            )
+        }
     }
 }
