@@ -29,6 +29,21 @@ class YamlLoaderTest {
     }
 
     @Test
+    fun it_unmarshals_objects_from_json_files() {
+        val json = yamlFile(
+            """|{
+               |  data: [
+               |    "hoge",
+               |    "fuga",
+               |    "piyo"
+               |  ]
+               |}""".trimMargin())
+        val actual:Map<String, Any> = YamlLoader.readObjects(listOf(json))
+        val expect = mapOf("data" to listOf("hoge", "fuga", "piyo"))
+        assertEquals(expect, actual)
+    }
+
+    @Test
     fun it_unmarshals_a_merged_map_object_from_multiple_yaml_files() {
         val yaml1 = yamlFile("""
         |data1:

@@ -24,7 +24,7 @@ class ModelSpec(
     fun applyTo(executionContext: ExecutionContext) {
         base.forEachFileSets { files ->
             val yamlFiles = files.asFileTree.matching {
-                it.include("**/*.yaml", "**/*.yml")
+                it.include("**/*.yaml", "**/*.yml", "**/*.json", "**/*.js")
             }
             executionContext.modelFiles.addAll(yamlFiles)
             executionContext.modelEntryResolvers.add(ProjectEntryResolver())
