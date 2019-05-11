@@ -33,10 +33,10 @@ class IncludesHandler: FileCopyHandler {
 
     override fun copy(reader: Reader, out: OutputStream) {
         val directive = "@$includesName@"
-        val regex = """(?<=^|\n)(.*)$directive(.*)\n([\s\S]*)\n(.*)$directive""".toRegex()
+        val regex = """(?<=^|\n)(.*)$directive(.*)(?=\n)([\s\S]*)\n(.*)$directive""".toRegex()
         val m = regex.find(originalContent)
         if (m == null) throw IllegalStateException(
-            """This template does not have the directive ("$directive") at which the includes are inserted."""
+            """The following template does not have the directive ("$directive") at which the includes are inserted:\n$originalContent"""
         )
         val startDirective = m.groupValues[1] + directive + m.groupValues[2]
         val endDirective = m.groupValues[4] + directive
@@ -45,7 +45,7 @@ class IncludesHandler: FileCopyHandler {
         out.bufferedWriter().use {
             it.write(
                 originalContent.replaceRange(
-                    m.range, "$startDirective\n$isAlreadyInserted\n$isBeingInserted\n$endDirective"
+                    m.range, "$startDirective$isAlreadyInserted\n$isBeingInserted\n$endDirective"
                 )
             )
         }
