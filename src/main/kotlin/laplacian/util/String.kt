@@ -35,7 +35,6 @@ fun String.lowerUnderscorize() = joinTokens(this, "_", false)
 fun String.upperUnderscorize() = joinTokens(this, "_", true)
 fun String.lowerHyphenize() = joinTokens(this, "-", false)
 fun String.upperHyphenize() = joinTokens(this, "-", true)
-//fun String.pathify() = joinTokens(this.replace("""[-_]+""".toRegex(), "_"), "/", false)
 fun String.pathify() = split("""\.+""".toRegex()).map{ it.lowerUnderscorize() }.joinToString("/")
 
 fun String.stripBlankLines() =

@@ -3,6 +3,7 @@ package laplacian.util
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.scanner.ScannerException
 import java.io.File
+import java.lang.RuntimeException
 
 class YamlLoader {
 
@@ -12,7 +13,14 @@ class YamlLoader {
             val parser = Yaml()
             val result: Map<String, T> = mutableMapOf()
             return files.fold(result) { acc, file ->
-                mergeObjectGraph(acc, readObjects<T>(parser, file), file) as Map<String, T>
+                try {
+                    mergeObjectGraph(acc, readObjects<T>(parser, file)) as Map<String, T>
+                }
+                catch (e: RuntimeException) {
+                   throw IllegalStateException(
+                      "While merging the model file (${file.absolutePath})", e
+                   )
+                }
             }
         }
 
@@ -27,35 +35,7 @@ class YamlLoader {
             }
         }
 
-        private fun mergeObjectGraph(one: Any, another: Any, file: File, path: String = ""): Any {
-            if (one is Map<*, *> && another is Map<*, *>) {
-                return one + another.map{ entry ->
-                    val k = entry.key
-                    val anotherValue = entry.value
-                    val value = one[k]
-                    when {
-                        (value == null) -> k to anotherValue
-                        (anotherValue == null) -> k to value
-                        else -> k to mergeObjectGraph(
-                            value,
-                            anotherValue,
-                            file,
-                            path + (if (path.isEmpty()) "" else ".") + k
-                        )
-                    }
-                }
-            }
-            if (one is List<*> && another is List<*>) {
-                return one + another
-            }
-            else {
-                throw java.lang.IllegalStateException(
-                    "While merging the model file (${file.absolutePath})," +
-                    " the following model items at '${if (path.isEmpty()) "root" else path}' conflict" +
-                    ": $one and $another"
-                )
-            }
-        }
+
 
     }
 }

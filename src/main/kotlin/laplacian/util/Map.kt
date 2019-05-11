@@ -1,8 +1,7 @@
 package laplacian.util
 
 import com.github.jknack.handlebars.Context
-import java.lang.IllegalStateException
-
+import org.yaml.snakeyaml.Yaml
 
 inline fun <reified T> Map<String, Any?>.getOrNull(key: String): T? {
     val v = this[key]
@@ -65,3 +64,45 @@ fun Map<String, Any?>.toContext(): Context {
 typealias Record = Map<String, Any?>
 typealias RecordList = List<Record>
 typealias Model = Map<String, RecordList>
+
+fun List<Record>.mergeWithKeys(vararg keys: String): List<Record> {
+    if (keys.isEmpty()) return this
+    val recordsByKey = mutableMapOf<String, Record>()
+    this.forEach { record ->
+        val key = Yaml().dump(keys.map { record.getOrDefault(it, "") })
+        val existing = recordsByKey[key]
+        recordsByKey[key] = if (existing == null) record
+                            else mergeObjectGraph(existing, record, keys.toList()) as Record
+    }
+    return recordsByKey.values.toList()
+}
+
+fun mergeObjectGraph(one: Any, another: Any, ignoringKeys: List<String> = emptyList(), path: String = ""): Any {
+    if (one is Map<*, *> && another is Map<*, *>) {
+        return one + another.map{ entry ->
+            val k = entry.key
+            val anotherValue = entry.value
+            val value = one[k]
+            when {
+                (k in ignoringKeys) -> k to value
+                (value == null) -> k to anotherValue
+                (anotherValue == null) -> k to value
+                else -> k to mergeObjectGraph(
+                    value,
+                    anotherValue,
+                    ignoringKeys,
+                    path + (if (path.isEmpty()) "" else ".") + k
+                )
+            }
+        }
+    }
+    if (one is List<*> && another is List<*>) {
+        return one + another
+    }
+    else {
+        throw IllegalArgumentException(
+            " the following model items at '${if (path.isEmpty()) "root" else path}' conflict" +
+            ": $one and $another"
+        )
+    }
+}
