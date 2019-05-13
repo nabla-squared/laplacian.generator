@@ -1,6 +1,7 @@
 package laplacian.util
 
 import com.github.jknack.handlebars.Context
+import laplacian.handlebars.TemplateWrapper
 import org.yaml.snakeyaml.Yaml
 
 inline fun <reified T> Map<String, Any?>.getOrNull(key: String): T? {

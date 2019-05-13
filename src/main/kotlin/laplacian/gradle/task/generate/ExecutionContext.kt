@@ -1,12 +1,8 @@
 package laplacian.gradle.task.generate
 
 import com.github.jknack.handlebars.Context
-import com.github.jknack.handlebars.ValueResolver
-import com.github.jknack.handlebars.context.MapValueResolver
-import laplacian.util.RecordList
-import laplacian.util.TemplateWrapper
+import laplacian.handlebars.TemplateWrapper
 import laplacian.util.YamlLoader
-import org.gradle.api.file.FileCopyDetails
 import java.io.File
 
 class ExecutionContext(
