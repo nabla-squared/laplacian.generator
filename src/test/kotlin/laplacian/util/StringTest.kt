@@ -280,4 +280,41 @@ class StringTest {
         assertEquals("hoge,fuga,piyo", "{{#block-join this as |item|}}{{item}}{{/block-join}}".handlebars().apply(arrayOf("hoge", "fuga", "piyo")))
         assertEquals("hoge|fuga|piyo", """{{#block-join this separator="|" as |item|}}{{item}}{{/block-join}}""".handlebars().apply(arrayOf("hoge", "fuga", "piyo")))
     }
+
+    @Test
+    fun test_unique_helper() {
+        val context = arrayOf("hoge", "fuga", "hoge")
+        assertEquals(
+            "|hoge||fuga|",
+            "{{#each (unique this) as |w|}}|{{w}}|{{/each}}".handlebars().apply(context)
+        )
+    }
+
+    @Test
+    fun test_concat_helper() {
+        val context = mapOf(
+            "A" to arrayOf("apple", "ape"),
+            "B" to arrayOf("big", "bug")
+        )
+        assertEquals(
+            "|apple||ape||big||bug|",
+            "{{#each (concat this.A this.B) as |w|}}|{{w}}|{{/each}}".handlebars().apply(context)
+        )
+    }
+
+    @Test
+    fun test_map_helper() {
+        val context = listOf(
+            mapOf("A" to "apple", "B" to "banana", "C" to "candy"),
+            mapOf("A" to "ape", "B" to "bull", "C" to "canary")
+        )
+        assertEquals(
+            "|apple||ape|",
+            "{{#each (map this 'A') as |w|}}|{{w}}|{{/each}}".handlebars().apply(context)
+        )
+        assertEquals(
+            "|banana||bull|",
+            "{{#each (map this 'B') as |w|}}|{{w}}|{{/each}}".handlebars().apply(context)
+        )
+    }
 }
