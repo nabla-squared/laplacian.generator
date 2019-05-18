@@ -16,12 +16,12 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib"))
     implementation(kotlin("reflect"))
-    api("com.github.jknack:handlebars:4.1.0")
-    implementation("org.yaml:snakeyaml:1.22")
+    api("com.github.jknack:handlebars:4.1.2")
+    implementation("org.yaml:snakeyaml:1.24")
     implementation("org.atteo:evo-inflector:1.2.2")
-    implementation("net.sourceforge.plantuml:plantuml:1.2019.3")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.2.0")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.2.0")
+    implementation("net.sourceforge.plantuml:plantuml:1.2019.5")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.4.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.4.2")
 }
 
 val sourcesJar by tasks.creating(Jar::class.java) {
