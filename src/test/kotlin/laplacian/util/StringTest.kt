@@ -317,4 +317,24 @@ class StringTest {
             "{{#each (map this 'B') as |w|}}|{{w}}|{{/each}}".handlebars().apply(context)
         )
     }
+
+    @Test
+    fun test_custom_each_helper() {
+        val context = mapOf(
+            "a" to "ORIGINAL_ITEM",
+            "items" to listOf(
+                mapOf("a" to "apple", "B" to "banana", "C" to "candy"),
+                mapOf("a" to "ape", "B" to "bull", "C" to "canary")
+            )
+        )
+        assertEquals(
+            "|apple||ape|",
+            "{{#each items}}|{{a}}|{{/each}}".handlebars().apply(context)
+        )
+        assertEquals(
+            "|ORIGINAL_ITEM/apple||ORIGINAL_ITEM/ape|",
+            "{{#each items as |w|}}|{{a}}/{{w.a}}|{{/each}}".handlebars().apply(context)
+        )
+    }
+
 }

@@ -3,10 +3,7 @@ package laplacian.handlebars
 import com.github.jknack.handlebars.Handlebars
 import com.github.jknack.handlebars.Helper
 import com.github.jknack.handlebars.Options
-import laplacian.handlebars.helper.DefineHelper
-import laplacian.handlebars.helper.JoinHelper
-import laplacian.handlebars.helper.ListHelper
-import laplacian.handlebars.helper.StringHelper
+import laplacian.handlebars.helper.*
 import laplacian.util.*
 
 
@@ -38,6 +35,7 @@ class Helpers {
             .registerHelper("map", ListHelper{ l, opts -> l.map{ i -> TemplateWrapper.createContext(i!!)[opts.params[0].toString()] }})
             .registerHelper("unique", ListHelper{ l, _ -> l.distinct() })
             .registerHelper("block-join", JoinHelper.INSTANCE)
+            .registerHelper("each", EachHelper.INSTANCE)
             .registerHelper("define", DefineHelper.INSTANCE)
         }
     }
