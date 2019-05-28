@@ -25,8 +25,12 @@ dependencies {
 }
 
 val sourcesJar by tasks.creating(Jar::class.java) {
-    classifier = "sources"
+    archiveClassifier.set("sources")
 	from(sourceSets.main.get().allSource)
+}
+
+tasks.named<Test>("test") {
+    useJUnitPlatform()
 }
 
 gradlePlugin {
