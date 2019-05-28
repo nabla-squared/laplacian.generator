@@ -2,6 +2,7 @@ package laplacian.gradle.task.generate
 
 import org.gradle.api.Project
 import org.gradle.api.tasks.Input
+import java.io.File
 
 class ModelSpec(
     project: Project,
@@ -23,12 +24,12 @@ class ModelSpec(
 
     fun applyTo(executionContext: ExecutionContext) {
         base.forEachFileSets { files ->
-            val yamlFiles = files.asFileTree.matching {
+            val yamlFiles: List<File> = files.asFileTree.matching {
                 it.include("**/*.yaml", "**/*.yml", "**/*.json", "**/*.js")
-            }
-            executionContext.modelFiles.addAll(yamlFiles)
-            executionContext.modelEntryResolvers.add(ProjectEntryResolver())
-            executionContext.modelEntryResolvers.addAll(modelEntryResolvers.get())
+            }.filterNotNull()
+            executionContext.addModel(*yamlFiles.toTypedArray())
+            executionContext.addModelEntryResolver(ProjectEntryResolver())
+            executionContext.addModelEntryResolver(*modelEntryResolvers.get().toTypedArray())
         }
     }
 }
