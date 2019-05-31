@@ -46,13 +46,15 @@ class EachHelper : Helper<Any> {
             var even = index % 2 == 0
             val parent = options.context
             val fn = options.fn
+            var itCtx = Context.newContext(parent, emptyMap<String, Any?>())
             while (loop.hasNext()) {
                 val it = loop.next()
                 /*
                 val itCtx = Context.newContext(parent, it)
                 */
-                val itCtx = if (options.blockParams.isEmpty()) Context.newContext(parent, it)
-                            else Context.newContext(parent, emptyMap<String, Any?>())
+                if (options.blockParams.isEmpty()) {
+                    itCtx = Context.newContext(parent, it)
+                }
                 itCtx.combine("@key", index)
                     .combine("@index", index)
                     .combine("@first", if (index == base) "first" else "")
