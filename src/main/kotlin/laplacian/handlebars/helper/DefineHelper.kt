@@ -26,12 +26,19 @@ class DefineHelper: Helper<Any> {
                 "Unsupported tag type: ${options.tagType}"
             )
         }
-        val name = path.replace("../", "")
-        val c = if (path.startsWith("../")) options.context.parent() else options.context
-        c.combine(name, value)
+        val m = PATH_EXPR.find(path) ?: throw IllegalArgumentException(
+            "Invalid variable expression: $path"
+        )
+        val upperScope = m.groupValues[1].length / 3
+        val name = m.groupValues[2]
+        val targetContext = (1..upperScope).fold(options.context) { c, _ ->
+             c.parent()
+        }
+        targetContext.combine(name, value)
         return buffer
     }
     companion object {
+        val PATH_EXPR = """^((?:\.\./)*)([-_a-zA-Z0-9$]+)""".toRegex()
         val INSTANCE = DefineHelper()
     }
 }
