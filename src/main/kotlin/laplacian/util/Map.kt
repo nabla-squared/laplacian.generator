@@ -100,10 +100,12 @@ fun mergeObjectGraph(one: Any, another: Any, ignoringKeys: List<String> = emptyL
     if (one is List<*> && another is List<*>) {
         return one + another
     }
-    else {
-        throw IllegalArgumentException(
-            " the following model items at '${if (path.isEmpty()) "root" else path}' conflict" +
-            ": $one and $another"
-        )
+    if (one.javaClass.isAssignableFrom(another.javaClass) ||
+        another.javaClass.isAssignableFrom(one.javaClass)) {
+        return another
     }
+    throw java.lang.IllegalArgumentException(
+        "The following types of model items are '${if (path.isEmpty()) "root" else path}' conflicting" +
+        ": $one(:${one.javaClass.name})and $another(:${another.javaClass.name})"
+    )
 }
