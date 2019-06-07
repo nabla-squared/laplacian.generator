@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/nabla-squared/laplacian.generator.svg?style=shield)](https://circleci.com/gh/nabla-squared/laplacian.generator)
+
 Laplacian Generator
 ===========================
 A tiny utility that generates files with arbitary directry tree structure using [Handlebars](http://jknack.github.io/handlebars.java/) templates.
