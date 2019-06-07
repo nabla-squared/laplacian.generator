@@ -5,6 +5,8 @@ import com.github.jknack.handlebars.Helper
 import com.github.jknack.handlebars.Options
 import laplacian.handlebars.helper.*
 import laplacian.util.*
+import org.yaml.snakeyaml.DumperOptions
+import org.yaml.snakeyaml.Yaml
 
 
 class Helpers {
@@ -15,6 +17,22 @@ class Helpers {
         fun identifierHelper(wide: Boolean = false, fn: (str: String, opts: Options) -> String): Helper<Any> = StringHelper() { str, opts ->
             str.replace(if (wide) IDENTIFIER_TOKEN_WIDE else IDENTIFIER_TOKEN) { fn(it.value, opts) }
         }
+
+        val YAML = Yaml(DumperOptions().apply {
+            isPrettyFlow = true
+            defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
+            indent = 2
+        })
+
+
+        fun toYaml(obj: Any, pad: String = ""): String =
+            YAML.dump(obj).trim().also {
+                return if (pad.isEmpty())
+                    it
+                else
+                    it.replace(END_OF_LINE_EXCLUDING_EOF, "\n$pad")
+            }
+        private val END_OF_LINE_EXCLUDING_EOF = """\n(?!$)""".toRegex()
 
         fun registerTo(handlebars: Handlebars) {
             handlebars
@@ -31,6 +49,7 @@ class Helpers {
             })
             .registerHelper("trim", StringHelper{ t, _ -> t.trim()})
             .registerHelper("dquote", StringHelper{ t, _ -> t.dquote()})
+            .registerHelper("yaml", StringifyHelper<Any>{ t, opts -> toYaml(t, opts.params.getOrNull(0)?.toString() ?: "") })
             .registerHelper("concat", ListHelper{ l, opts -> l + ListHelper.asList(opts.params[0]) })
             .registerHelper("map", ListHelper{ l, opts -> l.map{ i -> TemplateWrapper.createContext(i!!)[opts.params[0].toString()] }})
             .registerHelper("unique", ListHelper{ l, _ -> l.distinct() })

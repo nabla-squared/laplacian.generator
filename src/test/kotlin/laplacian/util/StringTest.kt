@@ -1,6 +1,7 @@
 package laplacian.util
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.assertAll
 
 class StringTest {
     @Test
@@ -236,7 +237,7 @@ class StringTest {
     }
 
     @Test
-    fun test_using_additonal_string_helper() {
+    fun test_using_additional_string_helper() {
         assertEquals("HELLO", "{{upper this}}".handlebars().apply("hello"))
     }
 
@@ -257,6 +258,40 @@ class StringTest {
         val actual = codeBlock.handlebars().apply("")
         val expect = "hogehoge"
         assertEquals(expect, actual)
+    }
+
+    @Test
+    fun test_yaml_helper() {
+        val obj = mapOf(
+            "H" to "hogehoge",
+            "F" to false,
+            "Z" to 0,
+            "L" to listOf("hoge", "fuga", "piyo")
+        )
+        val template = """{{yaml this}}"""
+        val templateWithPad = """> {{yaml this "> "}}"""
+        assertAll({
+            assertEquals("""
+            |H: hogehoge
+            |F: false
+            |Z: 0
+            |L:
+            |- hoge
+            |- fuga
+            |- piyo
+            """.trimMargin(), template.handlebars().apply(obj).trim())
+        }, {
+            assertEquals("""
+            |> H: hogehoge
+            |> F: false
+            |> Z: 0
+            |> L:
+            |> - hoge
+            |> - fuga
+            |> - piyo
+            """.trimMargin(), templateWithPad.handlebars().apply(obj).trim())
+        })
+
     }
 
     @Test
