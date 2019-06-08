@@ -25,7 +25,7 @@ class Helpers {
         })
 
 
-        fun toYaml(obj: Any, pad: String = ""): String =
+        fun toYaml(obj: Any?, pad: String = ""): String =
             YAML.dump(obj).trim().also {
                 return if (pad.isEmpty())
                     it
@@ -33,6 +33,12 @@ class Helpers {
                     it.replace(END_OF_LINE_EXCLUDING_EOF, "\n$pad")
             }
         private val END_OF_LINE_EXCLUDING_EOF = """\n(?!$)""".toRegex()
+
+        fun literalize(value: Any?): String = when(value) {
+            null -> "null"
+            is String -> "\"$value\""
+            else -> value.toString()
+        }
 
         fun registerTo(handlebars: Handlebars) {
             handlebars
@@ -49,7 +55,8 @@ class Helpers {
             })
             .registerHelper("trim", StringHelper{ t, _ -> t.trim()})
             .registerHelper("dquote", StringHelper{ t, _ -> t.dquote()})
-            .registerHelper("yaml", StringifyHelper<Any>{ t, opts -> toYaml(t, opts.params.getOrNull(0)?.toString() ?: "") })
+            .registerHelper("yaml", StringifyHelper<Any?>{ t, opts -> toYaml(t, opts.params.getOrNull(0)?.toString() ?: "") })
+            .registerHelper("literal", StringifyHelper<Any?>{ t, _ -> literalize(t) })
             .registerHelper("concat", ListHelper{ l, opts -> l + ListHelper.asList(opts.params[0]) })
             .registerHelper("map", ListHelper{ l, opts -> l.map{ i -> TemplateWrapper.createContext(i!!)[opts.params[0].toString()] }})
             .registerHelper("unique", ListHelper{ l, _ -> l.distinct() })

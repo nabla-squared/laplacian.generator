@@ -261,6 +261,17 @@ class StringTest {
     }
 
     @Test
+    fun test_literal_helper() {
+        val template = "{{literal this}}"
+        assertAll(
+            { assertEquals("\"hogehoge\"", template.handlebars().apply("hogehoge")) },
+            { assertEquals("42", template.handlebars().apply(42)) },
+            { assertEquals("\"42\"", template.handlebars().apply("42")) },
+            { assertEquals("null", template.handlebars().apply(null)) }
+        )
+    }
+
+    @Test
     fun test_yaml_helper() {
         val obj = mapOf(
             "H" to "hogehoge",
