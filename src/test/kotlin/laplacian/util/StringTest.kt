@@ -243,7 +243,10 @@ class StringTest {
 
     @Test
     fun test_trim_helper() {
-        assertEquals("hello", "{{trim this}}".handlebars().apply("  hello\n"))
+        assertAll(
+            { assertEquals("hello", "{{trim this}}".handlebars().apply("  hello\n")) },
+            { assertEquals("hello", """{{#trim chars=","}}{{this}}{{/trim}}""".handlebars().apply("hello,")) }
+        )
     }
 
     @Test

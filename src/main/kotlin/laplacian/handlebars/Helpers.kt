@@ -53,7 +53,13 @@ class Helpers {
                 val width = opts.hash.getOrElse("width"){opts.params[0]} as Int
                 t.shift(width)
             })
-            .registerHelper("trim", StringHelper{ t, _ -> t.trim()})
+            .registerHelper("trim", StringHelper{ t, opts ->
+                val chars = opts.hash.getOrElse("chars"){opts.params.getOrNull(0)}?.toString()
+                if (chars == null)
+                    t.trim()
+                else
+                    t.trim(*chars.toCharArray())
+            })
             .registerHelper("dquote", StringHelper{ t, _ -> t.dquote()})
             .registerHelper("yaml", StringifyHelper<Any?>{ t, opts -> toYaml(t, opts.params.getOrNull(0)?.toString() ?: "") })
             .registerHelper("literal", StringifyHelper<Any?>{ t, _ -> literalize(t) })
