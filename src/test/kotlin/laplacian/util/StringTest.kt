@@ -245,9 +245,31 @@ class StringTest {
     fun test_trim_helper() {
         assertAll(
             { assertEquals("hello", "{{trim this}}".handlebars().apply("  hello\n")) },
-            { assertEquals("hello", """{{#trim chars=","}}{{this}}{{/trim}}""".handlebars().apply("hello,")) }
+            { assertEquals("hello", """{{#trim chars=","}}{{this}}{{/trim}}""".handlebars().apply("hello,")) },
+            { assertEquals("hello", """{{#trim chars=","}}{{this}}{{/trim}}""".handlebars().apply("hello,  \n")) }
         )
     }
+
+    @Test
+    fun test_contains_key_helper() {
+        val array = arrayOf("a", "b", "c")
+        val list = listOf("a", "b", "c")
+        val map = mapOf("a" to "AA", "b" to "BB", "c" to "CC")
+        val context = mapOf(
+            "array" to array,
+            "list" to list,
+            "map" to map
+        )
+        assertAll(
+            { assertEquals("Y", "{{#if (contains-key array 0)}}Y{{/if}}".handlebars().apply(context)) },
+            { assertEquals("", "{{#if (contains-key array 3)}}Y{{/if}}".handlebars().apply(context)) },
+            { assertEquals("Y", "{{#if (contains-key list 0)}}Y{{/if}}".handlebars().apply(context)) },
+            { assertEquals("", "{{#if (contains-key list 3)}}Y{{/if}}".handlebars().apply(context)) },
+            { assertEquals("Y", "{{#if (contains-key map 'a')}}Y{{/if}}".handlebars().apply(context)) },
+            { assertEquals("", "{{#if (contains-key map 'd')}}Y{{/if}}".handlebars().apply(context)) }
+        )
+    }
+
 
     @Test
     fun test_trim_block_helper() {

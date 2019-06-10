@@ -58,7 +58,7 @@ class Helpers {
                 if (chars == null)
                     t.trim()
                 else
-                    t.trim(*chars.toCharArray())
+                    t.trim { it in chars || it.isWhitespace() }
             })
             .registerHelper("dquote", StringHelper{ t, _ -> t.dquote()})
             .registerHelper("yaml", StringifyHelper<Any?>{ t, opts -> toYaml(t, opts.params.getOrNull(0)?.toString() ?: "") })
@@ -68,6 +68,7 @@ class Helpers {
             .registerHelper("unique", ListHelper{ l, _ -> l.distinct() })
             .registerHelper("block-join", JoinHelper.INSTANCE)
             .registerHelper("each", EachHelper.INSTANCE)
+            .registerHelper("contains-key", ContainsKeyHelper.INSTANCE)
             .registerHelper("define", DefineHelper.INSTANCE)
         }
     }
