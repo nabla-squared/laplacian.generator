@@ -292,7 +292,11 @@ class StringTest {
             { assertEquals("\"hogehoge\"", template.handlebars().apply("hogehoge")) },
             { assertEquals("42", template.handlebars().apply(42)) },
             { assertEquals("\"42\"", template.handlebars().apply("42")) },
-            { assertEquals("null", template.handlebars().apply(null)) }
+            { assertEquals("null", template.handlebars().apply(null)) },
+            { assertEquals("""listOf("hoge", "fuga", "piyo")""",
+              template.handlebars().apply(listOf("hoge", "fuga", "piyo"))) },
+            { assertEquals("""mapOf("a" to "hoge", "b" to "fuga", "c" to "piyo")""",
+              template.handlebars().apply(mapOf("a" to "hoge", "b" to "fuga", "c" to "piyo"))) }
         )
     }
 

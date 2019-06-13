@@ -37,6 +37,8 @@ class Helpers {
         fun literalize(value: Any?): String = when(value) {
             null -> "null"
             is String -> "\"$value\""
+            is List<*> -> "listOf(${value.joinToString(", ") { literalize(it) }})"
+            is Map<*,*> -> """mapOf(${value.map{ "${literalize(it.key)} to ${literalize(it.value)}" }.joinToString(", ")})"""
             else -> value.toString()
         }
 
