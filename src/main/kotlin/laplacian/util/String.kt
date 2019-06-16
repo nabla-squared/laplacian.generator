@@ -9,12 +9,13 @@ import laplacian.handlebars.TemplateWrapper
 import org.atteo.evo.inflector.English
 import java.io.File
 
-val SEPARATOR = """([-./_\s]+|(?<=[a-z])(?=[A-Z]))""".toRegex()
+val SEPARATOR = """([^a-zA-Z0-9$]+|(?<=[a-z])(?=[A-Z]))""".toRegex()
 
 fun splitIdentifierIntoTokens(str: String): List<String> = str.split(SEPARATOR)
 
 fun String.upperCamelize() =
         splitIdentifierIntoTokens(this)
+            .filter{ it.isNotEmpty() }
             .map{ it[0].toUpperCase() + it.substring(1) }
             .joinToString("")
 

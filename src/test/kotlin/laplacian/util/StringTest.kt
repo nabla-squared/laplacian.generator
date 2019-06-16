@@ -28,6 +28,12 @@ class StringTest {
         assertEquals(
                 "hogeFugaPiyo", "hoge fuga piyo".lowerCamelize()
         )
+        assertEquals(
+                "hogeFugaPiyo", "hoge<fuga_piyo>".lowerCamelize()
+        )
+        assertEquals(
+                "listEntity", "List<Entity>".lowerCamelize()
+        )
     }
 
     @Test
@@ -111,7 +117,7 @@ class StringTest {
         assertEquals(expect, actual)
     }
 
-     @Test
+    @Test
     fun test_strip_blank_lines() {
         val withDocument = """
         |/**
@@ -215,6 +221,11 @@ class StringTest {
     }
 
     @Test
+    fun test_camelize_helper() {
+        assertEquals("listEntity", "{{lower-camel this}}".handlebars().apply("List<Entity>"))
+    }
+
+    @Test
     fun test_define_helper() {
         val codeBlock = """
         |{{define "v" 42}}
@@ -228,7 +239,6 @@ class StringTest {
         |hoge = fuga
         """.trimMargin().trim()
         assertEquals(expect, actual)
-
     }
 
     @Test

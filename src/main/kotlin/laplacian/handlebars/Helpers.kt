@@ -11,12 +11,6 @@ import org.yaml.snakeyaml.Yaml
 
 class Helpers {
     companion object {
-        val IDENTIFIER_TOKEN = """[-_a-zA-Z][-_a-zA-Z0-9$]*""".toRegex()
-        val IDENTIFIER_TOKEN_WIDE = """[-_a-zA-Z][-./_a-zA-Z0-9$]*""".toRegex()
-
-        fun identifierHelper(wide: Boolean = false, fn: (str: String, opts: Options) -> String): Helper<Any> = StringHelper() { str, opts ->
-            str.replace(if (wide) IDENTIFIER_TOKEN_WIDE else IDENTIFIER_TOKEN) { fn(it.value, opts) }
-        }
 
         val YAML = Yaml(DumperOptions().apply {
             isPrettyFlow = true
@@ -44,13 +38,13 @@ class Helpers {
 
         fun registerTo(handlebars: Handlebars) {
             handlebars
-            .registerHelper("lower-camel", identifierHelper{t, _ -> t.lowerCamelize()})
-            .registerHelper("upper-camel", identifierHelper{t, _ -> t.upperCamelize()})
-            .registerHelper("hyphen", identifierHelper{t, _ -> t.lowerHyphenize()})
-            .registerHelper("lower-underscore", identifierHelper{t, _ -> t.lowerUnderscorize()})
-            .registerHelper("upper-underscore", identifierHelper{t, _ -> t.upperUnderscorize()})
+            .registerHelper("lower-camel", StringHelper{ t, _ -> t.lowerCamelize()})
+            .registerHelper("upper-camel", StringHelper{ t, _ -> t.upperCamelize()})
+            .registerHelper("hyphen", StringHelper{ t, _ -> t.lowerHyphenize()})
+            .registerHelper("lower-underscore", StringHelper{ t, _ -> t.lowerUnderscorize()})
+            .registerHelper("upper-underscore", StringHelper{ t, _ -> t.upperUnderscorize()})
             .registerHelper("path", StringHelper{t, _ -> t.pathify()})
-            .registerHelper("plural", identifierHelper{t, _ -> t.pluralize()})
+            .registerHelper("plural", StringHelper{ t, _ -> t.pluralize()})
             .registerHelper("shift", StringHelper{ t, opts ->
                 val width = opts.hash.getOrElse("width"){opts.params[0]} as Int
                 t.shift(width)
