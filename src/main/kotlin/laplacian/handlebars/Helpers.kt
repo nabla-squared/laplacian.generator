@@ -64,6 +64,7 @@ class Helpers {
             .registerHelper("unique", ListHelper{ l, _ -> l.distinct() })
             .registerHelper("block-join", JoinHelper.INSTANCE)
             .registerHelper("each", EachHelper.INSTANCE)
+            .registerHelper("lookup", LookupHelper.INSTANCE)
             .registerHelper("contains-key", ContainsKeyHelper.INSTANCE)
             .registerHelper("define", DefineHelper.INSTANCE)
         }

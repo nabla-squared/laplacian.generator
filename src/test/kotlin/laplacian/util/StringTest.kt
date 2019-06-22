@@ -261,6 +261,20 @@ class StringTest {
     }
 
     @Test
+    fun test_lookup_helper() {
+        val context = mapOf(
+            "map" to mapOf("a" to "AA", "b" to "BB"),
+            "list" to listOf("A", "B")
+        )
+        assertAll(
+            { assertEquals("AA", """{{define "key" "a"}}{{lookup map key}}""".handlebars().apply(context)) },
+            { assertEquals("", """{{define "key" "c"}}{{lookup map key}}""".handlebars().apply(context)) },
+            { assertEquals("A", """{{define "key" 0}}{{lookup list key}}""".handlebars().apply(context)) },
+            { assertEquals("", """{{define "key" 2}}{{lookup list key}}""".handlebars().apply(context)) }
+        )
+    }
+
+    @Test
     fun test_contains_key_helper() {
         val array = arrayOf("a", "b", "c")
         val list = listOf("a", "b", "c")
