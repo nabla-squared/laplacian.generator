@@ -18,10 +18,10 @@ class ContainsKeyHelper : Helper<Any> {
             "The contains-key helper always requires the second parameter."
         )
         return when(context) {
-            is Iterable<*> -> context.toList().getOrNull(key.toInt()) ?: false
-            is Array<*> -> context.getOrNull(key.toInt()) ?: false
-            is Map<*, *> -> context.containsKey(key)
-            else -> Context.newBuilder(options.context, context).build().get(key) ?: false
+            is Iterable<*> -> context.toList().size > key.toInt()
+            is Array<*> -> context.size > key.toInt()
+            is Map<*, *> -> (context as Map<String, Any?>).containsKey(key)
+            else -> Context.newBuilder(options.context, context).build().get(key) != null
         }
     }
 

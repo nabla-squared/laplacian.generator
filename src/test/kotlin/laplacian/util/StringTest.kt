@@ -310,20 +310,23 @@ class StringTest {
     @Test
     fun test_contains_key_helper() {
         val array = arrayOf("a", "b", "c")
-        val list = listOf("a", "b", "c")
+        val list = listOf("a", "b", "c", "")
         val map = mapOf("a" to "AA", "b" to "BB", "c" to "CC")
         val context = mapOf(
             "array" to array,
             "list" to list,
-            "map" to map
+            "map" to map,
+            "FALSE" to false
         )
         assertAll(
             { assertEquals("Y", "{{#if (contains-key array 0)}}Y{{/if}}".handlebars().apply(context)) },
             { assertEquals("", "{{#if (contains-key array 3)}}Y{{/if}}".handlebars().apply(context)) },
             { assertEquals("Y", "{{#if (contains-key list 0)}}Y{{/if}}".handlebars().apply(context)) },
-            { assertEquals("", "{{#if (contains-key list 3)}}Y{{/if}}".handlebars().apply(context)) },
+            { assertEquals("Y", "{{#if (contains-key list 3)}}Y{{/if}}".handlebars().apply(context)) },
+            { assertEquals("", "{{#if (contains-key list 4)}}Y{{/if}}".handlebars().apply(context)) },
             { assertEquals("Y", "{{#if (contains-key map 'a')}}Y{{/if}}".handlebars().apply(context)) },
-            { assertEquals("", "{{#if (contains-key map 'd')}}Y{{/if}}".handlebars().apply(context)) }
+            { assertEquals("", "{{#if (contains-key map 'd')}}Y{{/if}}".handlebars().apply(context)) },
+            { assertEquals("Y", "{{#if (contains-key this 'FALSE')}}Y{{/if}}".handlebars().apply(context)) }
         )
     }
 
