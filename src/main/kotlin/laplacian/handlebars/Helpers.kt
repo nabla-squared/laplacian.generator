@@ -63,6 +63,7 @@ class Helpers {
             .registerHelper("map", ListHelper{ l, opts -> l.map{ i -> TemplateWrapper.createContext(i!!)[opts.params[0].toString()] }})
             .registerHelper("unique", ListHelper{ l, _ -> l.distinct() })
             .registerHelper("block-join", JoinHelper.INSTANCE)
+            .registerHelper("if" , IfHelper.INSTANCE)
             .registerHelper("each", EachHelper.INSTANCE)
             .registerHelper("lookup", LookupHelper.INSTANCE)
             .registerHelper("contains-key", ContainsKeyHelper.INSTANCE)

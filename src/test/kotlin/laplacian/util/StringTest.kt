@@ -226,6 +226,39 @@ class StringTest {
     }
 
     @Test
+    fun test_if_helper() {
+        val template = """{{#if this}}TRUE{{else}}FALSE{{/if}}"""
+        assertAll(
+            { assertEquals("TRUE", template.handlebars().apply(1)) },
+            { assertEquals("TRUE", template.handlebars().apply(listOf(""))) },
+            { assertEquals("FALSE", template.handlebars().apply(0)) },
+            { assertEquals("FALSE", template.handlebars().apply("")) },
+            { assertEquals("FALSE", template.handlebars().apply(emptyList<String>())) }
+        )
+    }
+
+    @Test
+    fun test_if_helper_in_expression() {
+        val template = """{{if this "TRUE" "FALSE"}}"""
+        assertAll(
+            { assertEquals("TRUE", template.handlebars().apply(1)) },
+            { assertEquals("TRUE", template.handlebars().apply(listOf(""))) },
+            { assertEquals("FALSE", template.handlebars().apply(0)) },
+            { assertEquals("FALSE", template.handlebars().apply("")) },
+            { assertEquals("FALSE", template.handlebars().apply(emptyList<String>())) }
+        )
+    }
+
+    @Test
+    fun test_if_helper_without_alternate_value() {
+        val template = """{{if this "TRUE"}}"""
+        assertAll(
+            { assertEquals("TRUE", template.handlebars().apply(1)) },
+            { assertEquals("", template.handlebars().apply(0)) }
+        )
+    }
+
+    @Test
     fun test_define_helper() {
         val codeBlock = """
         |{{define "v" 42}}
