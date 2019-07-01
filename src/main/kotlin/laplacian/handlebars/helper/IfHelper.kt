@@ -5,16 +5,21 @@ import com.github.jknack.handlebars.TagType
 
 class IfHelper : Helper<Any> {
 
-    override fun apply(context: Any, options: Options): Any {
+    @Throws(IllegalArgumentException::class)
+    override fun apply(context: Any?, options: Options): Any {
         val params = options.params
         val falsy = options.isFalsy(context)
-        val value = if (params.size > 0) params.first()
-                    else context
-        val alternate = if (params.size > 1) params[1]
-                        else ""
+
         return when (options.tagType) {
-            TagType.VAR -> if (falsy) alternate
-                           else value
+            TagType.VAR -> {
+                val alternate = if (params.size > 1) params[1]
+                                else ""
+                when {
+                   (context == null || falsy) -> alternate
+                   (params.isNotEmpty()) -> params.first()
+                   else -> context
+                }
+            }
             TagType.SECTION -> options.buffer().also {
                 it.append(
                     if (falsy) options.inverse()

@@ -229,6 +229,7 @@ class StringTest {
     fun test_if_helper() {
         val template = """{{#if this}}TRUE{{else}}FALSE{{/if}}"""
         assertAll(
+            { assertEquals("FALSE", template.handlebars().apply(null)) },
             { assertEquals("TRUE", template.handlebars().apply(1)) },
             { assertEquals("TRUE", template.handlebars().apply(listOf(""))) },
             { assertEquals("FALSE", template.handlebars().apply(0)) },
