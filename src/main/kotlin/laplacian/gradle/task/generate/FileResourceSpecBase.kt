@@ -41,7 +41,9 @@ class FileResourceSpecBase(
         val name = module.name
         val version = module.version
         val modulePath = "/${name}-${version}.jar"
-        if (LOG.isInfoEnabled) LOG.info("""Loading into the "${configurationName.get()}" configuration the module at: $modulePath""")
+        if (LOG.isInfoEnabled) LOG.info(
+            """Loading into the "${configurationName.get()}" configuration the module at: $modulePath"""
+        )
         moduleNames.add(modulePath)
     }
 
@@ -54,7 +56,6 @@ class FileResourceSpecBase(
                 "It seems that one of the dependent laplacian-module `$path` could not be found in ($archivePaths)."
             )
             val content = project.zipTree(archive).asFileTree
-            // content.forEach { it.absolutePath } // a workaround extract the all files in the archive
             consumer(content)
         }
     }

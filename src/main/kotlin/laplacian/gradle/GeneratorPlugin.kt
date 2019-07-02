@@ -88,14 +88,14 @@ class GeneratorPlugin: Plugin<Project> {
                     from(moduleDef)
                 }
             )
-            task.templateSpecs.set(listOf(
+            task.templateSpec.set(
                 TemplateSpec(project).apply {
                     files.setFrom()
                     configurationName.set(moduleTemplate.name)
                     moduleTemplate.allDependencies.forEach { dependency ->
                         module(dependency)
                     }
-                })
+                }
             )
             task.prepare()
         }

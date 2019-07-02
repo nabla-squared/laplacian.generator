@@ -9,16 +9,17 @@ open class LaplacianGenerateTask: AbstractCopyTask() {
 
     @Nested
     val modelSpec = project.objects
-       .property(ModelSpec::class.java)
-       .value(ModelSpec(project))
+        .property(ModelSpec::class.java)
+        .value(ModelSpec(project))
 
     @Nested
-    val templateSpecs = project.objects
-       .listProperty(TemplateSpec::class.java)
+    val templateSpec = project.objects
+        .property(TemplateSpec::class.java)
+        .value(TemplateSpec(project))
 
     val executionContext = project.objects
-       .property(ExecutionContext::class.java)
-       .value(ExecutionContext())
+        .property(ExecutionContext::class.java)
+        .value(ExecutionContext())
 
     fun prepare() {
         rootSpec.into(project.projectDir)
@@ -28,9 +29,13 @@ open class LaplacianGenerateTask: AbstractCopyTask() {
         val context = executionContext.get()
         modelSpec.get().applyTo(context)
         context.build()
-        if (LOG.isInfoEnabled) LOG.info("Generate based on the following model: ${context.currentModel}")
-        templateSpecs.get().forEach { spec ->
-            if (LOG.isInfoEnabled) LOG.info("Use the following template: $spec")
+        if (LOG.isInfoEnabled) LOG.info(
+            "Generate based on the following model: ${context.currentModel}"
+        )
+        templateSpec.get().also { spec ->
+            if (LOG.isInfoEnabled) LOG.info(
+                "Use the following template: $spec"
+            )
             spec.applyTo(rootSpec.addChild(), context)
         }
     }

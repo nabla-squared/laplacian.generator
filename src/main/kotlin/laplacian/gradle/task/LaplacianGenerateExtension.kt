@@ -19,25 +19,21 @@ open class LaplacianGenerateExtension constructor(
     }
 
     @Nested
-    val templateSpecs = project.objects
-                       .listProperty(TemplateSpec::class.java)
-                       .apply{ add(TemplateSpec(project)) }
+    val templateSpec = project.objects
+                      .property(TemplateSpec::class.java)
+                      .value(TemplateSpec(project))
 
-    val templateSources = templateSpecs.map { sourceSets ->
-        sourceSets.fold(project.files()) { acc, sourceSet ->
-            acc.from(sourceSet.files)
-        }
-    }
+    val templateSource = templateSpec.map { it.files }
 
     fun template(configuration: TemplateSpec.() -> Unit) {
         val spec = TemplateSpec(project)
         spec.apply(configuration)
-        templateSpecs.add(spec)
+        templateSpec.set(spec)
     }
 
     fun applyTo(task: LaplacianGenerateTask) {
         task.modelSpec.set(modelSpec)
-        task.templateSpecs.set(templateSpecs)
+        task.templateSpec.set(templateSpec)
         task.prepare()
     }
 }
