@@ -35,7 +35,10 @@ class GeneratorPlugin: Plugin<Project> {
         )
         project.tasks.register(
             GENERATE_TASK_NAME, LaplacianGenerateTask::class.java
-        )
+        ) {
+            it.group = "laplacian generator"
+            it.description = "generates files from template files and models"
+        }
     }
 
     private fun setupModelConfiguration(project: Project) {
