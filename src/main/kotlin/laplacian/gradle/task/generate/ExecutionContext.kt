@@ -37,7 +37,8 @@ class ExecutionContext(
         entries = modelFiles.fold(entries) { acc, modelFile ->
             try {
                 val readModel = Yaml().load<Map<String, Any?>>(modelFile.readText())
-                mergeObjectGraph(acc, readModel) as Map<String, Any?>
+                if (readModel == null) acc
+                else mergeObjectGraph(acc, readModel) as Map<String, Any?>
             }
             catch (e: RuntimeException) {
                 throw IllegalStateException(
