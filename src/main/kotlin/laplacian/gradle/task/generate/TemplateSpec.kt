@@ -6,13 +6,14 @@ import org.gradle.api.file.*
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 import org.slf4j.LoggerFactory
+import java.io.File
 
 class TemplateSpec(
     project: Project,
-    val base: FileResourceSpec = FileResourceSpecBase(
+    private val base: FileResourceSpec = FileResourceSpecBase(
         project, arrayOf("template"), "template"
     )
-) : FileResourceSpec by base  {
+) : FileResourceSpec by base {
 
     override fun toString() = base.toString()
 
@@ -25,18 +26,24 @@ class TemplateSpec(
     }
 
     @Optional
-    @OutputDirectory
     val into = project.objects
-              .property(String::class.java)
-              .value("./")
+        .property(String::class.java)
+        .value("./")
 
     fun into(path: String) {
         into.set(path)
     }
 
+    val baseDir = project.objects
+        .property(File::class.java)
+        .value(project.projectDir)
+
+    @OutputDirectory
+    val target = into.map{ File(baseDir.get(), it) }
+
     fun applyTo(copySpec: CopySpec, context: ExecutionContext) {
         copySpec.includeEmptyDirs = false
-        copySpec.into(into.get())
+        copySpec.into(target.get().relativeTo(project.projectDir))
         copySpec.eachFile { detail ->
             if (LOG.isInfoEnabled) LOG.info("Processing a template: ${detail.sourceName} -> ${detail.name}")
             doForEachFile(detail, context)

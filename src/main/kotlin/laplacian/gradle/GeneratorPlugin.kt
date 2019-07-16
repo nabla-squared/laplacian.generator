@@ -46,7 +46,9 @@ class GeneratorPlugin: Plugin<Project> {
             it.description = "The artifacts which contain laplacian model definitions."
             it.isVisible = false
         }
-        val extension = project.extensions.getByType(LaplacianGenerateExtension::class.java)
+        val extension = project.extensions.getByType(
+            LaplacianGenerateExtension::class.java
+        )
         project.tasks.named(GENERATE_TASK_NAME, LaplacianGenerateTask::class.java).configure {
             configuration.allDependencies.forEach { dependency ->
                 extension.model {
