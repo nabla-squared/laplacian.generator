@@ -28,7 +28,6 @@ class ModelSpec(
                 it.include("**/*.yaml", "**/*.yml", "**/*.json", "**/*.js")
             }.filterNotNull()
             executionContext.addModel(*yamlFiles.toTypedArray())
-            executionContext.addModelEntryResolver(ProjectEntryResolver())
             executionContext.addModelEntryResolver(*modelEntryResolvers.get().toTypedArray())
         }
     }

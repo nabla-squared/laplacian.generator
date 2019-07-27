@@ -2,7 +2,6 @@ package laplacian.gradle
 
 import laplacian.gradle.task.LaplacianGenerateTask
 import laplacian.gradle.task.LaplacianGenerateExtension
-import laplacian.gradle.task.LaplacianModuleTask
 import laplacian.gradle.task.generate.ModelSpec
 import laplacian.gradle.task.generate.TemplateSpec
 import org.gradle.api.Plugin
@@ -26,7 +25,6 @@ class GeneratorPlugin: Plugin<Project> {
         registerGeneratorTask(project)
         setupModelConfiguration(project)
         setupTemplateConfiguration(project)
-        registerModuleTask(project)
     }
 
     private fun registerGeneratorTask(project: Project) {
@@ -71,38 +69,6 @@ class GeneratorPlugin: Plugin<Project> {
                 }
             }
             extension.applyTo(task)
-        }
-    }
-
-    private fun registerModuleTask(project: Project) {
-        val moduleTemplate = project.configurations.create(CONFIGURATION_MODULE) {
-            it.description = "The artifacts that contain laplacian model files."
-            it.isVisible = false
-            project.dependencies.add(it.name, MODULE_TEMPLATE)
-        }
-        project.tasks.register(MODULE_TASK_NAME, LaplacianModuleTask::class.java).configure { task ->
-            task.modelSpec.set(
-                ModelSpec(project).apply {
-                    val moduleDef = project.files(
-                        "laplacian-module.yml",
-                        "laplacian-module.yaml"
-                    )
-                    if (moduleDef.files.all{!it.exists()}) throw IllegalStateException(
-                        "A file which is named laplacian-module.ya?ml is needed in the root directory of this project. "
-                    )
-                    from(moduleDef)
-                }
-            )
-            task.templateSpec.set(
-                TemplateSpec(project).apply {
-                    files.setFrom()
-                    configurationName.set(moduleTemplate.name)
-                    moduleTemplate.allDependencies.forEach { dependency ->
-                        module(dependency)
-                    }
-                }
-            )
-            task.prepare()
         }
     }
 }
