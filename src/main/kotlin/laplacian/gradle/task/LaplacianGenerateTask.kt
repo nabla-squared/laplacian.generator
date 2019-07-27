@@ -1,7 +1,9 @@
 package laplacian.gradle.task
 
 import laplacian.gradle.task.generate.*
+import org.gradle.api.file.FileTree
 import org.gradle.api.internal.file.copy.*
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.*
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -12,6 +14,9 @@ open class LaplacianGenerateTask: AbstractCopyTask() {
     val modelSpec = project.objects
         .property(ModelSpec::class.java)
         .value(ModelSpec(project))
+
+    @InputFiles
+    val modelFiles: Provider<FileTree> = modelSpec.map{ spec -> spec.files.asFileTree }
 
     @Nested
     val templateSpec = project.objects
