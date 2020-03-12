@@ -2,22 +2,16 @@ package laplacian.gradle
 
 import laplacian.gradle.task.LaplacianGenerateTask
 import laplacian.gradle.task.LaplacianGenerateExtension
-import laplacian.gradle.task.generate.ModelSpec
-import laplacian.gradle.task.generate.TemplateSpec
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.slf4j.LoggerFactory
-import java.lang.IllegalStateException
 
 class GeneratorPlugin: Plugin<Project> {
 
     companion object {
         const val GENERATE_TASK_NAME = "laplacianGenerate"
-        const val MODULE_TASK_NAME = "laplacianModule"
-        const val MODULE_TEMPLATE = "laplacian:laplacian.template.module-base:1.0.0"
         const val CONFIGURATION_TEMPLATE = "template"
         const val CONFIGURATION_MODEL = "model"
-        const val CONFIGURATION_MODULE = "laplacianModuleTemplate"
         val LOG = LoggerFactory.getLogger(GeneratorPlugin::class.java)
     }
 
