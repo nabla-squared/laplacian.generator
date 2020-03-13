@@ -18,12 +18,16 @@ open class LaplacianGenerateExtension constructor(
         spec.apply(configuration)
     }
 
+    val targetDir = project.objects
+                   .fileProperty()
+                   .value { project.projectDir }
+
     @Nested
     val templateSpec = project.objects
                       .property(TemplateSpec::class.java)
                       .value(TemplateSpec(project))
 
-    val templateSource = templateSpec.map { it.files }
+    val templateSources = templateSpec.map { it.files }
 
     fun template(configuration: TemplateSpec.() -> Unit) {
         val spec = TemplateSpec(project)
@@ -32,6 +36,7 @@ open class LaplacianGenerateExtension constructor(
     }
 
     fun applyTo(task: LaplacianGenerateTask) {
+        task.target.set(targetDir.get().asFile)
         task.modelSpec.set(modelSpec)
         task.templateSpec.set(templateSpec)
         task.prepare()
