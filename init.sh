@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
-RAW_HOST=https://raw.githubusercontent.com/laplacian/laplacian.generator/master
+RAW_HOST=https://raw.githubusercontent.com/nabla-squared/laplacian.generator/master
 set -x
 
 main () {
@@ -13,7 +13,6 @@ main () {
 install_laplacian () {
   local SCRIPTS_DIR=scripts
   local SCRIPT_PATH=$SCRIPTS_DIR/laplacian-generate.sh
-
   mkdir -p ./$SCRIPTS_DIR && (
     curl -Ls -o ./$SCRIPT_PATH $RAW_HOST/$SCRIPT_PATH
     curl -Ls -o ./.gitignore $RAW_HOST/.gitignore
@@ -30,4 +29,3 @@ show_end_message () {
 }
 
 main "$@"
-
