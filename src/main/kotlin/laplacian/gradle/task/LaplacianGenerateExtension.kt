@@ -18,9 +18,9 @@ open class LaplacianGenerateExtension constructor(
         spec.apply(configuration)
     }
 
-    val targetDir = project.objects
-                   .fileProperty()
-                   .value { project.projectDir }
+    val target = project.objects
+                .fileProperty()
+                .value { project.projectDir }
 
     @Nested
     val templateSpec = project.objects
@@ -36,7 +36,7 @@ open class LaplacianGenerateExtension constructor(
     }
 
     fun applyTo(task: LaplacianGenerateTask) {
-        task.target.set(targetDir.get().asFile)
+        task.target.set(target.get().asFile)
         task.modelSpec.set(modelSpec)
         task.templateSpec.set(templateSpec)
         task.prepare()
