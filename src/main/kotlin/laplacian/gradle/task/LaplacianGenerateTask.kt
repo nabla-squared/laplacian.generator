@@ -27,6 +27,7 @@ open class LaplacianGenerateTask: AbstractCopyTask() {
         .property(ExecutionContext::class.java)
         .value(ExecutionContext())
 
+    @OutputDirectory
     val target = project.objects
         .property(File::class.java)
         .value(project.projectDir)
