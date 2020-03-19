@@ -14,8 +14,7 @@ open class LaplacianGenerateExtension constructor(
                    .value(ModelSpec(project))
 
     fun model(configuration: ModelSpec.() -> Unit) {
-        val spec = modelSpec.get()
-        spec.apply(configuration)
+        modelSpec.get().apply(configuration)
     }
 
     val target = project.objects
@@ -30,9 +29,7 @@ open class LaplacianGenerateExtension constructor(
     val templateSources = templateSpec.map { it.files }
 
     fun template(configuration: TemplateSpec.() -> Unit) {
-        val spec = TemplateSpec(project)
-        spec.apply(configuration)
-        templateSpec.set(spec)
+        templateSpec.get().apply(configuration)
     }
 
     fun applyTo(task: LaplacianGenerateTask) {

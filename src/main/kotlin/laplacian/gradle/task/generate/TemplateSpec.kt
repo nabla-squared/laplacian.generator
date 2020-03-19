@@ -11,7 +11,7 @@ import java.io.File
 class TemplateSpec(
     project: Project,
     private val base: FileResourceSpec = FileResourceSpecBase(
-        project, arrayOf("template"), "template"
+        project, "template"
     )
 ) : FileResourceSpec by base {
 

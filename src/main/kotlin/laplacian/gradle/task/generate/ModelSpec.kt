@@ -7,9 +7,7 @@ import java.io.File
 class ModelSpec(
     project: Project,
     val base: FileResourceSpec = FileResourceSpecBase(
-        project,
-        arrayOf("model", "laplacian-module.yml", "laplacian-module.yaml"),
-        "model"
+        project, "model"
     )
 ) : FileResourceSpec by base {
 

@@ -11,18 +11,19 @@ import java.lang.IllegalStateException
 
 class FileResourceSpecBase(
     override val project: Project,
-    defaultFiles: Array<String>,
     defaultConfigurationName: String
 ) : FileResourceSpec {
     companion object {
         val LOG = LoggerFactory.getLogger(FileResourceSpecBase::class.java)
     }
     @InputFiles
-    override val files = project.files(*defaultFiles)
+    override val files = project.files(emptyArray<String>())
 
     @Optional
     @Input
-    override val moduleNames = project.objects.listProperty(String::class.java)
+    override val moduleNames = project.objects
+        .listProperty(String::class.java)
+        .empty()
 
     @Input
     override val configurationName = project.objects
@@ -42,7 +43,7 @@ class FileResourceSpecBase(
         val version = module.version
         val modulePath = "/${name}-${version}.jar"
         if (LOG.isInfoEnabled) LOG.info(
-            """Loading into the "${configurationName.get()}" configuration the module at: $modulePath"""
+            """>>>>${moduleNames.get().map{it}.joinToString(",")} Loading into the "${configurationName.get()}" configuration the module at: $modulePath"""
         )
         moduleNames.add(modulePath)
     }
