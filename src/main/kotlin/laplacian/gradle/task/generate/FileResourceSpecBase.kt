@@ -49,7 +49,6 @@ class FileResourceSpecBase(
     }
 
     override fun forEachFileSets(consumer: (fileSet: FileCollection) -> Unit) {
-        consumer(files.asFileTree)
         val configuration = configuration.get()
         moduleNames.get().forEach { path ->
             val archivePaths = configuration.files.map{ it.absolutePath }
@@ -59,6 +58,7 @@ class FileResourceSpecBase(
             val content = project.zipTree(archive).asFileTree
             consumer(content)
         }
+        consumer(files.asFileTree)
     }
 
     override fun toString() = mapOf(
