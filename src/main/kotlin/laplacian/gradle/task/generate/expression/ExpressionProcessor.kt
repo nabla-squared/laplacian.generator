@@ -62,14 +62,13 @@ interface ExpressionProcessor {
             addProcessor(terminator)
             try {
                 processors.first().eval("", context)
+                return terminator.results
             }
             catch (e: RuntimeException) {
                 throw GradleException(
-                    "A problem occurred while expanding path: $path, cause: ${e.message}", e
+                    "A problem occurred while expanding path: $path, context: $context, cause: ${e.message}", e
                 )
             }
-
-            return terminator.results
         }
     }
 }

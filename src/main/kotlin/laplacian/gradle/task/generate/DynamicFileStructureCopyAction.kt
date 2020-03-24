@@ -40,14 +40,16 @@ class DynamicFileStructureCopyAction(
 
         override fun processFile(details: FileCopyDetailsInternal) {
             val target = fileResolver.resolve(details.relativePath.pathString)
+            val baseModel = executionContext.currentModel
             val expandedPaths = ExpressionProcessor.process(
                 target.absolutePath,
-                executionContext.currentModel
+                baseModel
             )
             val copied = expandedPaths.all { (path, context) ->
                 executionContext.currentModel = context
                 details.copyTo(File(path))
             }
+            executionContext.currentModel = baseModel
             if (copied) didWork = true
         }
     }
