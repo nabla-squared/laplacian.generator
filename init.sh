@@ -2,7 +2,6 @@
 
 set -e
 RAW_HOST=https://raw.githubusercontent.com/nabla-squared/laplacian.template.project.base/master
-set -x
 
 main () {
   show_processing_message
@@ -13,7 +12,7 @@ main () {
 install_laplacian () {
   local SCRIPTS_DIR=scripts
   local LAPLACIAN_GENERATOR=$SCRIPTS_DIR/laplacian-generate.sh
-  local PROJECT_GENERATOR=$SCRIPTS_DIR/laplacian-project-generate.sh
+  local PROJECT_GENERATOR=$SCRIPTS_DIR/update-project.sh
   mkdir -p ./$SCRIPTS_DIR && (
     curl -Ls -o ./$LAPLACIAN_GENERATOR $RAW_HOST/template/$LAPLACIAN_GENERATOR
     curl -Ls -o ./$PROJECT_GENERATOR $RAW_HOST/template/$PROJECT_GENERATOR
