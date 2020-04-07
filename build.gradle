@@ -9,7 +9,7 @@ version = '1.0.0'
 
 repositories {
     maven {
-        url '../mvn-repo/'
+        url '../laplacian.projects/subprojects/mvn-repo/'
     }
     maven {
         url 'https://raw.github.com/nabla-squared/mvn-repo/master/'
@@ -26,6 +26,12 @@ dependencies {
     implementation 'net.sourceforge.plantuml:plantuml:1.2019.5'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.6.0'
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 task sourcesJar(type: Jar) {
@@ -49,7 +55,7 @@ gradlePlugin {
 publishing {
     repositories {
         maven {
-            url "$projectDir/../mvn-repo/"
+            url '../laplacian.projects/subprojects/mvn-repo/'
         }
     }
     publications {
