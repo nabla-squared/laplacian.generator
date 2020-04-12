@@ -15,8 +15,8 @@ install_laplacian () {
   local LAPLACIAN_GENERATOR=$SCRIPTS_DIR/laplacian-generate.sh
   local PROJECT_GENERATOR=$SCRIPTS_DIR/laplacian-project-generate.sh
   mkdir -p ./$SCRIPTS_DIR && (
-    curl -Ls -o ./$LAPLACIAN_GENERATOR $RAW_HOST/template/$LAPLACIAN_GENERATOR
-    curl -Ls -o ./$PROJECT_GENERATOR $RAW_HOST/template/$PROJECT_GENERATOR
+    curl -Ls -o ./$LAPLACIAN_GENERATOR $RAW_HOST/src/$LAPLACIAN_GENERATOR
+    curl -Ls -o ./$PROJECT_GENERATOR $RAW_HOST/src/$PROJECT_GENERATOR
     chmod 755 ./$LAPLACIAN_GENERATOR ./$PROJECT_GENERATOR
   )
 }
