@@ -25,7 +25,7 @@ class ModelSpec(
             val yamlFiles: List<File> = files.asFileTree.matching {
                 it.include("**/*.yaml", "**/*.yml", "**/*.json", "**/*.js")
             }.filterNotNull()
-            executionContext.addModel(*yamlFiles.toTypedArray())
+            executionContext.addModel(*yamlFiles.sorted().toTypedArray())
             executionContext.addModelEntryResolver(*modelEntryResolvers.get().toTypedArray())
         }
     }

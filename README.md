@@ -17,7 +17,7 @@ JDK 8 or later is installed. (Tested on Zulu JDK 8)
 Run the following command in a newly created directory(=project root).
 
 ```console
-$ bash <(curl -Ls https://git.io/fhxcl)
+$ curl -Ls https://git.io/fhxcl | bash
 ```
 
 This will create the following files and empty directories.
