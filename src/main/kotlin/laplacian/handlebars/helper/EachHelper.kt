@@ -57,6 +57,7 @@ class EachHelper : Helper<Any> {
                 }
                 itCtx.combine("@key", index)
                     .combine("@index", index)
+                    .combine("@counter", index + 1)
                     .combine("@first", if (index == base) "first" else "")
                     .combine("@last", if (!loop.hasNext()) "last" else "")
                     .combine("@odd", if (even) "" else "odd")
