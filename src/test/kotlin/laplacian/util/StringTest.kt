@@ -392,7 +392,17 @@ class StringTest {
             |> - piyo
             """.trimMargin(), templateWithPad.handlebars().apply(obj).trim())
         })
+    }
 
+    @Test
+    fun test_eval_helper() {
+        val context = mapOf(
+            "keywords" to listOf("hoge", "fuga", "piyo"),
+            "message" to "{{#each keywords as |k|}}{{upper-snake k}}!{{#unless @last}}, {{/unless}}{{/each}}"
+        )
+        assertEquals("""
+        |HOGE!, FUGA!, PIYO!
+        """.trimMargin(), "{{eval message}}".handlebars().apply(context).trim())
     }
 
     @Test

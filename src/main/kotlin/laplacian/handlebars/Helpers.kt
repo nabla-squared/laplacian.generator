@@ -42,7 +42,9 @@ class Helpers {
             .registerHelper("upper-camel", StringHelper{ t, _ -> t.upperCamelize()})
             .registerHelper("hyphen", StringHelper{ t, _ -> t.lowerHyphenize()})
             .registerHelper("lower-underscore", StringHelper{ t, _ -> t.lowerUnderscorize()})
+            .registerHelper("lower-snake", StringHelper{ t, _ -> t.lowerUnderscorize()})
             .registerHelper("upper-underscore", StringHelper{ t, _ -> t.upperUnderscorize()})
+            .registerHelper("upper-snake", StringHelper{ t, _ -> t.upperUnderscorize()})
             .registerHelper("path", StringHelper{t, _ -> t.pathify()})
             .registerHelper("plural", StringHelper{ t, _ -> t.pluralize()})
             .registerHelper("shift", StringHelper{ t, opts ->
@@ -58,6 +60,7 @@ class Helpers {
             })
             .registerHelper("dquote", StringHelper{ t, _ -> t.dquote()})
             .registerHelper("yaml", StringifyHelper<Any?>{ t, opts -> toYaml(t, opts.params.getOrNull(0)?.toString() ?: "") })
+            .registerHelper("eval", StringHelper{ t, opts -> t.handlebars().apply(opts.context) })
             .registerHelper("literal", StringifyHelper<Any?>{ t, _ -> literalize(t) })
             .registerHelper("concat", ListHelper{ l, opts -> l + ListHelper.asList(opts.params[0]) })
             .registerHelper("map", ListHelper{ l, opts -> l.map{ i -> TemplateWrapper.createContext(i!!)[opts.params[0].toString()] }})
