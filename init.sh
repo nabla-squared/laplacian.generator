@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
-RAW_HOST=https://raw.githubusercontent.com/nabla-squared/laplacian.template.project.base/master
+RAW_HOST=https://raw.githubusercontent.com/nabla-squared/laplacian.project-base.template/master
 
 main () {
   show_processing_message
