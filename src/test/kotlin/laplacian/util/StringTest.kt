@@ -395,15 +395,28 @@ class StringTest {
     }
 
     @Test
-    fun test_eval_helper() {
+    fun test_eval_template_helper() {
         val context = mapOf(
             "keywords" to listOf("hoge", "fuga", "piyo"),
             "message" to "{{#each keywords as |k|}}{{upper-snake k}}!{{#unless @last}}, {{/unless}}{{/each}}"
         )
         assertEquals("""
         |HOGE!, FUGA!, PIYO!
-        """.trimMargin(), "{{eval message}}".handlebars().apply(context).trim())
+        """.trimMargin(), "{{eval-template message}}".handlebars().apply(context).trim())
     }
+
+    @Test
+    fun test_eval_expression_helper() {
+        val context = mapOf(
+            "keywords" to listOf("hoge", "fuga", "piyo"),
+            "expression" to "(join keywords ' // ')"
+        )
+        assertEquals("""
+        |hoge // fuga // piyo
+        """.trimMargin(), "{{eval-expression expression}}".handlebars().apply(context).trim())
+    }
+
+
 
     @Test
     fun test_dquote_helper() {

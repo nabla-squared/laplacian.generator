@@ -60,7 +60,7 @@ class Helpers {
             })
             .registerHelper("dquote", StringHelper{ t, _ -> t.dquote()})
             .registerHelper("yaml", StringifyHelper<Any?>{ t, opts -> toYaml(t, opts.params.getOrNull(0)?.toString() ?: "") })
-            .registerHelper("eval", StringHelper{ t, opts -> t.handlebars().apply(opts.context) })
+            .registerHelper("eval-template", StringHelper{ t, opts -> t.handlebars().apply(opts.context) })
             .registerHelper("literal", StringifyHelper<Any?>{ t, _ -> literalize(t) })
             .registerHelper("concat", ListHelper{ l, opts -> l + ListHelper.asList(opts.params[0]) })
             .registerHelper("map", ListHelper{ l, opts -> l.map{ i -> TemplateWrapper.createContext(i!!)[opts.params[0].toString()] }})
@@ -69,6 +69,7 @@ class Helpers {
             .registerHelper("if" , IfHelper.INSTANCE)
             .registerHelper("each", EachHelper.INSTANCE)
             .registerHelper("lookup", LookupHelper.INSTANCE)
+            .registerHelper("eval-expression", EvalExpressionHelper.INSTANCE)
             .registerHelper("contains-key", ContainsKeyHelper.INSTANCE)
             .registerHelper("define", DefineHelper.INSTANCE)
         }
