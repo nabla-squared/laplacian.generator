@@ -40,12 +40,13 @@ class IncludesHandler: FileCopyHandler {
         )
         val startDirective = m.groupValues[1] + directive + m.groupValues[2]
         val endDirective = m.groupValues[4] + directive
-        val isAlreadyInserted = m.groupValues[3]
+//        val isAlreadyInserted = m.groupValues[3]
         val isBeingInserted = reader.readText()
         out.bufferedWriter().use {
             it.write(
                 originalContent.replaceRange(
-                    m.range, "$startDirective$isAlreadyInserted\n$isBeingInserted\n$endDirective"
+//                    m.range, "$startDirective$isAlreadyInserted\n$isBeingInserted\n$endDirective"
+                    m.range, "$startDirective\n$isBeingInserted\n$endDirective"
                 )
             )
         }
