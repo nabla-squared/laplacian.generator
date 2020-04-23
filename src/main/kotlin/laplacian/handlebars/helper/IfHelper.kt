@@ -11,7 +11,7 @@ class IfHelper : Helper<Any> {
         val falsy = options.isFalsy(context)
 
         return when (options.tagType) {
-            TagType.VAR -> {
+            TagType.VAR, TagType.SUB_EXPRESSION -> {
                 val alternate = if (params.size > 1) params[1]
                                 else ""
                 when {
