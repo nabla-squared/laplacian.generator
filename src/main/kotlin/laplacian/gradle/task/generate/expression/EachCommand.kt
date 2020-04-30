@@ -15,9 +15,12 @@ class EachCommand(
         val list = when {
             (items is Array<*>) -> listOf(*items)
             (items is List<*>) -> items
+            else -> emptyList()
+            /*
             else -> throw IllegalStateException(
                 "$itemsExpr should be an array or list but was: ${items?.javaClass?.name ?: "null"}"
             )
+            */
         }
         list.filter{ it != null }.forEachIndexed { index, item ->
             next.eval(

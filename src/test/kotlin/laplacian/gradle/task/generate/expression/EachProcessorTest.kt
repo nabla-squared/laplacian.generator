@@ -15,10 +15,18 @@ class EachProcessorTest {
         assertEquals(expect, actual)
     }
 
-    @Test
-    fun error_should_be_thrown_if_items_actually_was_not_an_iterable_or_an_array() {
+    fun null_values_should_be_treated_as_empty_lists_when_they_are_iterated() {
         val model = mapOf("persons" to listOf("hogeo", "fugami", "piyosuke"))
         val expr = "{each people as person}{person}.json"
+
+        val expect = emptyList<String>()
+        val actual = ExpressionProcessor.process(expr, model).map{it.first}
+        assertEquals(expect, actual)
+    }
+
+    fun error_should_be_thrown_if_items_actually_was_not_an_iterable_or_an_array() {
+        val model = mapOf("count" to 3)
+        val expr = "{each count as num}{num}.json"
 
         assertThrows(RuntimeException::class.java) {
             ExpressionProcessor.process(expr, model)
