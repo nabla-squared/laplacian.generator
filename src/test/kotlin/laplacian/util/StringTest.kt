@@ -251,6 +251,19 @@ class StringTest {
     }
 
     @Test
+    fun test_case_helper_in_expression() {
+        val template = """{{case (eq this "A") "A!!" (eq this "B") "B!!" "UNDEFINED!!!"}}"""
+        assertAll(
+            { assertEquals("A!!", template.handlebars().apply("A")) },
+            { assertEquals("B!!", template.handlebars().apply("B")) },
+            { assertEquals("UNDEFINED!!!", template.handlebars().apply("C")) },
+            { assertEquals("UNDEFINED!!!", template.handlebars().apply(0)) },
+            { assertEquals("UNDEFINED!!!", template.handlebars().apply("")) },
+            { assertEquals("UNDEFINED!!!", template.handlebars().apply(null)) }
+        )
+    }
+
+    @Test
     fun test_if_helper_without_alternate_value() {
         val template = """{{if this "TRUE"}}"""
         assertAll(
@@ -450,7 +463,7 @@ class StringTest {
     }
 
     @Test
-    fun test_concat_helper() {
+    fun test_concat_helper_applied_to_arrays() {
         val context = mapOf(
             "A" to arrayOf("apple", "ape"),
             "B" to arrayOf("big", "bug")
@@ -458,6 +471,14 @@ class StringTest {
         assertEquals(
             "|apple||ape||big||bug|",
             "{{#each (concat this.A this.B) as |w|}}|{{w}}|{{/each}}".handlebars().apply(context)
+        )
+    }
+
+    @Test
+    fun test_concat_helper_applied_to_strings() {
+        assertEquals(
+            "|apple||ape||big||bug|",
+            "{{concat '|apple|' '|ape|' '|big|' '|bug|'}}".handlebars().apply(emptyMap<String, Any>())
         )
     }
 
