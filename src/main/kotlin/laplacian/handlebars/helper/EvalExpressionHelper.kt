@@ -5,6 +5,7 @@ import com.github.jknack.handlebars.Context
 import com.github.jknack.handlebars.Helper
 import com.github.jknack.handlebars.Options
 import laplacian.util.*
+import laplacian.handlebars.*
 
 class EvalExpressionHelper : Helper<Any> {
 
@@ -15,13 +16,7 @@ class EvalExpressionHelper : Helper<Any> {
             "Expression must not be null."
         )
         val expression = context.toString()
-        if (expression.isBlank()) throw IllegalArgumentException(
-            "Expression must not be blank."
-        )
-        val template = "{{define '$KEY' $expression }}".handlebars()
-        val ctx = options.context
-        template.apply(ctx)
-        return ctx.get(KEY)
+        return options.context.evalExpression(expression)
     }
 
     companion object {

@@ -3,11 +3,20 @@ package laplacian.handlebars
 import com.github.jknack.handlebars.Handlebars
 import com.github.jknack.handlebars.Helper
 import com.github.jknack.handlebars.Options
+import com.github.jknack.handlebars.Context
 import laplacian.handlebars.helper.*
 import laplacian.util.*
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.Yaml
+import java.util.UUID
 
+fun Context.evalExpression(expression: String): Any? {
+    if (expression.isNullOrBlank()) return null
+    val key = UUID.randomUUID().toString()
+    val template = "{{define '$key' $expression }}".handlebars()
+    template.apply(this)
+    return this.get(key)
+}
 
 class Helpers {
     companion object {
@@ -76,3 +85,5 @@ class Helpers {
         }
     }
 }
+
+
