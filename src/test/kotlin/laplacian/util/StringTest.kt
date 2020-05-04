@@ -494,7 +494,25 @@ class StringTest {
         )
         assertEquals(
             "|banana||bull|",
-            "{{#each (map this 'B') as |w|}}|{{w}}|{{/each}}".handlebars().apply(context)
+            "{{#each (map this 'this.B') as |w|}}|{{w}}|{{/each}}".handlebars().apply(context)
+        )
+        assertEquals(
+            "|banana-candy||bull-canary|",
+            """{{#each (map this '(concat B "-" C)') as |w|}}|{{w}}|{{/each}}""".handlebars().apply(context)
+        )
+        assertEquals(
+            "|3||3|",
+            """{{#each (map this 'size') as |w|}}|{{w}}|{{/each}}""".handlebars().apply(context)
+        )
+    }
+    @Test
+    fun test_filter_helper() {
+        val context = listOf(
+            "hogehoge", "fuga", "piyopiyo"
+        )
+        assertEquals(
+        "hogehoge, piyopiyo",
+            """{{join (filter this '(neq this "fuga")') ', ' }}""".handlebars().apply(context)
         )
     }
 

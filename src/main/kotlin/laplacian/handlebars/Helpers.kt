@@ -71,7 +71,15 @@ class Helpers {
             .registerHelper("yaml", StringifyHelper<Any?>{ t, opts -> toYaml(t, opts.params.getOrNull(0)?.toString() ?: "") })
             .registerHelper("eval-template", StringHelper{ t, opts -> t.handlebars().apply(opts.context) })
             .registerHelper("literal", StringifyHelper<Any?>{ t, _ -> literalize(t) })
-            .registerHelper("map", ListHelper{ l, opts -> l.map{ i -> TemplateWrapper.createContext(i!!)[opts.params[0].toString()] }})
+            .registerHelper("map", ListHelper{ l, opts -> l.map {
+                val expr = opts.params[0].toString()
+                TemplateWrapper.createContext(it!!).evalExpression(expr)
+            }})
+            .registerHelper("filter", ListHelper{ l, opts -> l.filter {
+                val expr = opts.params[0].toString()
+                val value = TemplateWrapper.createContext(it!!).evalExpression(expr)
+                !opts.isFalsy(value)
+            }})
             .registerHelper("unique", ListHelper{ l, _ -> l.distinct() })
             .registerHelper("block-join", JoinHelper.INSTANCE)
             .registerHelper("if" , IfHelper.INSTANCE)
