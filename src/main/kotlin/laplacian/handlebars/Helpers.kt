@@ -67,6 +67,7 @@ class Helpers {
                 else
                     t.trim { it in chars || it.isWhitespace() }
             })
+            .registerHelper("printf", StringHelper{ t, opts -> t.format(*opts.params) })
             .registerHelper("dquote", StringHelper{ t, _ -> t.dquote()})
             .registerHelper("yaml", StringifyHelper<Any?>{ t, opts -> toYaml(t, opts.params.getOrNull(0)?.toString() ?: "") })
             .registerHelper("eval-template", StringHelper{ t, opts -> t.handlebars().apply(opts.context) })

@@ -308,6 +308,18 @@ class StringTest {
     }
 
     @Test
+    fun test_printf_helper() {
+        assertEquals(
+            "MESSAGE: Hello",
+            "{{printf 'MESSAGE: %s' (upper-camel this)}}".handlebars().apply("hello")
+        )
+        assertEquals(
+            "MESSAGE: Hello SIZE: 5",
+            "{{printf 'MESSAGE: %s SIZE: %d' (upper-camel this) this.length}}".handlebars().apply("hello")
+        )
+    }
+
+    @Test
     fun test_lookup_helper() {
         val context = mapOf(
             "map" to mapOf("a" to "AA", "b" to "BB"),
