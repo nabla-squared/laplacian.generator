@@ -9,7 +9,7 @@ import laplacian.handlebars.TemplateWrapper
 import org.atteo.evo.inflector.English
 import java.io.File
 
-val SEPARATOR = """([^a-zA-Z0-9$]+|(?<=[a-z])(?=[A-Z]))""".toRegex()
+val SEPARATOR = """([^a-zA-Z0-9$\u0080-\u9fff]+|(?<=[a-z])(?=[A-Z]))""".toRegex()
 
 fun splitIdentifierIntoTokens(str: String): List<String> = str.split(SEPARATOR)
 

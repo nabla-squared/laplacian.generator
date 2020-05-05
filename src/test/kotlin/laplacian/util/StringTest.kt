@@ -47,6 +47,9 @@ class StringTest {
         assertEquals(
                 "HOGE-FUGA-PIYO", "HOGE_FUGA_PIYO".upperHyphenize()
         )
+        assertEquals(
+                "新橋-京急蒲田", "新橋 京急蒲田".upperHyphenize()
+        )
     }
 
 
