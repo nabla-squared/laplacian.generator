@@ -441,8 +441,6 @@ class StringTest {
         """.trimMargin(), "{{eval-expression expression}}".handlebars().apply(context).trim())
     }
 
-
-
     @Test
     fun test_dquote_helper() {
         assertEquals(
@@ -535,7 +533,12 @@ class StringTest {
             "items" to listOf(
                 mapOf("a" to "apple", "B" to "banana", "C" to "candy"),
                 mapOf("a" to "ape", "B" to "bull", "C" to "canary")
-            )
+            ),
+            "lines" to """
+            |apple
+            |banana
+            |candy
+            """.trimMargin()
         )
         assertEquals(
             "|apple||ape|",
@@ -545,6 +548,9 @@ class StringTest {
             "|ORIGINAL_ITEM/apple||ORIGINAL_ITEM/ape|",
             "{{#each items as |w|}}|{{a}}/{{w.a}}|{{/each}}".handlebars().apply(context)
         )
+        assertEquals(
+            "|apple||banana||candy|",
+            "{{#each lines as |line|}}|{{line}}|{{/each}}".handlebars().apply(context)
+        )
     }
-
 }

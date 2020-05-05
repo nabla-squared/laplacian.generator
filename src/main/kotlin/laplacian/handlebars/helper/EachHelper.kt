@@ -38,9 +38,16 @@ class EachHelper : Helper<Any> {
 
     @Throws(IOException::class)
     override fun apply(context: Any?, options: Options): Any {
-        if (context is Iterable<*>) {
+
+        val iterator = when {
+            (context is Iterable<*>) -> context.iterator()
+            (context is String) -> context.toString().split("""\n""".toRegex()).iterator()
+            else -> null
+        }
+
+        if (iterator != null) {
             val buffer = options.buffer()
-            val loop = context.iterator()
+            val loop = iterator
             val base = options.hash<Int>("base", 0)
             var index = base
             var even = index % 2 == 0

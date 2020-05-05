@@ -22,6 +22,7 @@ class ListHelper(private val fn: (list: List<Any?>, opts: Options) -> List<Any?>
                 (obj is List<*>) -> obj
                 (obj is Array<*>) -> obj.toList()
                 (obj is Iterable<*>) -> obj.toList()
+                (obj is String) -> obj.toString().split("""\n""".toRegex())
                 else -> listOf(obj)
             }
         }
