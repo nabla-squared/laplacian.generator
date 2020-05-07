@@ -81,6 +81,20 @@ class Helpers {
                 val value = TemplateWrapper.createContext(it!!).evalExpression(expr)
                 !opts.isFalsy(value)
             }})
+            .registerHelper("sort", ListHelper{ l: List<Any?>, opts ->
+                if (opts.params.isEmpty()) {
+                    l.sortedBy{ it?.toString() ?: "" }
+                }
+                else {
+                    val expr = opts.params[0].toString()
+                    l.sortedBy {
+                        TemplateWrapper
+                            .createContext(it!!)
+                            .evalExpression(expr)
+                            ?.toString() ?: ""
+                    }
+                }
+            })
             .registerHelper("unique", ListHelper{ l, _ -> l.distinct() })
             .registerHelper("block-join", JoinHelper.INSTANCE)
             .registerHelper("if" , IfHelper.INSTANCE)

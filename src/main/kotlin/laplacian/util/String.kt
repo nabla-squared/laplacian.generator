@@ -16,7 +16,7 @@ fun splitIdentifierIntoTokens(str: String): List<String> = str.split(SEPARATOR)
 fun String.upperCamelize() =
         splitIdentifierIntoTokens(this)
             .filter{ it.isNotEmpty() }
-            .map{ it[0].toUpperCase() + it.substring(1) }
+            .map{ it[0].toUpperCase() + it.substring(1).toLowerCase() }
             .joinToString("")
 
 fun String.lowerCamelize(): String {

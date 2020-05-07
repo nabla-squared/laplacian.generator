@@ -26,6 +26,9 @@ class StringTest {
                 "HogeFugaPiyo", "hoge-fugaPiyo".upperCamelize()
         )
         assertEquals(
+                "HogeFugaPiyo", "HOGE_FUGA_PIYO".upperCamelize()
+        )
+        assertEquals(
                 "hogeFugaPiyo", "hoge fuga piyo".lowerCamelize()
         )
         assertEquals(
@@ -518,6 +521,7 @@ class StringTest {
             """{{#each (map this 'size') as |w|}}|{{w}}|{{/each}}""".handlebars().apply(context)
         )
     }
+
     @Test
     fun test_filter_helper() {
         val context = listOf(
@@ -527,6 +531,39 @@ class StringTest {
         "hogehoge, piyopiyo",
             """{{join (filter this '(neq this "fuga")') ', ' }}""".handlebars().apply(context)
         )
+    }
+
+    @Test
+    fun test_sort_helper() {
+        data class Item(
+            private val _name: String,
+            private val _price: Int
+        ) {
+            fun getName() = _name
+            fun getPrice() = _price
+        }
+        val itemList = listOf(
+            Item("beer", 2000),
+            Item("car", 9000),
+            Item("antenna", 5000)
+        )
+        assertAll({
+            val context = listOf("100", "010", "002", "0001")
+            assertEquals(
+                "0001 002 010 100",
+                """{{join (sort this) ' ' }}""".handlebars().apply(context)
+            )
+        }, {
+            assertEquals(
+                "antenna beer car",
+                """{{join (map (sort this 'name') 'name' ) ' ' }}""".handlebars().apply(itemList)
+            )
+        }, {
+            assertEquals(
+                "beer antenna car",
+                """{{join (map (sort this 'price') 'name' ) ' ' }}""".handlebars().apply(itemList)
+            )
+        })
     }
 
     @Test
