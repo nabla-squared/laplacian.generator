@@ -55,8 +55,7 @@ gradlePlugin {
 publishing {
     repositories {
         maven {
-            url '../laplacian.projects/subprojects/mvn-repo/'
-//            url '../mvn-repo/'
+            url '../mvn-repo/'
         }
     }
     publications {

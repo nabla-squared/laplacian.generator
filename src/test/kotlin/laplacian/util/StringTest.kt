@@ -506,19 +506,19 @@ class StringTest {
         )
         assertEquals(
             "|apple||ape|",
-            "{{#each (map this 'A') as |w|}}|{{w}}|{{/each}}".handlebars().apply(context)
+            "{{#each (map this '@it.A') as |w|}}|{{w}}|{{/each}}".handlebars().apply(context)
         )
         assertEquals(
             "|banana||bull|",
-            "{{#each (map this 'this.B') as |w|}}|{{w}}|{{/each}}".handlebars().apply(context)
+            "{{#each (map this '@it.B') as |w|}}|{{w}}|{{/each}}".handlebars().apply(context)
         )
         assertEquals(
             "|banana-candy||bull-canary|",
-            """{{#each (map this '(concat B "-" C)') as |w|}}|{{w}}|{{/each}}""".handlebars().apply(context)
+            """{{#each (map this '(concat @it.B "-" @it.C)') as |w|}}|{{w}}|{{/each}}""".handlebars().apply(context)
         )
         assertEquals(
             "|3||3|",
-            """{{#each (map this 'size') as |w|}}|{{w}}|{{/each}}""".handlebars().apply(context)
+            """{{#each (map this '@it.size') as |w|}}|{{w}}|{{/each}}""".handlebars().apply(context)
         )
     }
 
@@ -529,7 +529,7 @@ class StringTest {
         )
         assertEquals(
         "hogehoge, piyopiyo",
-            """{{join (filter this '(neq this "fuga")') ', ' }}""".handlebars().apply(context)
+            """{{join (filter this '(neq @it "fuga")') ', ' }}""".handlebars().apply(context)
         )
     }
 
@@ -556,12 +556,12 @@ class StringTest {
         }, {
             assertEquals(
                 "antenna beer car",
-                """{{join (map (sort this 'name') 'name' ) ' ' }}""".handlebars().apply(itemList)
+                """{{join (map (sort this '@it.name') '@it.name' ) ' ' }}""".handlebars().apply(itemList)
             )
         }, {
             assertEquals(
                 "beer antenna car",
-                """{{join (map (sort this 'price') 'name' ) ' ' }}""".handlebars().apply(itemList)
+                """{{join (map (sort this '@it.price') '@it.name' ) ' ' }}""".handlebars().apply(itemList)
             )
         })
     }

@@ -74,24 +74,26 @@ class Helpers {
             .registerHelper("literal", StringifyHelper<Any?>{ t, _ -> literalize(t) })
             .registerHelper("map", ListHelper{ l, opts -> l.map {
                 val expr = opts.params[0].toString()
-                TemplateWrapper.createContext(it!!).evalExpression(expr)
+                val context = opts.context
+                context.combine("@it", it!!).evalExpression(expr)
             }})
             .registerHelper("filter", ListHelper{ l, opts -> l.filter {
                 val expr = opts.params[0].toString()
-                val value = TemplateWrapper.createContext(it!!).evalExpression(expr)
+                val context = opts.context
+                val value = context.combine("@it", it!!).evalExpression(expr)
                 !opts.isFalsy(value)
             }})
             .registerHelper("sort", ListHelper{ l: List<Any?>, opts ->
+                val nullValue = ""
                 if (opts.params.isEmpty()) {
-                    l.sortedBy{ it?.toString() ?: "" }
+                    l.sortedBy{ it?.toString() ?: nullValue }
                 }
                 else {
                     val expr = opts.params[0].toString()
+                    val context = opts.context
                     l.sortedBy {
-                        TemplateWrapper
-                            .createContext(it!!)
-                            .evalExpression(expr)
-                            ?.toString() ?: ""
+                        context.combine("@it", it!!)
+                               .evalExpression(expr)?.toString() ?: nullValue
                     }
                 }
             })
