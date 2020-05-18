@@ -479,6 +479,27 @@ class StringTest {
     }
 
     @Test
+    fun test_first_helper() {
+        val context = mapOf(
+            "str" to """
+                |Summary
+                |- At first
+                |- In Addition
+                """.trimMargin(),
+            "arr" to listOf(
+                "Summary",
+                "- At first",
+                "- In Addition"
+            )
+        );
+        assertAll({
+            assertEquals("Summary", "{{first str}}".handlebars().apply(context))
+        }, {
+            assertEquals("Summary", "{{first arr}}".handlebars().apply(context))
+        })
+    }
+
+    @Test
     fun test_concat_helper_applied_to_arrays() {
         val context = mapOf(
             "A" to arrayOf("apple", "ape"),

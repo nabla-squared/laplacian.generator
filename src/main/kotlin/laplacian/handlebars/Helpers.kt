@@ -72,6 +72,7 @@ class Helpers {
             .registerHelper("yaml", StringifyHelper<Any?>{ t, opts -> toYaml(t, opts.params.getOrNull(0)?.toString() ?: "") })
             .registerHelper("eval-template", StringHelper{ t, opts -> t.handlebars().apply(opts.context) })
             .registerHelper("literal", StringifyHelper<Any?>{ t, _ -> literalize(t) })
+            .registerHelper("first", ListHelper{ l, _ -> l.first() })
             .registerHelper("map", ListHelper{ l, opts -> l.map {
                 val expr = opts.params[0].toString()
                 val context = opts.context

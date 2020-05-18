@@ -4,8 +4,8 @@ import com.github.jknack.handlebars.Helper
 import com.github.jknack.handlebars.Options
 import com.github.jknack.handlebars.TagType
 
-class ListHelper(private val fn: (list: List<Any?>, opts: Options) -> List<Any?>): Helper<Any> {
-    override fun apply(context: Any?, options: Options): Any {
+class ListHelper(private val fn: (list: List<Any?>, opts: Options) -> Any?): Helper<Any?> {
+    override fun apply(context: Any?, options: Options): Any? {
         return when (options.tagType) {
             TagType.VAR, TagType.SUB_EXPRESSION -> {
                 fn(asList(context), options)
