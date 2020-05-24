@@ -36,8 +36,8 @@ inline fun <reified T> Map<String, Any?>.getOrThrow(key: String, defaultValue: T
 
 fun <T> Map<String, Any?>.getList(key: String, defaultList: List<T>? = null): List<T> {
     if (defaultList == null) return this.getOrThrow(key)
-    if (!this.containsKey(key)) return defaultList
     val v = this[key]
+    if (v == null) return defaultList
     if (v is List<*>) return v as List<T>
     throw IllegalStateException(
         "'$key' has a value but its type is not list but is: ${v!!.javaClass.canonicalName}"
