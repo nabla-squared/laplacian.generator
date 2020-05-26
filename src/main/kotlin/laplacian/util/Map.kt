@@ -105,7 +105,8 @@ fun mergeObjectGraph(one: Any, another: Any, ignoringKeys: List<String> = emptyL
         return another
     }
     throw java.lang.IllegalArgumentException(
-        "The following types of model items are '${if (path.isEmpty()) "root" else path}' conflicting" +
-        ": $one(:${one.javaClass.name})and $another(:${another.javaClass.name})"
+        "You are merging items having conflicting types on the property: '${if (path.isEmpty()) "root" else path}'.\n" +
+        "The new value: $another (Type = ${another.javaClass.name})\n" +
+        "is being merged to the current value: $one (Type = ${one.javaClass.name})"
     )
 }

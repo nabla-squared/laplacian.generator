@@ -2,13 +2,15 @@ package laplacian.gradle.task.generate
 
 import com.github.jknack.handlebars.Context
 import laplacian.handlebars.TemplateWrapper
+import laplacian.util.YamlLoader
 import laplacian.util.mergeObjectGraph
 import org.yaml.snakeyaml.Yaml
 import java.io.File
 
 class ExecutionContext(
     private var entries: Map<String, Any?> = emptyMap(),
-    private var modelEntryResolvers: List<ModelEntryResolver> = mutableListOf()
+    private var modelEntryResolvers: List<ModelEntryResolver> = mutableListOf(),
+    private var modelSchema: File? = null
 ) {
     lateinit var baseModel: Context
     lateinit var currentTemplate: File
@@ -33,7 +35,14 @@ class ExecutionContext(
         return this
     }
 
+    fun setModelSchema(schemaFile: File): ExecutionContext {
+        modelSchema = schemaFile
+        return this
+    }
+
     fun addModel(vararg modelFiles: File): ExecutionContext {
+        entries = YamlLoader.readObjects(modelFiles.toList(), modelSchema, baseModel = entries)
+        /*
         entries = modelFiles.fold(entries) { acc, modelFile ->
             try {
                 val readModel = Yaml().load<Map<String, Any?>>(modelFile.readText())
@@ -46,6 +55,7 @@ class ExecutionContext(
                 )
             }
         }
+        */
         return this
     }
 

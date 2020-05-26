@@ -21,7 +21,9 @@ dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
     api 'com.github.jknack:handlebars:4.1.2'
-    implementation 'org.yaml:snakeyaml:1.24'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.11.0'
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.11.0'
+    implementation 'com.networknt:json-schema-validator:1.0.39'
     implementation 'org.atteo:evo-inflector:1.2.2'
     implementation 'net.sourceforge.plantuml:plantuml:1.2019.5'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
@@ -32,11 +34,6 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-}
-
-task sourcesJar(type: Jar) {
-    archiveClassifier = 'sources'
-    from sourceSets.main.allSource
 }
 
 test {
@@ -56,12 +53,6 @@ publishing {
     repositories {
         maven {
             url '../mvn-repo/'
-        }
-    }
-    publications {
-        mavenJava(MavenPublication) {
-            from components["java"]
-            artifact sourcesJar
         }
     }
 }
