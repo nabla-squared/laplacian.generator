@@ -107,6 +107,7 @@ class Helpers {
             .registerHelper("lookup", LookupHelper.INSTANCE)
             .registerHelper("eval-expression", EvalExpressionHelper.INSTANCE)
             .registerHelper("contains-key", ContainsKeyHelper.INSTANCE)
+            .registerHelper("list-of", ListOfHelper.INSTANCE)
             .registerHelper("define", DefineHelper.INSTANCE)
         }
     }

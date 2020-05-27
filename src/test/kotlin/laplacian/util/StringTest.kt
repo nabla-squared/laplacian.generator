@@ -479,6 +479,20 @@ class StringTest {
     }
 
     @Test
+    fun test_list_of_helper() {
+        val template = "{{define 'list' (list-of 'a' 'b' 'c')}}{{#each list as |item|}}{{item}}{{/each}}"
+        val template2 = "{{#each (list-of 'a' 'b' 'c') as |item|}}{{item}}{{/each}}"
+        assertEquals("abc", template.handlebars().apply(""))
+        assertEquals("abc", template2.handlebars().apply(""))
+    }
+
+    @Test
+    fun test_create_empty_list_with_list_of_helper() {
+        val template = "{{define 'list' (list-of)}}{{#if list}}empty!{{else}}not empty!{{/if}}"
+        assertEquals("empty!", template.handlebars().apply(""))
+    }
+
+    @Test
     fun test_first_helper() {
         val context = mapOf(
             "str" to """
