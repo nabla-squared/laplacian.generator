@@ -41,20 +41,6 @@ class YamlLoader {
                    )
                 }
             }
-            /*
-            entries = modelFiles.fold(entries) { acc, modelFile ->
-                try {
-                    val readModel = Yaml().load<Map<String, Any?>>(modelFile.readText())
-                    if (readModel == null) acc
-                    else mergeObjectGraph(acc, readModel) as Map<String, Any?>
-                }
-                catch (e: RuntimeException) {
-                    throw IllegalStateException(
-                        "A problem occurred while merging the model file (${modelFile.absolutePath})", e
-                    )
-                }
-            }
-             */
         }
 
 

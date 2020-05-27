@@ -426,6 +426,32 @@ class StringTest {
     }
 
     @Test
+    fun test_json_helper() {
+        val obj = mapOf(
+            "H" to "hogehoge",
+            "F" to false,
+            "Z" to 0,
+            "L" to listOf("hoge", "fuga", "piyo")
+        )
+        val template = """{{json this}}"""
+        val templateWithPad = """> {{json this "> "}}"""
+        assertAll({
+            assertEquals("""
+            |{"H":"hogehoge","F":false,"Z":0,"L":["hoge","fuga","piyo"]}
+            """.trimMargin(), template.handlebars().apply(obj).trim())
+        }, {
+            assertEquals("""
+            |> {
+            |>   "H" : "hogehoge",
+            |>   "F" : false,
+            |>   "Z" : 0,
+            |>   "L" : [ "hoge", "fuga", "piyo" ]
+            |> }
+            """.trimMargin(), templateWithPad.handlebars().apply(obj).trim())
+        })
+    }
+
+    @Test
     fun test_eval_template_helper() {
         val context = mapOf(
             "keywords" to listOf("hoge", "fuga", "piyo"),

@@ -1,5 +1,6 @@
 package laplacian.handlebars
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.jknack.handlebars.Handlebars
 import com.github.jknack.handlebars.Helper
 import com.github.jknack.handlebars.Options
@@ -70,6 +71,20 @@ class Helpers {
             .registerHelper("printf", StringHelper{ t, opts -> t.format(*opts.params) })
             .registerHelper("dquote", StringHelper{ t, _ -> t.dquote()})
             .registerHelper("yaml", StringifyHelper<Any?>{ t, opts -> toYaml(t, opts.params.getOrNull(0)?.toString() ?: "") })
+            .registerHelper("json", StringifyHelper<Any?>{ obj, opts ->
+                val padding = opts.params.getOrNull(0)?.toString() ?: ""
+                val mapper = ObjectMapper()
+                var isHead = true
+                if (padding.isEmpty()) mapper.writeValueAsString(obj)
+                else mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj).split("\n").joinToString("\n") {
+                    if (isHead) {
+                        isHead = false
+                        it
+                    } else {
+                        padding + it
+                    }
+                }
+            })
             .registerHelper("eval-template", StringHelper{ t, opts -> t.handlebars().apply(opts.context) })
             .registerHelper("literal", StringifyHelper<Any?>{ t, _ -> literalize(t) })
             .registerHelper("first", ListHelper{ l, _ -> l.first() })
