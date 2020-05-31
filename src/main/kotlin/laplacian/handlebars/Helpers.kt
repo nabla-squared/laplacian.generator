@@ -70,6 +70,14 @@ class Helpers {
             })
             .registerHelper("printf", StringHelper{ t, opts -> t.format(*opts.params) })
             .registerHelper("dquote", StringHelper{ t, _ -> t.dquote()})
+            .registerHelper("starts-with", StringHelper{t, opts ->
+                val prefix = opts.params.first().toString()
+                if (t.startsWith(prefix)) t.substring(prefix.length) else ""
+            })
+            .registerHelper("ends-with", StringHelper{t, opts ->
+                val suffix = opts.params.first().toString()
+                if (t.endsWith(suffix)) t.substring(0, t.length - suffix.length) else ""
+            })
             .registerHelper("yaml", StringifyHelper<Any?>{ t, opts -> toYaml(t, opts.params.getOrNull(0)?.toString() ?: "") })
             .registerHelper("json", StringifyHelper<Any?>{ obj, opts ->
                 val padding = opts.params.getOrNull(0)?.toString() ?: ""

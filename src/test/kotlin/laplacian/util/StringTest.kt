@@ -362,6 +362,25 @@ class StringTest {
         )
     }
 
+    @Test
+    fun test_starts_with_helper() {
+        val template = "{{#if (starts-with this '_')}}Private{{else}}Public{{/if}}"
+        assertEquals("Private", template.handlebars().apply("_method_name"))
+        assertEquals("Public", template.handlebars().apply("method_name"))
+
+        val template2 = "{{starts-with this '_'}}"
+        assertEquals("method_name", template2.handlebars().apply("_method_name"))
+    }
+
+    @Test
+    fun test_ends_with_helper() {
+        val template = "{{#if (ends-with this '.tgz')}}Tarball{{else}}Not supported{{/if}}"
+        assertEquals("Tarball", template.handlebars().apply("archive.tgz"))
+        assertEquals("Not supported", template.handlebars().apply("archive.7z"))
+
+        val template2 = "{{ends-with this '.tgz'}}"
+        assertEquals("archive", template2.handlebars().apply("archive.tgz"))
+    }
 
     @Test
     fun test_trim_block_helper() {
