@@ -515,7 +515,9 @@ class StringTest {
     @Test
     fun test_create_empty_list_with_list_of_helper() {
         val template = "{{define 'list' (list-of)}}{{#if list}}empty!{{else}}not empty!{{/if}}"
+        val template2 = "{{define 'list' (list-of)}}{{#each list as |item|}}{{item}}{{/each}}"
         assertEquals("empty!", template.handlebars().apply(""))
+        assertEquals("", template2.handlebars().apply(""))
     }
 
     @Test

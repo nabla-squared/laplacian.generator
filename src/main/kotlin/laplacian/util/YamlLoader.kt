@@ -46,6 +46,7 @@ class YamlLoader {
 
         private fun readObjects(file: File, schema: JsonSchema?): Map<String, Any?> {
             val yaml = file.readText()
+            if (yaml.isBlank()) return emptyMap()
             try {
                 // Use Snake yaml parser directly as Jackson does not handle anchors in Yaml files.
                 val readModel = Yaml().load<Map<String, Any?>>(yaml)
