@@ -69,6 +69,37 @@ class StringTest {
         )
     }
 
+    fun test_dot_delimited() {
+        assertEquals(
+                "hoge.fuga.piyo", "Hoge FugaPiyo".dotDelimited()
+        )
+        assertEquals(
+                "hoge.fuga.piyo", "HOGE.FUGA-PIYO".dotDelimited()
+        )
+    }
+
+    fun test_space_delimited() {
+        assertEquals(
+                "hoge fuga piyo", "Hoge.FugaPiyo".spaceDelimited()
+        )
+        assertEquals(
+                "hoge fuga piyo", "HOGE.FUGA-PIYO".spaceDelimited()
+        )
+    }
+
+
+    fun test_capitalize_first() {
+        assertEquals(
+                "Capitalize First", "capitalize First".capitalizeFirst()
+        )
+        assertEquals(
+                "C", "c".capitalizeFirst()
+        )
+        assertEquals(
+                "", "".capitalizeFirst()
+        )
+    }
+
     @Test
     fun test_strip_doc_comment() {
         val withDocument = """

@@ -13,6 +13,11 @@ val SEPARATOR = """([^a-zA-Z0-9$\u0080-\u9fff]+|(?<=[a-z])(?=[A-Z]))""".toRegex(
 
 fun splitIdentifierIntoTokens(str: String): List<String> = str.split(SEPARATOR)
 
+fun String.capitalizeFirst() = when {
+    this.isEmpty() -> ""
+    else -> this[0].toUpperCase() + this.substring(1)
+}
+
 fun String.upperCamelize() =
         splitIdentifierIntoTokens(this)
             .filter{ it.isNotEmpty() }
@@ -35,6 +40,8 @@ fun String.upperUnderscorize() = joinTokens(this, "_", true)
 fun String.lowerHyphenize() = joinTokens(this, "-", false)
 fun String.upperHyphenize() = joinTokens(this, "-", true)
 fun String.pathify() = split("""\.+""".toRegex()).map{ it.lowerUnderscorize() }.joinToString("/")
+fun String.spaceDelimited() = joinTokens(this, "", false)
+fun String.dotDelimited() = joinTokens(this, ".", false)
 
 fun String.stripBlankLines() =
         this.replace("""(^|\n)[ \t]+(?=$|\n)""".toRegex(), "").trim()

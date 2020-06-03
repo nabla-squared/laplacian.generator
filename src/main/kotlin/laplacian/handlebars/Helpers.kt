@@ -50,11 +50,14 @@ class Helpers {
             handlebars
             .registerHelper("lower-camel", StringHelper{ t, _ -> t.lowerCamelize()})
             .registerHelper("upper-camel", StringHelper{ t, _ -> t.upperCamelize()})
+            .registerHelper("capitalize-first", StringHelper{ t, _ -> t.capitalizeFirst()})
             .registerHelper("hyphen", StringHelper{ t, _ -> t.lowerHyphenize()})
             .registerHelper("lower-underscore", StringHelper{ t, _ -> t.lowerUnderscorize()})
             .registerHelper("lower-snake", StringHelper{ t, _ -> t.lowerUnderscorize()})
             .registerHelper("upper-underscore", StringHelper{ t, _ -> t.upperUnderscorize()})
             .registerHelper("upper-snake", StringHelper{ t, _ -> t.upperUnderscorize()})
+            .registerHelper("dot-delimited", StringHelper{ t, _ -> t.dotDelimited()})
+            .registerHelper("space-delimted", StringHelper{ t, _ -> t.spaceDelimited()})
             .registerHelper("path", StringHelper{t, _ -> t.pathify()})
             .registerHelper("plural", StringHelper{ t, _ -> t.pluralize()})
             .registerHelper("shift", StringHelper{ t, opts ->
