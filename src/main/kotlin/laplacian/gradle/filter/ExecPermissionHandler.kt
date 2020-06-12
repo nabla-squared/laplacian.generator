@@ -14,7 +14,5 @@ class ExecPermissionHandler : FileCopyHandler {
         return false // This handler does not affect the content of files
     }
 
-    override fun copy(reader: Reader, out: OutputStream) {
-        TODO("not implemented")
-    }
+    override fun copy(reader: Reader): Reader = reader
 }

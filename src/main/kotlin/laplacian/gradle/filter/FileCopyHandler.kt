@@ -7,5 +7,5 @@ import laplacian.gradle.task.generate.ExecutionContext
 
 interface FileCopyHandler {
     fun handle(details: FileCopyDetails, context: ExecutionContext) : Boolean
-    fun copy(reader: Reader, out: OutputStream)
+    fun copy(reader: Reader): Reader
 }

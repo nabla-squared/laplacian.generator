@@ -11,9 +11,7 @@ class FileCopyPipelineFilter(
 
     private val converted: Reader by lazy {
         fileCopyPipeline.fold(reader) { reader, converter ->
-            val buffer = ByteArrayOutputStream()
-            converter.copy(reader, buffer)
-            InputStreamReader(ByteArrayInputStream(buffer.toByteArray()))
+            converter.copy(reader)
         }
     }
 

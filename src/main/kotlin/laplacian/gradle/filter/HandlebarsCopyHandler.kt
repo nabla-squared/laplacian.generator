@@ -3,6 +3,7 @@ package laplacian.gradle.filter
 import laplacian.gradle.task.generate.ExecutionContext
 import java.io.OutputStream
 import java.io.Reader
+import java.io.StringReader
 import laplacian.util.*
 import org.gradle.api.file.FileCopyDetails
 
@@ -24,13 +25,14 @@ class HandlebarsCopyHandler() : FileCopyHandler {
 
     lateinit var context: ExecutionContext
 
-    override fun copy(reader: Reader, out: OutputStream) {
+    override fun copy(reader: Reader): Reader {
         val template = reader.readText()
         val baseDir = context.currentTemplate.parentFile
-        out.bufferedWriter().use {
-            it.write(
-                template.handlebars(baseDir).apply(context.currentModel).stripBlankLines()
-            )
-        }
+        return StringReader(
+            template
+                .handlebars(baseDir)
+                .apply(context.currentModel)
+                .stripBlankLines()
+        )
     }
 }

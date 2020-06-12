@@ -22,7 +22,16 @@ class TemplateSpec(
             """^META-INF/""".toRegex(),
             """(^|[./])partial(?=[./]).*\.hbs(\.|$)""".toRegex()
         )
+        val BINARY_FILE_EXTENSIONS = listOf(
+           "jar", "exe", "bin", "zip", "gzip", "tar", "tgz"
+        )
         val LOG = LoggerFactory.getLogger(TemplateSpec::class.java)
+        val COPY_HANDLERS = listOf(
+            HandlebarsCopyHandler(),
+            PlantUmlCopyHandler(),
+            IncludesHandler(),
+            ExecPermissionHandler()
+        )
     }
 
     @Optional
@@ -60,17 +69,15 @@ class TemplateSpec(
             fileCopyDetails.exclude()
             return
         }
-        val pipeline = listOf(
-            HandlebarsCopyHandler(),
-            PlantUmlCopyHandler(),
-            IncludesHandler(),
-            ExecPermissionHandler()
-        ).filter { handler ->
+        if (BINARY_FILE_EXTENSIONS.any{ it == context.currentTemplate.extension }) {
+            return
+        }
+        val handlers = COPY_HANDLERS.filter { handler ->
             handler.handle(fileCopyDetails, context)
         }
-        if (pipeline.isNotEmpty()) {
+        if (handlers.isNotEmpty()) {
             fileCopyDetails.filter(
-                mapOf("fileCopyPipeline" to pipeline),
+                mapOf("fileCopyPipeline" to handlers),
                 FileCopyPipelineFilter::class.java
             )
         }

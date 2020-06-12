@@ -46,8 +46,13 @@ class DynamicFileStructureCopyAction(
                 baseModel
             )
             val copied = expandedPaths.all { (path, context) ->
+                val targetFile = File(path)
                 executionContext.currentModel = context
-                details.copyTo(File(path))
+                executionContext.currentTarget = targetFile
+                if (targetFile.exists() && targetFile.isFile) {
+                    executionContext.currentContent = targetFile.readText()
+                }
+                details.copyTo(targetFile)
             }
             executionContext.currentModel = baseModel
             if (copied) didWork = true

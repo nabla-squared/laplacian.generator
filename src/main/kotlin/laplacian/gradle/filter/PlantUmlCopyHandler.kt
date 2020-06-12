@@ -5,8 +5,7 @@ import net.sourceforge.plantuml.FileFormat
 import net.sourceforge.plantuml.FileFormatOption
 import net.sourceforge.plantuml.SourceStringReader
 import org.gradle.api.file.FileCopyDetails
-import java.io.OutputStream
-import java.io.Reader
+import java.io.*
 
 class PlantUmlCopyHandler: FileCopyHandler {
 
@@ -22,8 +21,11 @@ class PlantUmlCopyHandler: FileCopyHandler {
         return true
     }
 
-    override fun copy(reader: Reader, out: OutputStream) {
+    override fun copy(reader: Reader): Reader {
         val plantUml = reader.readText()
-        SourceStringReader(plantUml).outputImage(out, FileFormatOption(FileFormat.SVG))
+        val buffer = ByteArrayOutputStream()
+        SourceStringReader(plantUml)
+            .outputImage(buffer, FileFormatOption(FileFormat.SVG))
+        return InputStreamReader(ByteArrayInputStream(buffer.toByteArray()))
     }
 }

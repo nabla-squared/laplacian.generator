@@ -14,6 +14,8 @@ class ExecutionContext(
 ) {
     lateinit var baseModel: Context
     lateinit var currentTemplate: File
+    lateinit var currentTarget: File
+    var currentContent: String? = null
 
     fun addModelEntryResolver(vararg resolvers: ModelEntryResolver): ExecutionContext {
         modelEntryResolvers = (modelEntryResolvers + resolvers).distinct()
@@ -42,20 +44,6 @@ class ExecutionContext(
 
     fun addModel(vararg modelFiles: File): ExecutionContext {
         entries = YamlLoader.readObjects(modelFiles.toList(), modelSchema, baseModel = entries)
-        /*
-        entries = modelFiles.fold(entries) { acc, modelFile ->
-            try {
-                val readModel = Yaml().load<Map<String, Any?>>(modelFile.readText())
-                if (readModel == null) acc
-                else mergeObjectGraph(acc, readModel) as Map<String, Any?>
-            }
-            catch (e: RuntimeException) {
-                throw IllegalStateException(
-                    "A problem occurred while merging the model file (${modelFile.absolutePath})", e
-                )
-            }
-        }
-        */
         return this
     }
 
