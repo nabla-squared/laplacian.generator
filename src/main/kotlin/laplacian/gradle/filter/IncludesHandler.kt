@@ -15,14 +15,14 @@ class IncludesHandler: FileCopyHandler {
     var includesName: String? = null
 
 
-    private val includes: MutableMap<String, MutableList<(Reader) -> Reader>> =
+    private val includes: MutableMap<String, MutableMap<String, (Reader) -> Reader>> =
         mutableMapOf()
 
-    private fun lookupIncludes(path: String) : MutableList<(Reader) -> Reader> =
-        includes.getOrPut(path){ mutableListOf() }
+    private fun lookupIncludes(path: String) : MutableMap<String, (Reader) -> Reader> =
+        includes.getOrPut(path){ mutableMapOf() }
 
-    private fun registerIncludes(path: String, include: (Reader) -> Reader) =
-        includes.getOrPut(path){ mutableListOf() }.add(include)
+    private fun registerIncludes(path: String, key: String, include: (Reader) -> Reader) =
+        includes.getOrPut(path){ mutableMapOf() }.put(key, include)
 
     override fun handle(details: FileCopyDetails, context: ExecutionContext): Boolean {
         this.context = context
@@ -62,7 +62,7 @@ class IncludesHandler: FileCopyHandler {
             }
             StringReader(content)
         }
-        registerIncludes(path, include)
+        registerIncludes(path, includesName!!, include)
         return if (context.currentContent != null) {
             include(StringReader(context.currentContent))
         }
@@ -78,7 +78,7 @@ class IncludesHandler: FileCopyHandler {
             reader
         }
         else {
-            includes.fold(reader){ r, inc -> inc(r) }
+            includes.values.fold(reader){ r, inc -> inc(r) }
         }
     }
 
