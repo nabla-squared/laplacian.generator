@@ -12,22 +12,14 @@ class FileCopyPipelineFilterTest {
 
     val duplicate = object : FileCopyHandler {
         override fun handle(details: FileCopyDetails, context: ExecutionContext) = true
-        override fun copy(reader: Reader, out: OutputStream) {
-            out.bufferedWriter().use {
-                val content = reader.readText()
-                it.write(content + content)
-            }
-        }
+        override fun copy(reader: Reader): Reader =
+            reader.readText().let { StringReader(it + it) }
     }
 
     val capitalize = object : FileCopyHandler {
         override fun handle(details: FileCopyDetails, context: ExecutionContext) = true
-        override fun copy(reader: Reader, out: OutputStream) {
-            out.bufferedWriter().use {
-                val content = reader.readText().toUpperCase()
-                it.write(content)
-            }
-        }
+        override fun copy(reader: Reader): Reader =
+            StringReader(reader.readText().toUpperCase())
     }
 
     @Test
