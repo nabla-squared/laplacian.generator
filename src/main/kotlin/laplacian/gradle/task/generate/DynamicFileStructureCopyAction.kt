@@ -49,7 +49,7 @@ class DynamicFileStructureCopyAction(
                 val targetFile = File(path)
                 executionContext.currentModel = context
                 executionContext.currentTarget = targetFile
-                if (targetFile.exists() && targetFile.isFile) {
+                if (targetFile.exists() && targetFile.isFile && executionContext.includeName != null) {
                     executionContext.currentContent = targetFile.readText()
                 }
                 details.copyTo(targetFile)

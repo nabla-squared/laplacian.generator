@@ -12,8 +12,6 @@ class IncludesHandler: FileCopyHandler {
     }
 
     lateinit var context: ExecutionContext
-    var includesName: String? = null
-
 
     private val includes: MutableMap<String, MutableMap<String, (Reader) -> Reader>> =
         mutableMapOf()
@@ -29,17 +27,17 @@ class IncludesHandler: FileCopyHandler {
         val m = TEMPLATE_PATTERN.matchEntire(details.name)
         if (m != null) {
             val filename = m.groupValues[1] + m.groupValues[3]
-            includesName = m.groupValues[2]
+            context.includeName = m.groupValues[2]
             details.name = filename
         }
         else {
-            includesName = null
+            context.includeName = null
         }
         return true
     }
 
     private fun registerIncludes(includeReader: Reader): Reader {
-        val directive = "@$includesName@"
+        val directive = "@${context.includeName}@"
         val included = includeReader.readText()
         val path = context.currentTarget.path
         val include = { reader: Reader ->
@@ -49,6 +47,8 @@ class IncludesHandler: FileCopyHandler {
             val content = if (m == null) {
                 originalContent
             } else {
+                originalContent.replaceRange(m.range, included)
+                /*
                 val alreadyInserted = m.groupValues[3]
                 val m2 = regex.find(included)
                 originalContent.replaceRange(m.range, if (m2 == null) {
@@ -59,10 +59,11 @@ class IncludesHandler: FileCopyHandler {
                         m2.groupValues[1] + alreadyInserted + m2.groupValues[2]
                     )
                 })
+                */
             }
             StringReader(content)
         }
-        registerIncludes(path, includesName!!, include)
+        registerIncludes(path, context.includeName!!, include)
         return if (context.currentContent != null) {
             include(StringReader(context.currentContent))
         }
@@ -83,7 +84,7 @@ class IncludesHandler: FileCopyHandler {
     }
 
     override fun copy(reader: Reader): Reader =
-        if (includesName != null) {
+        if (context.includeName != null) {
             registerIncludes(reader)
         }
         else {

@@ -16,6 +16,7 @@ class ExecutionContext(
     lateinit var currentTemplate: File
     lateinit var currentTarget: File
     var currentContent: String? = null
+    var includeName: String? = null
 
     fun addModelEntryResolver(vararg resolvers: ModelEntryResolver): ExecutionContext {
         modelEntryResolvers = (modelEntryResolvers + resolvers).distinct()
