@@ -70,7 +70,7 @@ fun List<Record>.mergeWithKeys(vararg keys: String): List<Record> {
     if (keys.isEmpty()) return this
     val recordsByKey = mutableMapOf<String, Record>()
     this.forEach { record ->
-        val key = Yaml().dump(keys.map { record.getOrDefault(it, "") })
+        val key = keys.map { record.getOrDefault(it, "").toString() }.joinToString(",")
         val existing = recordsByKey[key]
         recordsByKey[key] = if (existing == null) record
                             else mergeObjectGraph(existing, record, keys.toList()) as Record
