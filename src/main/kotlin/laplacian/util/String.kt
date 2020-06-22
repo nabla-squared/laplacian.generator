@@ -8,6 +8,7 @@ import laplacian.handlebars.Helpers
 import laplacian.handlebars.TemplateWrapper
 import org.atteo.evo.inflector.English
 import java.io.File
+import java.security.MessageDigest
 
 val SEPARATOR = """([^a-zA-Z0-9$\u0080-\u9fff]+|(?<=[a-z])(?=[A-Z]))""".toRegex()
 
@@ -79,6 +80,12 @@ fun String.shift(shiftWidth: Int): String {
 
 fun String.dquote(): String =
     "\"${this.trim().replace("""["\\]""".toRegex(), "\\\\$0")}\""
+
+fun String.md5(str: String): String =
+    MessageDigest
+        .getInstance("MD5")
+        .digest(str.toByteArray())
+        .joinToString("") { "%02x".format(it) }
 
 fun createTemplate(forPath: Boolean = false): Handlebars {
     val template = Handlebars()

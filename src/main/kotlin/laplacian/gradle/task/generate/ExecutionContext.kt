@@ -61,4 +61,16 @@ class ExecutionContext(
         set(model) {
             _currentModel = model
         }
+    val curretntTemlatePath: String
+        get() = currentTemplate.path.let {
+            val m = basePathPattern.find(it)
+            if (m == null) return it
+            val v = m.groupValues
+            val fromArchive = v[1].contains(".jar_")
+            if (fromArchive)
+                "${v[2]}!${v[3]}"
+            else
+                v[3]
+        }
+    private val basePathPattern = """^.*/(([^/]*)\.jar_[^/]+|.NEXT)/(.*)$""".toRegex()
 }

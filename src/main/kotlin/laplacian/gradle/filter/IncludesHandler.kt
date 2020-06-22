@@ -37,29 +37,32 @@ class IncludesHandler: FileCopyHandler {
     }
 
     private fun registerIncludes(includeReader: Reader): Reader {
-        val directive = "@${context.includeName}@"
+        val includeName = context.includeName
         val included = includeReader.readText()
+        val key = context.curretntTemlatePath.replace("@", "_")
         val path = context.currentTarget.path
         val include = { reader: Reader ->
-            val regex = """(?<=^|\n)(.*)$directive(.*)(?=\n)([\s\S]*)\n(.*)$directive""".toRegex()
+            val regex = """(?<=^|\n)(.*)@(\+?)$includeName(\|${Regex.escape(key)}|)@(.*)(?=\n)([\s\S]*)\n(.*)@$includeName\3@""".toRegex()
             val originalContent = reader.readText()
             val m = regex.find(originalContent)
             val content = if (m == null) {
                 originalContent
             } else {
-                originalContent.replaceRange(m.range, included)
-                /*
-                val alreadyInserted = m.groupValues[3]
-                val m2 = regex.find(included)
-                originalContent.replaceRange(m.range, if (m2 == null) {
-                    included
-                } else {
-                    included.replaceRange(
-                        m2.range,
-                        m2.groupValues[1] + alreadyInserted + m2.groupValues[2]
-                    )
-                })
-                */
+                val v = m.groupValues
+                val initialMatch = v[3].isBlank()
+                val additive = v[2].isNotBlank()
+                val identifier = if (additive) "|$key" else ""
+                originalContent.replaceRange(
+                    m.range,
+                    "${v[1]}@${v[2]}$includeName$identifier@${v[4]}\n" +
+                    "$included\n" +
+                    "${v[6]}@$includeName$identifier@" +
+                    if (initialMatch && additive)
+                      "\n${v[1]}@+$includeName@${v[4]}\n" +
+                      "${v[6]}@$includeName@"
+                    else
+                      ""
+                )
             }
             StringReader(content)
         }
