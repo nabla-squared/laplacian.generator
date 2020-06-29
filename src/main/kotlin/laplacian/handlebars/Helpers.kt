@@ -72,6 +72,10 @@ class Helpers {
                     t.trim { it in chars || it.isWhitespace() }
             })
             .registerHelper("printf", StringHelper{ t, opts -> t.format(*opts.params) })
+            .registerHelper("replace", StringHelper{ t, opts -> t.replace(
+                opts.params[0].toString().toRegex(),
+                opts.params[1].toString()
+            )})
             .registerHelper("dquote", StringHelper{ t, _ -> t.dquote()})
             .registerHelper("starts-with", StringHelper{t, opts ->
                 val prefix = opts.params.first().toString()

@@ -357,6 +357,18 @@ class StringTest {
     }
 
     @Test
+    fun test_replace_helper() {
+        assertEquals(
+            "piyo piyo piyo",
+            "{{replace 'hoge hoge hoge' 'hoge' 'piyo'}}".handlebars().apply("")
+        )
+        assertEquals(
+            "piyo hoge hoge",
+            "{{replace 'hoge hoge hoge' '^hoge' 'piyo'}}".handlebars().apply("")
+        )
+    }
+
+    @Test
     fun test_lookup_helper() {
         val context = mapOf(
             "map" to mapOf("a" to "AA", "b" to "BB"),
