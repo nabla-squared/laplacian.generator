@@ -72,10 +72,19 @@ class Helpers {
                     t.trim { it in chars || it.isWhitespace() }
             })
             .registerHelper("printf", StringHelper{ t, opts -> t.format(*opts.params) })
-            .registerHelper("replace", StringHelper{ t, opts -> t.replace(
-                opts.params[0].toString().toRegex(),
-                opts.params[1].toString()
-            )})
+            .registerHelper("replace", StringHelper{ t, opts ->
+                val params = opts.params
+                if (params.size < 2) throw IllegalArgumentException(
+                    "Replace helper requires 3 parameters. Usage: {{replace target pattern replacement}}"
+                )
+                if (params[0] == null || params[1] == null) throw IllegalArgumentException(
+                    "Replace helper's parameters must not be null: {{replace '$t' '${params[0]}' '${params[1]}'}}"
+                )
+                t.replace(
+                    params[0].toString().toRegex(),
+                    params[1].toString()
+                )
+            })
             .registerHelper("dquote", StringHelper{ t, _ -> t.dquote()})
             .registerHelper("starts-with", StringHelper{t, opts ->
                 val prefix = opts.params.first().toString()
