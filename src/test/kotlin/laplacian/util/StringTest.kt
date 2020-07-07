@@ -653,8 +653,23 @@ class StringTest {
             "hogehoge", "fuga", "piyopiyo"
         )
         assertEquals(
-        "hogehoge, piyopiyo",
+            "hogehoge, piyopiyo",
             """{{join (filter this '(neq @it "fuga")') ', ' }}""".handlebars().apply(context)
+        )
+    }
+
+    @Test
+    fun test_any_helper() {
+        val context = listOf(
+            "hoge", "fuga", "piyo"
+        )
+        assertEquals(
+            "OK",
+            """{{if (any this '(eq @it "hoge")') 'OK' 'NG'}}""".handlebars().apply(context)
+        )
+        assertEquals(
+            "NG",
+            """{{if (any this '(eq @it "zap")') 'OK' 'NG'}}""".handlebars().apply(context)
         )
     }
 

@@ -112,6 +112,12 @@ class Helpers {
             .registerHelper("eval-template", StringHelper{ t, opts -> t.handlebars().apply(opts.context) })
             .registerHelper("literal", StringifyHelper<Any?>{ t, _ -> literalize(t) })
             .registerHelper("first", ListHelper{ l, _ -> l.first() })
+            .registerHelper("any", ListHelper{ l, opts -> l.any {
+                val expr = opts.params[0].toString()
+                val context = opts.context
+                val value = context.combine("@it", it!!).evalExpression(expr)
+                !opts.isFalsy(value)
+            }})
             .registerHelper("map", ListHelper{ l, opts -> l.map {
                 val expr = opts.params[0].toString()
                 val context = opts.context
