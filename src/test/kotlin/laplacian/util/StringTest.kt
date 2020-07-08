@@ -29,6 +29,9 @@ class StringTest {
                 "HogeFugaPiyo", "HOGE_FUGA_PIYO".upperCamelize()
         )
         assertEquals(
+                "", "".upperCamelize()
+        )
+        assertEquals(
                 "hogeFugaPiyo", "hoge fuga piyo".lowerCamelize()
         )
         assertEquals(
@@ -36,6 +39,18 @@ class StringTest {
         )
         assertEquals(
                 "listEntity", "List<Entity>".lowerCamelize()
+        )
+        assertEquals(
+                "", "".lowerCamelize()
+        )
+        assertEquals(
+                "a", "A".lowerCamelize()
+        )
+        assertEquals(
+                "a", "a".lowerCamelize()
+        )
+        assertEquals(
+                "", "{}".lowerCamelize()
         )
     }
 

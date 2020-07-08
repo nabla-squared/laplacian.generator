@@ -25,9 +25,12 @@ fun String.upperCamelize() =
             .map{ it[0].toUpperCase() + it.substring(1).toLowerCase() }
             .joinToString("")
 
-fun String.lowerCamelize(): String {
-    val camelized = this.upperCamelize()
-    return camelized[0].toLowerCase() + camelized.substring(1)
+fun String.lowerCamelize(): String = when {
+    this.isEmpty() -> ""
+    this.length == 1 -> this.substring(0, 1).toLowerCase()
+    else -> this.upperCamelize().let {
+        if (it.isEmpty()) "" else it[0].toLowerCase() + it.substring(1)
+    }
 }
 
 fun joinTokens(str: String, separator: String, upperCase: Boolean): String {
