@@ -19,6 +19,7 @@ class ListHelper(private val fn: (list: List<Any?>, opts: Options) -> Any?): Hel
         fun asList(obj: Any?): List<Any?> {
             return when {
                 (obj == null) -> emptyList()
+                (obj == false) -> emptyList()
                 (obj is List<*>) -> obj
                 (obj is Array<*>) -> obj.toList()
                 (obj is Iterable<*>) -> obj.toList()

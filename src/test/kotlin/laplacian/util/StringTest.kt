@@ -622,11 +622,20 @@ class StringTest {
     fun test_concat_helper_applied_to_arrays() {
         val context = mapOf(
             "A" to arrayOf("apple", "ape"),
-            "B" to arrayOf("big", "bug")
+            "B" to arrayOf("big", "bug"),
+            "empty" to emptyArray()
         )
         assertEquals(
             "|apple||ape||big||bug|",
             "{{#each (concat this.A this.B) as |w|}}|{{w}}|{{/each}}".handlebars().apply(context)
+        )
+        assertEquals(
+            "|apple||ape|",
+            "{{#each (concat this.A this.empty) as |w|}}|{{w}}|{{/each}}".handlebars().apply(context)
+        )
+        assertEquals(
+            "|big||bug|",
+            "{{#each (concat this.empty this.B ) as |w|}}|{{w}}|{{/each}}".handlebars().apply(context)
         )
     }
 

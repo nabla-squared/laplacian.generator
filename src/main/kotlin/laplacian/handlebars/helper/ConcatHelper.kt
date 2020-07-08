@@ -8,9 +8,10 @@ class ConcatHelper : Helper<Any> {
     @Throws(IllegalArgumentException::class)
     override fun apply(context: Any?, options: Options): Any {
         val params = listOf(context, *options.params)
+        val toList = params.any{ it is Array<*> || it is Iterable<*>}
         when (options.tagType) {
             TagType.VAR, TagType.SUB_EXPRESSION -> {
-                return if (context is Array<*> || context is Iterable<*>) {
+                return if (toList) {
                     params.map{ ListHelper.asList(it) }.flatten()
                 }
                 else {
