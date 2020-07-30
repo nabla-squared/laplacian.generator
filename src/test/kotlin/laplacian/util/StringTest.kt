@@ -757,4 +757,16 @@ class StringTest {
             "{{#each lines as |line|}}|{{line}}|{{/each}}".handlebars().apply(context)
         )
     }
+
+    @Test
+    fun test_fake_date() {
+        val fakeDate = "{{fake 'date-in-last-decade'}}".handlebars().apply("")
+        assertTrue(
+            fakeDate.matches("^[0-9]{4}-[0-9]{2}-[0-9]{2}$".toRegex())
+        )
+        val fakeDateTime = "{{fake 'date-in-last-decade' 'uuuu/MM/dd hh:mm'}}".handlebars().apply("")
+        assertTrue(
+            fakeDateTime.matches("^[0-9]{4}/[0-9]{2}/[0-9]{2} [0-9]{2}:[0-9]{2}$".toRegex())
+        )
+    }
 }

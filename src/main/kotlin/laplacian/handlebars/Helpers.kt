@@ -154,6 +154,7 @@ class Helpers {
             .registerHelper("contains-key", ContainsKeyHelper.INSTANCE)
             .registerHelper("list-of", ListOfHelper.INSTANCE)
             .registerHelper("define", DefineHelper.INSTANCE)
+            .registerHelper(FakeHelper.NAME, FakeHelper.INSTANCE)
             // TODO move to dedicated plugins
             .registerHelper("table-name", StringHelper{ t, opts -> "t_" + t.lowerUnderscorize() })
             .registerHelper("column-name", StringHelper{ t, opts -> t.lowerUnderscorize() })
