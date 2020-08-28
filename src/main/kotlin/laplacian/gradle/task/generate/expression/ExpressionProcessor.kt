@@ -53,6 +53,9 @@ interface ExpressionProcessor {
                 if (commandName == "unless") {
                     addProcessor(IfCommand(valueExpr, true))
                 }
+                if (commandName == "with") {
+                    addProcessor(WithCommand(valueExpr, varName))
+                }
                 ""
             }
             if (!remaining.isEmpty()) {
