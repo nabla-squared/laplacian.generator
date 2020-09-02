@@ -325,6 +325,17 @@ class StringTest {
     }
 
     @Test
+    fun test_eq_helper_null_handling() {
+        val template = """{{if (eq this null) "IS NULL" "NOT NULL"}}"""
+        assertAll(
+            { assertEquals("IS NULL", template.handlebars().apply(null)) },
+            { assertEquals("NOT NULL", template.handlebars().apply("")) }
+        )
+    }
+
+
+
+    @Test
     fun test_define_helper() {
         val codeBlock = """
         |{{define "v" 42}}
