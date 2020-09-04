@@ -392,6 +392,14 @@ class StringTest {
             "piyo hoge hoge",
             "{{replace 'hoge hoge hoge' '^hoge' 'piyo'}}".handlebars().apply("")
         )
+        assertEquals(
+            "\${piyo} hoge hoge",
+            "{{replace 'hoge hoge hoge' '^hoge' '\\\${piyo}'}}".handlebars().apply("")
+        )
+        assertEquals(
+            "poge hoge hoge",
+            "{{replace 'hoge hoge hoge' '^h(oge)?' 'p\$1'}}".handlebars().apply("")
+        )
     }
 
     @Test
