@@ -3,6 +3,7 @@ package laplacian.gradle.task.generate.expression
 import com.github.jknack.handlebars.Context
 import laplacian.util.*
 import org.gradle.api.GradleException
+import java.io.File
 
 interface ExpressionProcessor {
 
@@ -13,7 +14,6 @@ interface ExpressionProcessor {
     companion object {
 
         private val COMMAND_EXPR = """(.*?)\{\s*(each|if|unless|with)\s+([^}]+?)(\s+as\s+([-_a-zA-Z0-9$]+))?\s*}""".toRegex()
-
 
         fun process(path: String, context: Map<String, Any?>): List<Pair<String, Context>> {
             return process(path, context.toContext())
@@ -68,8 +68,16 @@ interface ExpressionProcessor {
                 return terminator.results
             }
             catch (e: RuntimeException) {
+                var modelDumpFile: File? = null
+                try {
+                    modelDumpFile = createTempFile("laplacian-generator-model-dump-", ".json")
+                    modelDumpFile.writeText(context.toString())
+                }
+                catch(ignored: Exception) { /* ignore */}
                 throw GradleException(
-                    "A problem occurred while expanding path: $path, context: $context, cause: ${e.message}", e
+                    "A problem occurred while expanding path: $path, cause: ${e.message}\n" +
+                    "Generator model was dumped in the file at: ${modelDumpFile?.absolutePath}",
+                    e
                 )
             }
         }

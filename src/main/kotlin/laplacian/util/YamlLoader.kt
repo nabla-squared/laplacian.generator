@@ -58,9 +58,17 @@ class YamlLoader {
                 return readModel
             }
             catch (e: Exception) {
+                var modelDumpFile: File? = null
+                try {
+                    modelDumpFile = createTempFile("laplacian-generator-model-dump-", ".json")
+                    modelDumpFile.writeText(yaml)
+                }
+                catch(ignored: Exception) { /* ignore */}
                 when {
                     (e is IOException || e is JsonProcessingException) -> throw IllegalStateException(
-                        "Failed to parse the following yaml file on ${file.absolutePath}\n$yaml", e
+                        "Failed to parse the following yaml file on ${file.absolutePath}. " +
+                        "Generator model was dumped in the file at: ${modelDumpFile?.absolutePath}",
+                        e
                     )
                     else -> throw e
                 }
