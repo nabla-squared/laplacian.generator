@@ -460,6 +460,14 @@ class StringTest {
     }
 
     @Test
+    fun test_contains_with_helper() {
+        val template = "{{#if (contains this '\${')}}Invalid{{else}}Valid{{/if}}"
+        assertEquals("Valid", template.handlebars().apply("\$method_name"))
+        assertEquals("Invalid", template.handlebars().apply("method\${name}"))
+    }
+
+
+    @Test
     fun test_trim_block_helper() {
         val codeBlock = """
         |{{#trim}}

@@ -94,6 +94,10 @@ class Helpers {
                 val suffix = opts.params.first().toString()
                 if (t.endsWith(suffix)) t.substring(0, t.length - suffix.length) else ""
             })
+            .registerHelper("contains", StringHelper{t, opts ->
+                val substring = opts.params.first().toString()
+                if (t.contains(substring)) substring else ""
+            })
             .registerHelper("yaml", StringifyHelper<Any?>{ t, opts -> toYaml(t, opts.params.getOrNull(0)?.toString() ?: "") })
             .registerHelper("json", StringifyHelper<Any?>{ obj, opts ->
                 val padding = opts.params.getOrNull(0)?.toString() ?: ""
