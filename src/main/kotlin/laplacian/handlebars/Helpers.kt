@@ -119,7 +119,7 @@ class Helpers {
             .registerHelper("any", ListHelper{ l, opts -> l.any {
                 val expr = opts.params[0].toString()
                 val context = opts.context
-                val value = context.combine("@it", it!!).evalExpression(expr)
+                val value = context.combine("@it", it).evalExpression(expr)
                 !opts.isFalsy(value)
             }})
             .registerHelper("map", ListHelper{ l, opts -> l.map {
@@ -130,7 +130,7 @@ class Helpers {
             .registerHelper("filter", ListHelper{ l, opts -> l.filter {
                 val expr = opts.params[0].toString()
                 val context = opts.context
-                val value = context.combine("@it", it!!).evalExpression(expr)
+                val value = context.combine("@it", it).evalExpression(expr)
                 !opts.isFalsy(value)
             }})
             .registerHelper("sort", ListHelper{ l: List<Any?>, opts ->
@@ -142,7 +142,7 @@ class Helpers {
                     val expr = opts.params[0].toString()
                     val context = opts.context
                     l.sortedBy {
-                        context.combine("@it", it!!)
+                        context.combine("@it", it)
                                .evalExpression(expr)?.toString() ?: nullValue
                     }
                 }
@@ -160,8 +160,8 @@ class Helpers {
             .registerHelper("define", DefineHelper.INSTANCE)
             .registerHelper(FakeHelper.NAME, FakeHelper.INSTANCE)
             // TODO move to dedicated plugins
-            .registerHelper("table-name", StringHelper{ t, opts -> "t_" + t.lowerUnderscorize() })
-            .registerHelper("column-name", StringHelper{ t, opts -> t.lowerUnderscorize() })
+            .registerHelper("table-name", StringHelper{ t, _ -> "t_" + t.lowerUnderscorize() })
+            .registerHelper("column-name", StringHelper{ t, _ -> t.lowerUnderscorize() })
         }
     }
 }
