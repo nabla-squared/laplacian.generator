@@ -8,7 +8,7 @@ class StringHelper(private val fn: (str: String, opts: Options) -> String): Help
     override fun apply(context: Any?, options: Options): Any {
         return when (options.tagType) {
             TagType.VAR, TagType.SUB_EXPRESSION -> {
-                fn(context.toString(), options)
+                fn(context?.toString() ?: "", options)
             }
             TagType.SECTION -> {
                 val buffer = options.buffer()
