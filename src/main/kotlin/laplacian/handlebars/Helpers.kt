@@ -94,6 +94,8 @@ class Helpers {
                 val suffix = opts.params.first().toString()
                 if (t.endsWith(suffix)) t.substring(0, t.length - suffix.length) else ""
             })
+            .registerHelper("not-null", BoolHelper{t, _ -> (t != null) })
+            .registerHelper("is-null", BoolHelper{t, _ -> (t == null) })
             .registerHelper("contains", StringHelper{t, opts ->
                 val substring = opts.params.first().toString()
                 if (t.contains(substring)) substring else ""
@@ -117,6 +119,12 @@ class Helpers {
             .registerHelper("literal", StringifyHelper<Any?>{ t, _ -> literalize(t) })
             .registerHelper("first", ListHelper{ l, _ -> l.first() })
             .registerHelper("any", ListHelper{ l, opts -> l.any {
+                val expr = opts.params[0].toString()
+                val context = opts.context
+                val value = context.combine("@it", it).evalExpression(expr)
+                !opts.isFalsy(value)
+            }})
+            .registerHelper("find", ListHelper{ l, opts -> l.find {
                 val expr = opts.params[0].toString()
                 val context = opts.context
                 val value = context.combine("@it", it).evalExpression(expr)

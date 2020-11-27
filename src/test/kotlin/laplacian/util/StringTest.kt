@@ -333,6 +333,15 @@ class StringTest {
         )
     }
 
+    @Test
+    fun test_not_null_helper() {
+        val template = """{{if (not-null this) "NOT NULL" "IS NULL"}}"""
+        assertAll(
+            { assertEquals("IS NULL", template.handlebars().apply(null)) },
+            { assertEquals("NOT NULL", template.handlebars().apply("")) }
+        )
+    }
+
 
 
     @Test
@@ -721,6 +730,25 @@ class StringTest {
         assertEquals(
             "NG",
             """{{if (any this '(eq @it "zap")') 'OK' 'NG'}}""".handlebars().apply(context)
+        )
+    }
+
+    @Test
+    fun test_find_helper() {
+        val context = listOf(
+            "hoge", "fuga", "piyo"
+        )
+        assertEquals(
+            "hoge",
+            """{{find this '(starts-with @it "h")'}}""".handlebars().apply(context)
+        )
+        assertEquals(
+            "piyo",
+            """{{find this '(starts-with @it "p")'}}""".handlebars().apply(context)
+        )
+        assertEquals(
+            "",
+            """{{find this '(starts-with @it "z")'}}""".handlebars().apply(context)
         )
     }
 
