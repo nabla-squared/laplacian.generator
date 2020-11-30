@@ -25,7 +25,7 @@ dependencies {
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.11.2'
     implementation 'com.networknt:json-schema-validator:1.0.39'
     implementation 'org.atteo:evo-inflector:1.2.2'
-    implementation 'net.sourceforge.plantuml:plantuml:1.2019.5'
+    implementation 'net.sourceforge.plantuml:plantuml:1.2020.20'
     implementation 'com.github.javafaker:javafaker:1.0.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.6.0'

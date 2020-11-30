@@ -13,7 +13,18 @@ class PlantUmlCopyHandler: FileCopyHandler {
         val PLANT_UML_PATTERN = """(.*)\.(puml|xsd)$""".toRegex()
     }
 
+    private val fileFormat: FileFormatOption? by lazy {
+        try {
+            FileFormatOption(FileFormat.SVG)
+        }
+        catch (e: Throwable) {
+            println(e.message)
+            null
+        }
+    }
+
     override fun handle(details: FileCopyDetails, context: ExecutionContext): Boolean {
+        if (fileFormat == null) return false
         val m = PLANT_UML_PATTERN.matchEntire(details.name)
         if (m == null) return false
         val baseName = m.groups[1]!!.value
@@ -25,7 +36,7 @@ class PlantUmlCopyHandler: FileCopyHandler {
         val plantUml = reader.readText()
         val buffer = ByteArrayOutputStream()
         SourceStringReader(plantUml)
-            .outputImage(buffer, FileFormatOption(FileFormat.SVG))
+            .outputImage(buffer, fileFormat)
         return InputStreamReader(ByteArrayInputStream(buffer.toByteArray()))
     }
 }
