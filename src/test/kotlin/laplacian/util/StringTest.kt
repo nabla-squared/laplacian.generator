@@ -412,6 +412,24 @@ class StringTest {
     }
 
     @Test
+    fun test_line_continuation() {
+        val codeBlock = """
+        |app.prop1={{line-continuation this}}
+        """.trimMargin()
+        val actual = codeBlock.handlebars().apply("""
+        |hoge
+        |fuga
+        |piyo
+        """.trimMargin())
+        val expect = """
+        |app.prop1=hoge\
+        |fuga\
+        |piyo
+        """.trimMargin()
+        assertEquals(expect, actual)
+    }
+
+    @Test
     fun test_lookup_helper() {
         val context = mapOf(
             "map" to mapOf("a" to "AA", "b" to "BB"),

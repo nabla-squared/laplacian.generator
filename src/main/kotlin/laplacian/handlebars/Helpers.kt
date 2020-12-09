@@ -85,6 +85,9 @@ class Helpers {
                     params[1].toString()
                 )
             })
+            .registerHelper("line-continuation", StringHelper{ t, _ ->
+                t.replace("""\n""".toRegex(), "\\\\\n")
+            })
             .registerHelper("dquote", StringHelper{ t, _ -> t.dquote()})
             .registerHelper("starts-with", StringHelper{t, opts ->
                 val prefix = opts.params.first().toString()
