@@ -412,6 +412,36 @@ class StringTest {
     }
 
     @Test
+    fun test_java_property_value_helper() {
+        val codeBlock = """
+        |app.prop1={{java-property-value prop1}}
+        |app.prop2={{java-property-value prop2}}
+        |app.prop3={{java-property-value prop3}}
+        |app.prop4={{java-property-value prop4}}
+        """.trimMargin()
+        val actual = codeBlock.handlebars().apply(mapOf(
+            "prop1" to """
+            |hoge
+            |fuga
+            |piyo
+            """.trimMargin(),
+            "prop2" to "hoge=fuga",
+            "prop3" to "hoge:fuga",
+            "prop4" to "hoge\\fuga"
+        ))
+        val expect = """
+        |app.prop1=hoge\
+        |fuga\
+        |piyo
+        |app.prop2=hoge\=fuga
+        |app.prop3=hoge\:fuga
+        |app.prop4=hoge\\fuga
+        """.trimMargin()
+        assertEquals(expect, actual)
+    }
+
+
+    @Test
     fun test_line_continuation() {
         val codeBlock = """
         |app.prop1={{line-continuation this}}

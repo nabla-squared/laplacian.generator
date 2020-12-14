@@ -88,6 +88,10 @@ class Helpers {
             .registerHelper("line-continuation", StringHelper{ t, _ ->
                 t.replace("""\n""".toRegex(), "\\\\\n")
             })
+            .registerHelper("java-property-value", StringHelper{ t, _ ->
+                t.replace("""([:=\\])""".toRegex(), "\\\\$1")
+                 .replace("""\n""".toRegex(), "\\\\\n")
+            })
             .registerHelper("dquote", StringHelper{ t, _ -> t.dquote()})
             .registerHelper("starts-with", StringHelper{t, opts ->
                 val prefix = opts.params.first().toString()
