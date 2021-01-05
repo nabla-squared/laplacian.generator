@@ -89,7 +89,8 @@ class Helpers {
                 t.replace("""\n""".toRegex(), "\\\\\n")
             })
             .registerHelper("java-property-value", StringHelper{ t, _ ->
-                t.replace("""([:=\\])""".toRegex(), "\\\\$1")
+                t.trim()
+                 .replace("""([:=\\])""".toRegex(), "\\\\$1")
                  .replace("""\n""".toRegex(), "\\\\\n")
             })
             .registerHelper("dquote", StringHelper{ t, _ -> t.dquote()})
