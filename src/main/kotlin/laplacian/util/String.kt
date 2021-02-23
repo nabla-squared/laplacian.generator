@@ -48,7 +48,7 @@ fun String.spaceDelimited() = joinTokens(this, "", false)
 fun String.dotDelimited() = joinTokens(this, ".", false)
 
 fun String.stripBlankLines() =
-        this.replace("""(^|\n)[ \t]+(?=$|\n)""".toRegex(), "").trim()
+        this.replace("""(^|\n)[ \t]+(?=$|\n)""".toRegex(), "")
 
 val DOC_COMMENT = """(/\*\*[\s\S]*?\*+/|([ \t]*#.*(\n|$)){2,})""".toRegex()
 
