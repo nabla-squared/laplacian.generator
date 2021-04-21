@@ -1,0 +1,17 @@
+presentation:
+    title: An introduction to Laplacian generator
+    pages:
+        - title: Feature summary
+          content:
+              - The first feature
+              - Another feature
+        - title: Working examples
+          content:
+              - The first step
+              - The second step
+        - title: Appendix
+          content:
+              - Appendix 1
+              - Appendix 2
+              - Appendix 3
+    copyright: © Laplacian. 2021 All rights reserved.

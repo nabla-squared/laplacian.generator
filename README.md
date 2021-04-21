@@ -4,71 +4,94 @@ Laplacian Generator
 ===========================
 A tiny utility that generates files with arbitary directry tree structure using [Handlebars](http://jknack.github.io/handlebars.java/) templates.
 
+Installation
+----------------
+
+### Prerequisites
+JDK 8 or later is installed. (Tested on Zulu JDK 8)
+
+### Install Laplacian Generator
+
+```console
+$ curl -Ls https://github.com/nabla-squared/laplacian.generator/releases/download/v1.0.0/install.sh | bash
+
+$ export LAPLACIAN_HOME=$HOME/.laplacian/dist/laplacian-generator-cli-1.0.0
+
+$ export PATH=$LAPLACIAN_HOME/bin:$PATH
+
+```
+
+### Run laplacian cli tool
+
+```console
+$ laplacian
+
+Usage: laplacian [OPTIONS] COMMAND [ARGS]...
+
+Commands:
+  init      Initialize a generator project.
+  generate  Generates resources from model data applying template files.
+
+```
+
 Getting Started
 ----------------
 
 In the following example, we will build a tiny tool that generates a html presentation from yaml data set.
 
-### Prerequisites
-JDK 8 or later is installed. (Tested on Zulu JDK 8)
-
-
 ### Creating a new generator project
-Run the following command in a newly created directory(=project root).
+Firstly, we need to create the following two directories named **model** and **template**.
+In the **model** directory, we place model data files which is written in yaml format.
+The model data will be applied to the **templates**, which reside in the **template** directory.
 
 ```console
-$ curl -Ls https://git.io/fhxcl | bash
+$ mkdir model template
 ```
-
-This will create the following files and empty directories.
 
 ```console
 $ tree
 .
 ├── model/
-├── template/
-├── laplacian-module.yml
-├── build.gradle.kts
-├── settings.gradle.kts
-├── gradlew
-└── gradle/
-    └── wrapper
-        ├── gradle-wrapper.jar
-        └── gradle-wrapper.properties
+└── template/
 ```
 
-The **model** direcotry is where we place some yaml files applied to the **templates**, which reside in the **template** directory.
 
 ### Adding a model file
-Firstly, add the following model file under the **model** directory.
+Add a model file under the **model** directory.
 
 ```console
-$ vim model/sample-presentation.yml
+$ vim model/presentation.yml
 ```
 
 ```yaml
 presentation:
-  title: An introduction to Laplacian generator
-  pages:
-  - title: Feature summary
-    content:
-    - The first feature
-    - Another feature
-  - title: Working examples
-    content:
-    - The first step
-    - The second step
+    title: An introduction to Laplacian generator
+    pages:
+        - title: Feature summary
+          content:
+              - The first feature
+              - Another feature
+        - title: Working examples
+          content:
+              - The first step
+              - The second step
+        - title: Appendix
+          content:
+              - Appendix 1
+              - Appendix 2
+              - Appendix 3
+    copyright: © Laplacian. 2021 All rights reserved
 ```
 
 ```console
 $ tree model
 model
-└── sample-presentation.yml
+└── presentation.yml
 ````
 
-### Creating a template
+### Creating templates
 
-It is supposed that the presentation we are generating has the following directory structure.
+We will create a html presentation having the following directory structure:
 
 ```console
 $ tree
@@ -78,10 +101,11 @@ $ tree
         ├── index.html
         └── pages
             ├── page-1.html
-            └── page-2.html
+            ├── page-2.html
+            └── page-3.html
 ```
 
-So, firstly, we need to add the root directory of the presentation named "presentation" to the "template" direcotry.
+So, at first, we need to add a presentation root directory named "presentation" to the "template" directory:
 
 ```console
 $ mkdir -p template/presentation
@@ -94,27 +118,25 @@ template
 Then, run the following command at the project root to apply the template.
 
 ```console
-$ ./gradlew lG
+$ laplacian generate
 ```
 
-You will find a new directory added to the project root, which is copied from the template directory.
-
+After running this command, you will see a new directory which is copied from the template directory.
 
 ```console
 $ tree
 .
-├── build.gradle.kts
-├── settings.gradle.kts
 ├── model
-│   └── sample-presentation.yml
+│   └── presentation.yml
 │── template
 │   └── presentation
-└── presentation
+└── dest
+    └── presentation
 ````
 
 ### Using a markup in file path
 
-Our **presentation** direcotry must contain a directory whose name is the title of the presentation replacing all the whitespaces to hyphen.
+Our **presentation** directory must contain a directory whose name is the title of the presentation replacing all whitespace to hyphen.
 
 ```console
 $ tree presentation
@@ -149,17 +171,17 @@ $ vim template/presentation/\{hyphen\ presentation.title\}/index.html.hbs
 
 ```html
 <html>
-  <h1>{{presentation.title}}</h1>
-  <ul>
-    {{#each pages in |page|}}
+<h1>{{presentation.title}}</h1>
+<ul>
+    {{#each presentation.pages as |page|}}
     <li>
-      <a href="./pages/page-{{@index}}.html">
-        {{page.title}}
-      </a>
+        <a href="./pages/page-{{@index}}.html">
+            {{page.title}}
+        </a>
     </li>
     {{/each}}
-  </ul>
-</html
+</ul>
+</html>
 ```
 
 ```console
@@ -173,7 +195,7 @@ template
 Run the command again to see the generated index html files.
 
 ```console
-$ ./gradlew lG
+$ laplacian generate
 
 $ tree presentation
 presentation
@@ -193,16 +215,12 @@ $ vim template/presentation/\{hyphen\ presentation.title\}/pages/\{each\ present
 
 ```html
 <html>
-  <h1>{{presentation.title}}</h1>
-  <ul>
-    {{#each pages in |page|}}
-    <li>
-      <a href="./pages/page-{{@index}}.html">
-        {{page.title}}
-      </a>
-    </li>
+<h3>{{page.title}}</h3>
+<ul>
+    {{#each page.content as |item|}}
+    <li>{{item}}</li>
     {{/each}}
-  </ul>
+</ul>
 </html>
 ```
 
@@ -219,7 +237,7 @@ template
 Run the following command to see the result of the template.
 
 ```console
-$ ./gradlew lG
+$ laplacian generate
 
 $ tree presentation
 presentation

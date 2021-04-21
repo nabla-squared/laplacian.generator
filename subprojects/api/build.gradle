@@ -1,0 +1,56 @@
+plugins {
+    id 'maven-publish'
+    id 'org.jetbrains.kotlin.jvm' version "$kotlinVersion"
+}
+
+group = 'laplacian'
+version = '1.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    implementation 'org.jetbrains.kotlin:kotlin-reflect'
+    api 'com.github.jknack:handlebars:4.1.2'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.11.2'
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.11.2'
+    implementation 'com.networknt:json-schema-validator:1.0.39'
+    implementation 'org.atteo:evo-inflector:1.2.2'
+    implementation 'com.github.javafaker:javafaker:1.0.2'
+    implementation "org.slf4j:slf4j-api:$slf4jVersion"
+    implementation "org.slf4j:slf4j-simple:$slf4jVersion"
+    api "org.pf4j:pf4j:$pf4jVersion"
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.6.0'
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        jvmTarget = "$jvmTargetVersion"
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+java {
+    withSourcesJar()
+}
+
+publishing {
+    repositories {
+        maven {
+            url '../../../maven-repo/'
+        }
+    }
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
+

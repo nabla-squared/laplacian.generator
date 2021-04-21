@@ -1,0 +1,47 @@
+<html>
+<head>
+    <style>
+      body {
+        padding: 40px 0;
+        margin: 0;
+      }
+      header, footer {
+        width: 100%;
+        height: 40px;
+        position: fixed;
+        background-color: #333333;
+        font-weight: bold;
+        font-size: larger;
+        color: #FFFFFF;
+      }
+      footer {
+        bottom: 0;
+        text-align: right;
+      }
+      header {
+        top: 0;
+        text-align: left;
+      }
+      </style>
+</head>
+<body>
+<header>
+    <!-- @header@ -->
+    <!-- @header@ -->
+</header>
+<ul>
+  {{#each presentation.pages as |page|}}
+  <li>
+  <a href="./pages/page-{{@index}}.html">
+    {{page.title}}
+  </a>
+  </li>
+  {{/each}}
+</ul>
+</ul>
+<footer>
+    <!-- @footer@ -->
+    <!-- @footer@ -->
+</footer>
+</body>
+</html>
