@@ -31,6 +31,10 @@ class Generate: CliktCommand(help = GENERATE_COMMAND_HELP) {
         by option("-m", "--model", help = MODEL_OPTION_HELP)
             .multiple(default = listOf(DEFAULT_MODEL_DIR))
 
+    val jsonModels: List<String>
+        by option("-m", "--json-model", help = JSON_MODEL_OPTION_HELP)
+            .multiple(default = emptyList())
+
     val templates: List<String>
         by option("-t", "--template", help = TEMPLATE_OPTION_HELP)
             .multiple(default = listOf(DEFAULT_TEMPLATE_DIR))
@@ -38,10 +42,6 @@ class Generate: CliktCommand(help = GENERATE_COMMAND_HELP) {
     val destination: String
         by option("-d", "--destination", help = DESTINATION_OPTION_HELP)
             .default("./dest")
-
-    val watch: Boolean
-        by option("-w", "--watch", help = WATCH_OPTION_HELP)
-            .flag()
 
     val noCache: Boolean
         by option("-C", "--no-cache", help = NO_CACHE_OPTION_HELP)
@@ -57,7 +57,7 @@ class Generate: CliktCommand(help = GENERATE_COMMAND_HELP) {
         val destDir = createDestDir()
         val modelRootDirs = readModulesFrom(models)
         processModelDir(modelRootDirs)
-
+        jsonModels.forEach { executionContext.addModel(it) }
         executionContext.build()
         val templateRootDirs = readModulesFrom(templates)
         val copyDetails = processTemplates(templateRootDirs)
@@ -282,10 +282,9 @@ class Generate: CliktCommand(help = GENERATE_COMMAND_HELP) {
             "Path to the json schema file."
         const val DESTINATION_OPTION_HELP =
             "Path to the directory which the generated files put into."
-        const val WATCH_OPTION_HELP =
-            "This process runs background and watches changes in the template" +
-            " and model files updating the generated files continuously ."
         const val NO_CACHE_OPTION_HELP =
             "All cached modules and plugins will be ignored and replaced with the newly loaded ones."
+        const val JSON_MODEL_OPTION_HELP =
+            "JSON or YAML format model data."
     }
 }
