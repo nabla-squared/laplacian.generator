@@ -32,7 +32,7 @@ class Generate: CliktCommand(help = GENERATE_COMMAND_HELP) {
             .multiple(default = listOf(DEFAULT_MODEL_DIR))
 
     val jsonModels: List<String>
-        by option("-m", "--json-model", help = JSON_MODEL_OPTION_HELP)
+        by option("-j", "--json-model", help = JSON_MODEL_OPTION_HELP)
             .multiple(default = emptyList())
 
     val templates: List<String>
@@ -45,6 +45,10 @@ class Generate: CliktCommand(help = GENERATE_COMMAND_HELP) {
 
     val noCache: Boolean
         by option("-C", "--no-cache", help = NO_CACHE_OPTION_HELP)
+            .flag()
+
+    val clean: Boolean
+        by option("-c", "--clean", help = CLEAN_OPTION_HELP)
             .flag()
 
     lateinit var executionContext: ExecutionContext
@@ -202,10 +206,10 @@ class Generate: CliktCommand(help = GENERATE_COMMAND_HELP) {
 
     private fun createDestDir(): File {
         val destDir = File(destination)
-        if (destDir.exists() && !destDir.deleteRecursively()) throw IllegalStateException(
+        if (clean && destDir.exists() && !destDir.deleteRecursively()) throw IllegalStateException(
             "Failed to clean up existing destination directory.: $destination"
         )
-        if (!destDir.mkdirs()) throw IllegalStateException(
+        if (!destDir.exists() && !destDir.mkdirs()) throw IllegalStateException(
             "Could not create the destination directory.: $destination"
         )
         return destDir
@@ -293,5 +297,7 @@ class Generate: CliktCommand(help = GENERATE_COMMAND_HELP) {
             "All cached modules and plugins will be ignored and replaced with the newly loaded ones."
         const val JSON_MODEL_OPTION_HELP =
             "JSON or YAML format model data."
+        const val CLEAN_OPTION_HELP =
+            "Clean up the destination directory before generataion."
     }
 }

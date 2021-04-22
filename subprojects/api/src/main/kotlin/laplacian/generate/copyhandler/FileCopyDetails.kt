@@ -14,7 +14,7 @@ data class FileCopyDetails (
     val destPath: String
         get() = "${destFileDir}/${destFileName}".replace("/+".toRegex(), "/")
     var exclude: Boolean = false
-    var override: Boolean = true
+    var overwrite: Boolean = true
     var binary: Boolean = false
     var content: String = template
     var includeName: String? = null
@@ -29,7 +29,7 @@ data class FileCopyDetails (
            "Failed to create a directory at ${destDir.absolutePath} while processing a template.: ${this}"
         )
         val destFile = File(destDir, destFileName)
-        if (destFile.exists() && !override) return
+        if (destFile.exists() && !overwrite) return
         if (!destFile.exists() && !destFile.createNewFile()) throw java.lang.IllegalStateException(
             "Failed to create a file at ${destFile.absolutePath} while processing a template.: ${this}"
         )
