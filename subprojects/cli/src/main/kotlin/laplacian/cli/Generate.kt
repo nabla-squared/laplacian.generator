@@ -24,7 +24,7 @@ class Generate: CliktCommand(help = GENERATE_COMMAND_HELP) {
             .multiple(default = emptyList())
 
     val schema: String
-        by option("-c", "--schema", help = SCHEMA_OPTION_HELP)
+        by option("-s", "--schema", help = SCHEMA_OPTION_HELP)
             .default("")
 
     val models: List<String>
@@ -51,6 +51,13 @@ class Generate: CliktCommand(help = GENERATE_COMMAND_HELP) {
 
     override fun run() {
         executionContext = ExecutionContext()
+        if (schema.isNotEmpty()) {
+            val schemaFile = File(schema)
+            if (!schemaFile.isFile || !schemaFile.canRead()) throw IllegalArgumentException(
+                "The schema file can not be read or is not a file: ${schemaFile.absolutePath}."
+            )
+            executionContext.setModelSchema(schemaFile)
+        }
         executionContext.addModel(mapOf("laplacian" to mapOf("args" to mapOf("plugins" to plugins))))
         loadPlugins()
         createWorkDir()
