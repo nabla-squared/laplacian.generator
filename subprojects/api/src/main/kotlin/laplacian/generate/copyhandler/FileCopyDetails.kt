@@ -26,12 +26,12 @@ data class FileCopyDetails (
         if (exclude) return
         val destDir = File(destRootDir, destFileDir)
         if (!destDir.exists() && !destDir.mkdirs()) throw IllegalStateException(
-           "Failed to create a directory at ${destDir.absolutePath} while processing a template.: ${this}"
+           "Failed to create a directory at ${destDir.absolutePath} while processing a template.: $this"
         )
         val destFile = File(destDir, destFileName)
         if (destFile.exists() && !overwrite) return
         if (!destFile.exists() && !destFile.createNewFile()) throw java.lang.IllegalStateException(
-            "Failed to create a file at ${destFile.absolutePath} while processing a template.: ${this}"
+            "Failed to create a file at ${destFile.absolutePath} while processing a template.: $this"
         )
         if (binary) {
             templateFile.copyTo(destFile, true)

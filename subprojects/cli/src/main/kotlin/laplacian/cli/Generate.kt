@@ -199,7 +199,7 @@ class Generate: CliktCommand(help = GENERATE_COMMAND_HELP) {
     private fun isLocalDir(path: String): Boolean =
         File(path).let{ it.isDirectory }
 
-   private fun processTemplates(templateDirs: List<File>): List<FileCopyDetails> =
+    private fun processTemplates(templateDirs: List<File>): List<FileCopyDetails> =
         templateDirs.fold(emptyList<FileCopyDetails>()) { acc, templateFile ->
             acc + processTemplateDir(templateFile)
         }
@@ -244,8 +244,9 @@ class Generate: CliktCommand(help = GENERATE_COMMAND_HELP) {
                 templateFileRelPath, executionContext
             )
             expandedPaths.map { (destFilePath, context) ->
-                val destFileName = destFilePath.substringAfterLast("/")
-                val destFileDir = destFilePath.substringBeforeLast("/", "")
+                val normalizedPath = destFilePath.replace("/+".toRegex(), "/")
+                val destFileName = normalizedPath.substringAfterLast("/")
+                val destFileDir = normalizedPath.substringBeforeLast("/", "")
                 executionContext.currentModel = context
                 FileCopyDetails(
                     templateFile = templateFile,
@@ -255,8 +256,16 @@ class Generate: CliktCommand(help = GENERATE_COMMAND_HELP) {
                     it.destFileName = destFileName
                     it.destFileDir = destFileDir
                     for (handler in COPY_HANDLERS) {
-                        val doNext = handler.handle(it)
-                        if (!doNext) break
+                        try {
+                            val doNext = handler.handle(it)
+                            if (!doNext) break
+                        }
+                        catch (e: Exception) {
+                            throw RuntimeException(
+                                "Failed to copy a template: [$templateFileRelPath] \n" +
+                                "to the file at: [$normalizedPath].", e
+                            )
+                        }
                     }
                 }
             }
