@@ -571,4 +571,24 @@ class HelpersTest {
             fakeDateTime.matches("^[0-9]{4}/[0-9]{2}/[0-9]{2} [0-9]{2}:[0-9]{2}$".toRegex())
         )
     }
+
+    @Test
+    fun test_preprocess_template_string() {
+        assertEquals(
+          """String.format("hoge-%s-piyo!!", this.getFuga())""",
+          "{{preprocess-template-string 'hoge-\${this.getFuga()}-piyo!!'}}".handlebars().apply("")
+        )
+        assertEquals(
+            """log.info("hoge-{}-piyo!!", this.getFuga())""",
+            "{{preprocess-template-string 'hoge-\${this.getFuga()}-piyo!!' function-name='log.info' placeholder='{}'}}".handlebars().apply("")
+        )
+        assertEquals(
+            """this.getFuga()""",
+            "{{preprocess-template-string '\${this.getFuga()}'}}".handlebars().apply("")
+        )
+        assertEquals(
+            "\"HOGEHOGE\"",
+            "{{preprocess-template-string 'HOGEHOGE'}}".handlebars().apply("")
+        )
+    }
 }

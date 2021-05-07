@@ -9,13 +9,14 @@ class ConcatHelper : Helper<Any> {
     override fun apply(context: Any?, options: Options): Any {
         val params = listOf(context, *options.params)
         val toList = params.any{ it is Array<*> || it is Iterable<*>}
+        val separator = options.hash.getOrDefault("separator", "").toString()
         when (options.tagType) {
             TagType.VAR, TagType.SUB_EXPRESSION -> {
                 return if (toList) {
                     params.map{ ListHelper.asList(it) }.flatten()
                 }
                 else {
-                    params.map{ it?.toString() ?: "" }.joinToString("")
+                    params.map{ it?.toString() ?: "" }.joinToString(separator)
                 }
             }
             else -> throw IllegalArgumentException(

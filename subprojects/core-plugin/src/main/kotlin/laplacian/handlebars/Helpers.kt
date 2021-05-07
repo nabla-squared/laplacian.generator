@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.jknack.handlebars.Helper
 import com.github.jknack.handlebars.Context
 import laplacian.handlebars.helper.*
+import laplacian.handlebars.helper.StringHelper
 import laplacian.generate.util.*
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.Yaml
@@ -91,6 +92,20 @@ class Helpers {
                 t.trim()
                     .replace("""([:=\\])""".toRegex(), "\\\\$1")
                     .replace("""\n""".toRegex(), "\\\\\n")
+            },
+            "preprocess-template-string" to StringHelper { t, opts ->
+                val placeholder = opts.hash.getOrDefault("placeholder", "%s").toString()
+                val functionName = opts.hash.getOrDefault("function-name", "String.format").toString()
+                val embeddedParams = mutableListOf<String>()
+                val formatString = t.trim().replace("""\$\{([^}]+)}""".toRegex()) { v ->
+                    embeddedParams.add(v.groupValues[1])
+                    placeholder
+                }
+                when {
+                    embeddedParams.isEmpty() -> formatString.dquote()
+                    formatString == placeholder -> embeddedParams.first()
+                    else -> "$functionName(${formatString.dquote()}, ${embeddedParams.joinToString(", ")})"
+                }
             },
             "dquote" to StringHelper { t, _ -> t.dquote() },
             "starts-with" to StringHelper { t, opts ->

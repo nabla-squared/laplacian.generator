@@ -8,7 +8,7 @@ version = '1.0.0'
 
 repositories {
     maven {
-        url '../../../mvn-repo/'
+        url '../../../maven-repo/'
     }
     maven {
         url 'https://raw.github.com/nabla-squared/maven-repo/master/'
@@ -52,7 +52,7 @@ test {
 publishing {
     repositories {
         maven {
-            url '../../../mvn-repo/'
+            url '../../../maven-repo/'
         }
     }
     publications {

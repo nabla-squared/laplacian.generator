@@ -6,7 +6,7 @@ import com.github.jknack.handlebars.TagType
 class IfHelper : Helper<Any> {
 
     @Throws(IllegalArgumentException::class)
-    override fun apply(context: Any?, options: Options): Any {
+    override fun apply(context: Any?, options: Options): Any? {
         val params = options.params
         val falsy = options.isFalsy(context)
 

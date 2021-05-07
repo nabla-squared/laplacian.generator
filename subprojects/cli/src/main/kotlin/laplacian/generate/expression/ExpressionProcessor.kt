@@ -35,10 +35,13 @@ interface ExpressionProcessor {
                 }
                 if (commandName == "each") {
                     if (valueExpr.isEmpty()) throw IllegalArgumentException(
-                        "items must not be null: $valueExpr in $path"
+                        "The items parameter of each command must not be null.\n" +
+                        "valueExpression=[$valueExpr],\n" +
+                        "path=[$path]\n"
                     )
                     if (varName.isEmpty()) throw IllegalArgumentException(
-                        "the name of variable which receives each item: $path"
+                        "The variable name (following keyword 'as') of each command is required.\n" +
+                        "path=[$path]."
                     )
                     addProcessor(EachCommand(valueExpr, varName, executionContext))
                 }
