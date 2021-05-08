@@ -13,9 +13,9 @@ import java.io.File
 import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
 import java.net.URL
-import java.nio.file.Files
-import java.nio.file.Path
+import java.nio.file.*
 import java.util.zip.ZipInputStream
+import kotlin.io.path.isRegularFile
 
 class Generate: CliktCommand(help = GENERATE_COMMAND_HELP) {
 
@@ -50,6 +50,30 @@ class Generate: CliktCommand(help = GENERATE_COMMAND_HELP) {
     val clean: Boolean
         by option("-c", "--clean", help = CLEAN_OPTION_HELP)
             .flag()
+
+    val pathsToPreserve: List<String>
+        by option("-r", "--retain", help = RETAIN_OPTION_HELP)
+            .multiple(default = emptyList())
+
+    val directoriesToPreserve: List<PathMatcher> by lazy {
+        (DEFAULT_PRESERVED_DIRS + pathsToPreserve).filter{ it.isNotBlank() && it.endsWith("/") }.map {
+            toPathMatcher(it.trimEnd('/'))
+        }
+    }
+
+    val filesToPreserve: List<PathMatcher> by lazy {
+        pathsToPreserve.filter { it.isNotBlank() && !it.endsWith("/") }.map {
+            toPathMatcher(it)
+        }
+    }
+
+    private fun toPathMatcher(glob: String): PathMatcher {
+        val rootOnly = glob.startsWith("/")
+        val prefix = if (rootOnly) File(destination).canonicalPath
+                     else "/**/"
+        val pattern = "glob:$prefix$glob".replace("""/+""".toRegex(), "/")
+        return FileSystems.getDefault().getPathMatcher(pattern)
+    }
 
     lateinit var executionContext: ExecutionContext
 
@@ -98,7 +122,7 @@ class Generate: CliktCommand(help = GENERATE_COMMAND_HELP) {
             val path = Path.of(it)
             if (Files.isDirectory(path)) {
                 LOG.info("Loading plugins under the directory: $path")
-                path.toFile().listFiles().forEach { jar ->
+                path.toFile().listFiles()!!.forEach { jar ->
                     if (jar.isFile && jar.extension == "jar") {
                         LOG.info(">> Loading plugin at: ${jar.name}")
                         manager.loadPlugin(jar.toPath())
@@ -205,14 +229,40 @@ class Generate: CliktCommand(help = GENERATE_COMMAND_HELP) {
         }
 
     private fun createDestDir(): File {
-        val destDir = File(destination)
-        if (clean && destDir.exists() && !destDir.deleteRecursively()) throw IllegalStateException(
-            "Failed to clean up existing destination directory.: $destination"
-        )
+        val destDir = File(destination).canonicalFile
+        if (clean && destDir.exists()) {
+            clearDir(destDir)
+        }
         if (!destDir.exists() && !destDir.mkdirs()) throw IllegalStateException(
             "Could not create the destination directory.: $destination"
         )
         return destDir
+    }
+
+    private fun clearDir(dir: File) {
+        if (!dir.isDirectory) throw IllegalStateException(
+            "The following path does not denote a directory: ${dir.absolutePath}"
+        )
+        dir.listFiles()!!.forEach { file ->
+            val path = file.toPath()
+            if (file.isFile) {
+                val shouldBePreserved = filesToPreserve.any { it.matches(path) }
+                if (!shouldBePreserved) {
+                    file.delete()
+                    return@forEach
+                }
+            }
+            if (file.isDirectory) {
+                val shouldBePreserved = directoriesToPreserve.any { it.matches(path) }
+                if (shouldBePreserved) {
+                    return@forEach
+                }
+                clearDir(file)
+                if (file.listFiles().isEmpty()) {
+                    file.deleteRecursively()
+                }
+            }
+        }
     }
 
     private fun createWorkDir() {
@@ -222,8 +272,6 @@ class Generate: CliktCommand(help = GENERATE_COMMAND_HELP) {
     }
 
     private fun processModelDir(modelDirs: List<File>) {
-        //if (schemaFile.isPresent) executionContext.setModelSchema(schemaFile.asFile.get())
-        //executionContext.addModelEntryResolver(*modelEntryResolvers.get().toTypedArray())
         val modelFiles = modelDirs.flatMap { modelDir ->
             modelDir.walkTopDown().filter { it.isFile }.toList().filter {
                 it.name.contains(SUPPORTED_MODEL_FILE_FORMATS)
@@ -252,12 +300,12 @@ class Generate: CliktCommand(help = GENERATE_COMMAND_HELP) {
                     templateFile = templateFile,
                     template = template,
                     context = executionContext,
-                ).also {
-                    it.destFileName = destFileName
-                    it.destFileDir = destFileDir
+                ).also { copy ->
+                    copy.destFileName = destFileName
+                    copy.destFileDir = destFileDir
                     for (handler in COPY_HANDLERS) {
                         try {
-                            val doNext = handler.handle(it)
+                            val doNext = handler.handle(copy)
                             if (!doNext) break
                         }
                         catch (e: Exception) {
@@ -267,6 +315,8 @@ class Generate: CliktCommand(help = GENERATE_COMMAND_HELP) {
                             )
                         }
                     }
+                    val pathWrittenTo = Paths.get(destination, copy.destPath)
+                    copy.overwrite = !filesToPreserve.any{ it.matches(pathWrittenTo) }
                 }
             }
         }
@@ -308,5 +358,8 @@ class Generate: CliktCommand(help = GENERATE_COMMAND_HELP) {
             "JSON or YAML format model data."
         const val CLEAN_OPTION_HELP =
             "Clean up the destination directory before generataion."
+        const val RETAIN_OPTION_HELP =
+            "Path of files that should be kept unchanged while the generation."
+        val DEFAULT_PRESERVED_DIRS = listOf(".*/")
     }
 }
