@@ -173,6 +173,9 @@ class Helpers {
                     !opts.isFalsy(value)
                 }
             },
+            "filter-not-empty" to ListHelper { l, opts ->
+                l.filter { !opts.isFalsy(it) }
+            },
             "sort" to ListHelper { l: List<Any?>, opts ->
                 val nullValue = ""
                 if (opts.params.isEmpty()) {

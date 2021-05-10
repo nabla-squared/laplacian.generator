@@ -494,6 +494,17 @@ class HelpersTest {
     }
 
     @Test
+    fun test_filter_not_empty() {
+        val context = listOf(
+            "hoge", "fuga", "piyo", null, ""
+        )
+        assertEquals(
+            "hoge, fuga, piyo",
+            """{{join (filter-not-empty this) ', ' }}""".handlebars().apply(context)
+        )
+    }
+
+    @Test
     fun test_any_helper() {
         val context = listOf(
             "hoge", "fuga", "piyo"
