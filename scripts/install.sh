@@ -14,6 +14,7 @@ INSTALL_DIR_NAME=".laplacian"
 INSTALL_DIR="${HOME}/${INSTALL_DIR_NAME}"
 DISTRIBUTION_DIR="${INSTALL_DIR}/dist"
 PLUGIN_DIR="${INSTALL_DIR}/plugin"
+CACHE_DIR="${INSTALL_DIR}/cache"
 LAPLACIAN_HOME_DIR="${INSTALL_DIR}/dist/${CLI_DIST_FILE_NAME}"
 
 INSTALL_DIR_WARNING="The Laplacian distribution was already installed under [${INSTALL_DIR}].
@@ -24,6 +25,7 @@ INSTALLATION_END_MESSAGE="...Finished."
 main () {
   show_processing_message || die
   check_install_dir || die
+  clear_cache_dir || die
   install_laplacian_cli || die
   install_core_plugins || die
   show_end_message || die
@@ -47,6 +49,11 @@ check_install_dir() {
   mkdir -p $INSTALL_DIR
 }
 
+clear_cache_dir() {
+  rm -rf $CACHE_DIR && \
+  mkdir -p $CACHE_DIR
+}
+
 install_laplacian_cli() {
   mkdir -p $DISTRIBUTION_DIR && \
   cd $DISTRIBUTION_DIR && \
@@ -55,7 +62,7 @@ install_laplacian_cli() {
 
 install_core_plugins() {
   mkdir -p $PLUGIN_DIR && \
-  curl -Ls -o "${PLUGIN_DIR}/${CORE_PLUGIN_FILE_NAME}" "${CORE_PLUGIN_DIST_URL}"
+  curl -Ls "${CORE_PLUGIN_DIST_URL}" > "${PLUGIN_DIR}/${CORE_PLUGIN_FILE_NAME}"
 }
 
 show_end_message () {

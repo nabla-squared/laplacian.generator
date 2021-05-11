@@ -13,12 +13,15 @@ JDK 8 or later is installed. (Tested on Zulu JDK 8)
 ### Install Laplacian Generator
 
 ```console
-$ curl -Ls https://github.com/nabla-squared/laplacian.generator/releases/download/v1.0.0/install.sh | bash
+curl -Ls https://github.com/nabla-squared/laplacian.generator/releases/download/v1.0.0/install.sh | bash
+```
 
-$ export LAPLACIAN_HOME=$HOME/.laplacian/dist/laplacian-generator-cli-1.0.0
+```console
+export LAPLACIAN_HOME=$HOME/.laplacian/dist/laplacian-generator-cli-1.0.0
+```
 
-$ export PATH=$LAPLACIAN_HOME/bin:$PATH
-
+```console
+export PATH=$LAPLACIAN_HOME/bin:$PATH
 ```
 
 ### Run laplacian cli tool
