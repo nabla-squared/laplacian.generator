@@ -42,6 +42,7 @@ test {
 
 application {
     mainClass = 'laplacian.cli.LaplacianKt'
+    applicationDefaultJvmArgs = ['-Djava.awt.headless=true']
 }
 
 distributions {
@@ -57,4 +58,5 @@ distTar {
 
 startScripts {
     applicationName = 'laplacian'
+    defaultJvmOpts = ['-Djava.awt.headless=true']
 }
