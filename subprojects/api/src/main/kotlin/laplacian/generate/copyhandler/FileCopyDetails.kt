@@ -47,23 +47,19 @@ data class FileCopyDetails (
 
     private fun processInclude(include: FileCopyDetails): Unit {
         val key = include.templateFile.canonicalPath.replace("@", "_")
-        val regex = """(?<=^|\n)(.*)@(\+?)${include.includeName}(\|${Regex.escape(key)}|)@(.*)(?=\n)([\s\S]*)\n(.*)@${include.includeName}\3@""".toRegex()
+        val regex = """(?<=^|\n)(.*)@(\+?)${include.includeName}@(.*)(?=\n)([\s\S]*)\n(.*)@${include.includeName}@""".toRegex()
         val m = regex.find(content) ?: return
         val v = m.groupValues
-        val initialMatch = v[3].isBlank()
         val additive = v[2].isNotBlank()
-        val identifier = if (additive) "|$key" else ""
-        val processed = content.replaceRange(
-            m.range,
-            "${v[1]}@${v[2]}${include.includeName}$identifier@${v[4]}\n" +
-                "${include.content}\n" +
-                    "${v[6]}@${include.includeName}$identifier@" +
-                    if (initialMatch && additive)
-                        "\n${v[1]}@+${include.includeName}@${v[4]}\n" +
-                            "${v[6]}@${include.includeName}@"
-                    else
-                        ""
-            )
+        //val identifier = "" //if (additive) "|$key" else ""
+        val followingStartMarker = v[3]
+        val originalContent = v[4]
+        val precedingEndMarker = v[5]
+        val newContent = include.content +
+            if (additive)
+                "\n${v[1]}@+${include.includeName}@${followingStartMarker}\n${precedingEndMarker}@${include.includeName}@"
+            else ""
+        val processed = content.replaceRange(m.range, newContent)
         content = processed
     }
 
