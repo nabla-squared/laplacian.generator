@@ -2,11 +2,8 @@ package laplacian.handlebars.helper
 
 import java.io.IOException
 import kotlin.random.Random
-import com.github.jknack.handlebars.Context
 import com.github.jknack.handlebars.Helper
 import com.github.jknack.handlebars.Options
-import laplacian.util.*
-import laplacian.handlebars.*
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.Instant

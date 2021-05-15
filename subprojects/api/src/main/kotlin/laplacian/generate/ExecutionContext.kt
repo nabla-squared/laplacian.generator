@@ -2,6 +2,7 @@ package laplacian.generate
 
 import com.github.jknack.handlebars.Context
 import com.github.jknack.handlebars.Helper
+import laplacian.generate.util.CsvLoader
 import laplacian.handlebars.HandlebarsExtension
 import laplacian.handlebars.TemplateWrapper
 import laplacian.generate.util.YamlLoader
@@ -35,6 +36,7 @@ class ExecutionContext {
 
     fun addModel(vararg modelFiles: File): ExecutionContext {
         entries = YamlLoader.readObjects(modelFiles.toList(), modelSchema, baseModel = entries)
+        entries = CsvLoader.readObjects(modelFiles.toList(), modelSchema, baseModel = entries)
         return this
     }
 

@@ -1,10 +1,8 @@
 package laplacian.handlebars.helper
 
 import java.io.IOException
-import com.github.jknack.handlebars.Context
 import com.github.jknack.handlebars.Helper
 import com.github.jknack.handlebars.Options
-import laplacian.util.*
 import laplacian.handlebars.*
 
 class EvalExpressionHelper : Helper<Any> {

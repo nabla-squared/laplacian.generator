@@ -1,6 +1,5 @@
 package laplacian.generate.util
 
-import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
@@ -11,7 +10,6 @@ import com.networknt.schema.JsonSchemaFactory
 import com.networknt.schema.SpecVersion
 import org.yaml.snakeyaml.Yaml
 import java.io.File
-import java.io.IOException
 import java.lang.Exception
 
 
@@ -20,8 +18,8 @@ class YamlLoader {
     companion object {
 
         private val mapper = ObjectMapper(YAMLFactory()).registerKotlinModule()
-
         private val jsonSchemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7)
+        private val SUPPORTED_FILE_EXTENSIONS = listOf("yaml", "yml", "json", "js")
 
         private fun readJsonSchema(file: File): JsonSchema {
             val factory = JsonSchemaFactory.builder(jsonSchemaFactory).objectMapper(mapper).build()
@@ -31,7 +29,7 @@ class YamlLoader {
 
         fun readObjects(files: Iterable<File>, schemaFile: File? = null, baseModel: Map<String, Any?> = emptyMap()): Map<String, Any?> {
             val schema: JsonSchema? = schemaFile?.let { readJsonSchema(it) }
-            return files.fold(baseModel) { acc, file ->
+            return files.filter{ SUPPORTED_FILE_EXTENSIONS.contains(it.extension) }.fold(baseModel) { acc, file ->
                 try {
                     mergeObjectGraph(acc, readObjects(file, schema)) as Map<String, Any?>
                 }
@@ -43,35 +41,22 @@ class YamlLoader {
             }
         }
 
-
         private fun readObjects(file: File, schema: JsonSchema?): Map<String, Any?> {
             val yaml = file.readText()
             if (yaml.isBlank()) return emptyMap()
             try {
-                // Use Snake yaml parser directly as Jackson does not handle anchors in Yaml files.
                 val readModel = Yaml().load<Map<String, Any?>>(yaml)
-                val node = mapper.convertValue<JsonNode>(readModel)
-                //val node = mapper.readTree(file)
-                //val readModel = mapper.convertValue<Map<String, Any?>>(node)
-                val validationErrors = schema?.validate(node) ?: emptySet()
-                if (validationErrors.isNotEmpty()) throw JsonSchemaValidationError(validationErrors)
+                if (schema != null) {
+                    val node = mapper.convertValue<JsonNode>(readModel)
+                    val validationErrors = schema.validate(node)
+                    if (validationErrors.isNotEmpty()) throw JsonSchemaValidationError(validationErrors)
+                }
                 return readModel
             }
             catch (e: Exception) {
-                var modelDumpFile: File? = null
-                try {
-                    modelDumpFile = createTempFile("laplacian-generator-model-dump-", ".json")
-                    modelDumpFile.writeText(yaml)
-                }
-                catch(ignored: Exception) { /* ignore */}
-                when {
-                    (e is IOException || e is JsonProcessingException) -> throw IllegalStateException(
-                        "Failed to parse the following yaml file on ${file.absolutePath}. " +
-                        "Generator model was dumped in the file at: ${modelDumpFile?.absolutePath}",
-                        e
-                    )
-                    else -> throw e
-                }
+                throw IllegalStateException(
+                    "Failed to parse the following yaml file on ${file.absolutePath}.", e
+                )
             }
         }
     }
