@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
 set -e
-# set -x
+
+VERBOSE=
+FORCE_INSTALL=
 
 RELEASE_VERSION="1.0.0"
 RELEASE_BASE_URL="https://github.com/nabla-squared/laplacian.generator/releases/download/v${RELEASE_VERSION}"
@@ -23,6 +25,7 @@ INSTALLATION_MESSAGE="Installing Laplacian Generator v${RELEASE_VERSION} ..."
 INSTALLATION_END_MESSAGE="...Finished."
 
 main () {
+  ! [[ -z $VERBOSE ]] && set -x
   show_processing_message || die
   check_install_dir || die
   clear_cache_dir || die
@@ -41,7 +44,7 @@ show_processing_message () {
 }
 
 check_install_dir() {
-  if [[ -d $INSTALL_DIR ]]
+  if [[ -d $INSTALL_DIR ]] && [[ -z "$FORCE_INSTALL" ]]
   then
     read -p "${INSTALL_DIR_WARNING}" confirm </dev/tty && [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]] || exit
   fi
@@ -79,4 +82,16 @@ show_end_message () {
 EOF
 }
 
-main "$@"
+parse_args() {
+  while getopts 'fv' OPTION;
+  do
+    case $OPTION in
+    v) VERBOSE='yes';;
+    f) FORCE_INSTALL='yes';;
+    esac
+  done
+  ARGS=$@
+}
+
+parse_args "$@"
+main
