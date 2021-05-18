@@ -64,6 +64,10 @@ class Helpers {
                 val width = opts.hash.getOrElse("width") { opts.params[0] } as Int
                 t.shift(width)
             },
+            "pad" to StringHelper { t, opts ->
+                val padString = opts.params[0] as String
+                t.pad(padString)
+            },
             "trim" to StringHelper { t, opts ->
                 val chars = opts.hash.getOrElse("chars") { opts.params.getOrNull(0) }?.toString()
                 if (chars == null)

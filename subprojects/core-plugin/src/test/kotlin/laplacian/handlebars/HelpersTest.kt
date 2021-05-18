@@ -51,10 +51,35 @@ class HelpersTest {
     }
 
     @Test
+    fun test_pad_helper() {
+        val codeBlock = """
+        |const nextDeck = entities.decks[action.deckId]
+        |
+        |app.activeDeck = nextDeck
+        |app.deckIndex = 0
+        |app.cardFlipped = false
+        """.trimMargin()
+        val actual = """
+        |/**
+        | * {{pad this ' * '}}
+        | */
+        """.trimMargin().handlebars().apply(codeBlock)
+        val expect = """
+        |/**
+        | * const nextDeck = entities.decks[action.deckId]
+        | *
+        | * app.activeDeck = nextDeck
+        | * app.deckIndex = 0
+        | * app.cardFlipped = false
+        | */
+        """.trimMargin()
+        assertEquals(expect, actual)
+    }
+
+    @Test
     fun test_camelize_helper() {
         assertEquals("listEntity", "{{lower-camel this}}".handlebars().apply("List<Entity>"))
     }
-
 
     @Test
     fun test_case_helper_in_expression() {

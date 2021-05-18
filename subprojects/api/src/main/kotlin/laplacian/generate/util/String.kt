@@ -65,12 +65,13 @@ fun String.handlebarsForPath(
     basePath: File? = null
 ): Template = HandlebarsUtil.buildTemplateForPath(this, helpers, basePath)
 
-fun String.shift(shiftWidth: Int): String {
-    val pad = "".padEnd(shiftWidth, ' ')
-    return this.trim().replace("""\n([^\n]*)""".toRegex()) { m ->
-        "\n${pad}${m.groupValues[1]}".trimEnd(' ')
+fun String.shift(shiftWidth: Int): String =
+    this.pad("".padEnd(shiftWidth, ' '))
+
+fun String.pad(padString: String): String =
+    this.trim().replace("""\n([^\n]*)""".toRegex()) { m ->
+        "\n${padString}${m.groupValues[1]}".trimEnd(' ')
     }
-}
 
 fun String.dquote(): String =
     "\"${this.trim().replace("""["\\]""".toRegex(), "\\\\$0")}\""
