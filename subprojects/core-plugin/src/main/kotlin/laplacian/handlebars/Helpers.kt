@@ -131,10 +131,10 @@ class Helpers {
             },
             "json" to StringifyHelper<Any?> { obj, opts ->
                 val padding = opts.params.getOrNull(0)?.toString() ?: ""
-                val mapper = ObjectMapper()
+                val mapper = ObjectMapper().writerWithDefaultPrettyPrinter()
                 var isHead = true
                 if (padding.isEmpty()) mapper.writeValueAsString(obj)
-                else mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj).split("\n").joinToString("\n") {
+                else mapper.writeValueAsString(obj).split("\n").joinToString("\n") {
                     if (isHead) {
                         isHead = false
                         it

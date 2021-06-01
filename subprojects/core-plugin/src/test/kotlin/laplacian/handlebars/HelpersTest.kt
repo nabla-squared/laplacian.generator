@@ -350,7 +350,12 @@ class HelpersTest {
         val templateWithPad = """> {{json this "> "}}"""
         assertAll({
             assertEquals("""
-            |{"H":"hogehoge","F":false,"Z":0,"L":["hoge","fuga","piyo"]}
+            |{
+            |  "H" : "hogehoge",
+            |  "F" : false,
+            |  "Z" : 0,
+            |  "L" : [ "hoge", "fuga", "piyo" ]
+            |}
             """.trimMargin(), template.handlebars().apply(obj).trim())
         }, {
             assertEquals("""
