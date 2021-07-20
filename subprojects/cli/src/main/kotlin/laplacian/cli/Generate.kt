@@ -96,6 +96,9 @@ class Generate: CliktCommand(help = GENERATE_COMMAND_HELP) {
         executionContext.build()
         val templateRootDirs = readModulesFrom(templates)
         val copyDetails = processTemplates(templateRootDirs)
+        val copyFiles = copyDetails.filter{ it.includeName == null }
+        val includes = copyDetails.filter{ it.includeName != null }
+        /*
         val includes = copyDetails.fold(mutableMapOf<String, MutableList<FileCopyDetails>>()) { acc, fileCopy ->
             if (fileCopy.includeName == null) {
                 return@fold acc
@@ -104,12 +107,17 @@ class Generate: CliktCommand(help = GENERATE_COMMAND_HELP) {
             includesForPath.add(fileCopy)
             acc
         }
-        copyDetails.forEach {
+        */
+        copyFiles.forEach { it.copyTo(destDir) }
+        includes.forEach { it.copyTo(destDir) }
+        /*
+        includes.forEach {
             it.copyTo(
                 destDir,
                 includes.getOrDefault(it.destPath, emptyList<FileCopyDetails>())
             )
         }
+        */
     }
 
     private fun loadPlugins() = DefaultPluginManager().let { manager ->
@@ -136,7 +144,7 @@ class Generate: CliktCommand(help = GENERATE_COMMAND_HELP) {
                 return@forEach
             }
             throw IllegalArgumentException(
-                "Plugin path should be a local file or directory path or a URL."
+                "Plugin path should be a local file or directory path or a URL.: $path"
             )
         }
         manager.startPlugins()
@@ -169,7 +177,8 @@ class Generate: CliktCommand(help = GENERATE_COMMAND_HELP) {
         )
         val moduleFile = File(MODULE_CACHE_DIR, moduleName)
         if (moduleFile.exists() && !noCache) return moduleFile
-        if (!moduleFile.exists() && !moduleFile.createNewFile()) throw IllegalStateException(
+        MODULE_CACHE_DIR.mkdirs()
+        if (!moduleFile.exists() && !(moduleFile.createNewFile())) throw IllegalStateException(
             "Failed to create new module cache file at [${moduleFile.absolutePath}]."
         )
         moduleUrl.openStream().copyTo(moduleFile.outputStream(), BUFFER_SIZE)

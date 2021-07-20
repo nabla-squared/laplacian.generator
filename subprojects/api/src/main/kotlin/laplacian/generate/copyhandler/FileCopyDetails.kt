@@ -22,7 +22,7 @@ data class FileCopyDetails (
     var canWrite: Boolean = templateFile.canWrite()
     var canRead: Boolean = templateFile.canRead()
 
-    fun copyTo(destRootDir: File, includes: List<FileCopyDetails> = emptyList()) {
+    fun copyTo(destRootDir: File/*, includes: List<FileCopyDetails> = emptyList()*/) {
         if (exclude) return
         val destDir = File(destRootDir, destFileDir)
         if (!destDir.exists() && !destDir.mkdirs()) throw IllegalStateException(
@@ -35,37 +35,44 @@ data class FileCopyDetails (
         )
         if (binary) {
             templateFile.copyTo(destFile, true)
+            setFileAttributesTo(destFile)
+        }
+        else if (includeName != null) {
+            processInclude(this, destFile)
         }
         else {
-            includes.forEach { processInclude(it) }
             destFile.writeText(content)
+            setFileAttributesTo(destFile)
         }
+    }
+
+    private fun setFileAttributesTo(destFile: File) {
         destFile.setReadable(canRead)
         destFile.setWritable(canWrite)
         destFile.setExecutable(canExecute)
-    }
-
-    private fun processInclude(include: FileCopyDetails): Unit {
-        val key = include.templateFile.canonicalPath.replace("@", "_")
-        val regex = """(?<=^|\n)(.*)@(\+?)${include.includeName}@(.*)(?=\n)([\s\S]*)\n(.*)@${include.includeName}@""".toRegex()
-        val m = regex.find(content) ?: return
-        val v = m.groupValues
-        val additive = v[2].isNotBlank()
-        //val identifier = "" //if (additive) "|$key" else ""
-        val followingStartMarker = v[3]
-        val originalContent = v[4]
-        val precedingEndMarker = v[5]
-        val newContent = include.content +
-            if (additive)
-                "\n${v[1]}@+${include.includeName}@${followingStartMarker}\n${precedingEndMarker}@${include.includeName}@"
-            else ""
-        val processed = content.replaceRange(m.range, newContent)
-        content = processed
     }
 
     override fun toString(): String = objectMapper.writeValueAsString(this)
 
     companion object {
         val objectMapper = ObjectMapper()
+        private fun processInclude(include: FileCopyDetails, destFile: File): Unit {
+            val key = include.templateFile.canonicalPath.replace("@", "_")
+            val regex = """(?<=^|\n)(.*)@(\+?)${include.includeName}@(.*)(?=\n)([\s\S]*)\n(.*)@${include.includeName}@""".toRegex()
+            val content = destFile.readText()
+            val m = regex.find(content) ?: return
+            val v = m.groupValues
+            val additive = v[2].isNotBlank()
+            //val identifier = "" //if (additive) "|$key" else ""
+            val followingStartMarker = v[3]
+            val originalContent = v[4]
+            val precedingEndMarker = v[5]
+            val newContent = include.content +
+                if (additive)
+                    "\n${v[1]}@+${include.includeName}@${followingStartMarker}\n${precedingEndMarker}@${include.includeName}@"
+                else ""
+            val processed = content.replaceRange(m.range, newContent)
+            destFile.writeText(processed)
+        }
     }
 }

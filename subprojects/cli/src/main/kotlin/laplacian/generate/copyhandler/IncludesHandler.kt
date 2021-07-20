@@ -12,7 +12,7 @@ class IncludesHandler: FileCopyHandler {
         val includeName = m.groupValues[2]
         details.destFileName = filename
         details.includeName = includeName
-        details.exclude = true
+        //details.exclude = true
         return true
     }
 /*
