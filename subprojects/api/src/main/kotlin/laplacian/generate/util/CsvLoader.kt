@@ -1,5 +1,6 @@
 package laplacian.generate.util
 
+import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.csv.CsvMapper
@@ -59,8 +60,10 @@ class CsvLoader {
                             "number" -> CsvSchema.ColumnType.NUMBER
                             "boolean" -> CsvSchema.ColumnType.BOOLEAN
                             "string" -> CsvSchema.ColumnType.STRING
+                            "array" -> CsvSchema.ColumnType.NUMBER_OR_STRING
                             else -> throw IllegalArgumentException("Unknown type annotation in: $header.")
                         }
+                        headers.setArrayElementSeparator(",")
                         headers.addColumn(columnName, columnType)
                     }.build()
                     csvMapper
@@ -88,10 +91,10 @@ class CsvLoader {
                         .filter { (_, value) -> value.isNotEmpty() }
                         .map { (columnName, value) ->
                         columnName to
-
                                 when (headers.column(columnName).type) {
                                     CsvSchema.ColumnType.NUMBER -> if (value.contains(".")) value.toDouble() else value.toInt()
                                     CsvSchema.ColumnType.BOOLEAN -> value.toBoolean()
+                                    CsvSchema.ColumnType.NUMBER_OR_STRING -> ObjectMapper().readValue(value, List::class.java)
                                 else -> value
                         }
                     }.toMap()
