@@ -1,5 +1,6 @@
 package laplacian.generate.util
 
+import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -41,7 +42,7 @@ class CsvLoader {
         }
 
         private val jsonSchemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7)
-        private val mapper = ObjectMapper(YAMLFactory()).registerKotlinModule()
+        private val mapper = ObjectMapper().registerKotlinModule().configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
         private val csvMapper = CsvMapper().registerModule(KotlinModule())
         private const val PREFIX_SEPARATOR = "__"
 
@@ -94,7 +95,7 @@ class CsvLoader {
                                 when (headers.column(columnName).type) {
                                     CsvSchema.ColumnType.NUMBER -> if (value.contains(".")) value.toDouble() else value.toInt()
                                     CsvSchema.ColumnType.BOOLEAN -> value.toBoolean()
-                                    CsvSchema.ColumnType.NUMBER_OR_STRING -> ObjectMapper().readValue(value, List::class.java)
+                                    CsvSchema.ColumnType.NUMBER_OR_STRING -> mapper.readValue(value, List::class.java)
                                 else -> value
                         }
                     }.toMap()
@@ -110,6 +111,7 @@ class CsvLoader {
                     "Failed to parse the following csv file on ${file.absolutePath}.", e
                 )
             }
+
         }
     }
 }
