@@ -30,8 +30,8 @@ class CsvLoaderTest {
         |      "items": {
         |        "type": "object",
         |        "properties": {
-        |          "number-column": { type: "number", enum: [1, 2, 3, 4] },
-        |          "string-column": { type: "string" }
+        |          "number-column": { "type": "number", "enum": [1, 2, 3, 4] },
+        |          "string-column": { "type": "string" }
         |        }
         |      }
         |    }

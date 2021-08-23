@@ -28,6 +28,7 @@ class StringTest {
         assertEquals(
                 "HogeFugaPiyo", "HOGE_FUGA_PIYO".upperCamelize()
         )
+
         assertEquals(
                 "", "".upperCamelize()
         )
@@ -51,6 +52,16 @@ class StringTest {
         )
         assertEquals(
                 "", "{}".lowerCamelize()
+        )
+    }
+
+    @Test
+    fun test_camelize_text_containing_1_character_token() {
+        assertEquals(
+            "HogeFugaPiyoP", "HOGE_FUGA_PIYO_P".upperCamelize()
+        )
+        assertEquals(
+            "HogeFugaNPiyo", "HOGE_FUGA_N_PIYO".upperCamelize()
         )
     }
 
