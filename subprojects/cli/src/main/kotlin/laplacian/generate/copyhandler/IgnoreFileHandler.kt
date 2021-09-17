@@ -4,7 +4,7 @@ class IgnoreFileHandler: FileCopyHandler {
     companion object {
         val EXCLUDED_PATTERNS = listOf(
             """^META-INF/""".toRegex(),
-            """(^|[./])partial(?=[./]).*\.hbs(\.|$)""".toRegex()
+            """(^|\./).*\.partial\.hbs$""".toRegex()
         )
     }
     override fun handle(details: FileCopyDetails): Boolean {
