@@ -8,7 +8,14 @@ import java.security.MessageDigest
 
 val SEPARATOR = """([^a-zA-Z0-9$\u0080-\u9fff]+|(?<=[a-z0-9])(?=[A-Z]))""".toRegex()
 
-fun splitIdentifierIntoTokens(str: String): List<String> = str.split(SEPARATOR)
+fun splitIdentifierIntoTokens(str: String): List<String> {
+    val noParenthesis = str.matches("""^[a-zA-Z0-9]+$""".toRegex())
+    val tokens =
+        if (noParenthesis && str.contains("""[a-z]""".toRegex()))
+           str.replace("""(?<=[A-Z])([A-Z])""".toRegex(), " $1")
+        else str
+    return tokens.split(SEPARATOR)
+}
 
 fun String.capitalizeFirst() = when {
     this.isEmpty() -> ""

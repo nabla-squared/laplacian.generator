@@ -63,6 +63,9 @@ class StringTest {
         assertEquals(
             "HogeFugaNPiyo", "HOGE_FUGA_N_PIYO".upperCamelize()
         )
+        assertEquals(
+            "hogeFugaNPiyo", "HogeFugaNPiyo".lowerCamelize()
+        )
     }
 
     @Test
@@ -80,7 +83,6 @@ class StringTest {
                 "新橋-京急蒲田", "新橋 京急蒲田".upperHyphenize()
         )
     }
-
 
     @Test
     fun test_pathify() {
