@@ -431,6 +431,12 @@ class HelpersTest {
     }
 
     @Test
+    fun test_split_helper() {
+        val template = "{{define 'tokens' (split 'hoge-fuga-piyo' '-')}}{{#each tokens as |token|}}[{{token}}]{{/each}}"
+        assertEquals("[hoge][fuga][piyo]", template.handlebars().apply(""))
+    }
+
+    @Test
     fun test_create_empty_list_with_list_of_helper() {
         val template = "{{define 'list' (list-of)}}{{#if list}}empty!{{else}}not empty!{{/if}}"
         val template2 = "{{define 'list' (list-of)}}{{#each list as |item|}}{{item}}{{/each}}"

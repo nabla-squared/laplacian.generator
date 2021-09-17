@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.jknack.handlebars.Helper
 import com.github.jknack.handlebars.Context
 import laplacian.handlebars.helper.*
-import laplacian.handlebars.helper.StringHelper
 import laplacian.generate.util.*
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.Yaml
@@ -203,6 +202,7 @@ class Helpers {
             "eval-expression" to EvalExpressionHelper.INSTANCE,
             "contains-key" to ContainsKeyHelper.INSTANCE,
             "list-of" to ListOfHelper.INSTANCE,
+            "split" to SplitHelper.INSTANCE,
             "define" to DefineHelper.INSTANCE,
             FakeHelper.NAME to FakeHelper.INSTANCE,
             // TODO move to dedicated plugins
