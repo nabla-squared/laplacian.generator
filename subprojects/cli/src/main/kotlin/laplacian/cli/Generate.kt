@@ -51,20 +51,26 @@ class Generate: CliktCommand(help = GENERATE_COMMAND_HELP) {
         by option("-c", "--clean", help = CLEAN_OPTION_HELP)
             .flag()
 
-    val pathsToPreserve: List<String>
+    val pathsToBePreserved: List<String>
         by option("-r", "--retain", help = RETAIN_OPTION_HELP)
             .multiple(default = emptyList())
 
-    val directoriesToPreserve: List<PathMatcher> by lazy {
-        (DEFAULT_PRESERVED_DIRS + pathsToPreserve).filter{ it.isNotBlank() && it.endsWith("/") }.map {
-            toPathMatcher(it.trimEnd('/'))
-        }
+    val directoriesToBePreserved: List<PathMatcher> by lazy {
+        (DEFAULT_PRESERVED_DIRS + pathsToBePreserved)
+            .filter{ it.isNotBlank() && it.endsWith("/") && !it.startsWith("!") }
+            .map { toPathMatcher(it.trimEnd('/')) }
     }
 
-    val filesToPreserve: List<PathMatcher> by lazy {
-        pathsToPreserve.filter { it.isNotBlank() && !it.endsWith("/") }.map {
-            toPathMatcher(it)
-        }
+    val filesToBePreserved: List<PathMatcher> by lazy {
+        pathsToBePreserved
+            .filter { it.isNotBlank() && !it.endsWith("/") && !it.startsWith("!") }
+            .map { toPathMatcher(it) }
+    }
+
+    val filesNotToBePreserved: List<PathMatcher> by lazy {
+        pathsToBePreserved
+            .filter { it.isNotBlank() && !it.endsWith("/") && it.startsWith("!") }
+            .map { toPathMatcher(it.substring(1)) }
     }
 
     private fun toPathMatcher(glob: String): PathMatcher {
@@ -98,26 +104,8 @@ class Generate: CliktCommand(help = GENERATE_COMMAND_HELP) {
         val copyDetails = processTemplates(templateRootDirs)
         val copyFiles = copyDetails.filter{ it.includeName == null }
         val includes = copyDetails.filter{ it.includeName != null }
-        /*
-        val includes = copyDetails.fold(mutableMapOf<String, MutableList<FileCopyDetails>>()) { acc, fileCopy ->
-            if (fileCopy.includeName == null) {
-                return@fold acc
-            }
-            val includesForPath = acc.getOrPut(fileCopy.destPath) { mutableListOf<FileCopyDetails>() }
-            includesForPath.add(fileCopy)
-            acc
-        }
-        */
         copyFiles.forEach { it.copyTo(destDir) }
         includes.forEach { it.copyTo(destDir) }
-        /*
-        includes.forEach {
-            it.copyTo(
-                destDir,
-                includes.getOrDefault(it.destPath, emptyList<FileCopyDetails>())
-            )
-        }
-        */
     }
 
     private fun loadPlugins() = DefaultPluginManager().let { manager ->
@@ -255,14 +243,14 @@ class Generate: CliktCommand(help = GENERATE_COMMAND_HELP) {
         dir.listFiles()!!.forEach { file ->
             val path = file.toPath()
             if (file.isFile) {
-                val shouldBePreserved = filesToPreserve.any { it.matches(path) }
-                if (!shouldBePreserved) {
+                val shouldBePreserved = filesToBePreserved.any { it.matches(path) }
+                if (!shouldBePreserved || filesNotToBePreserved.any { it.matches(path) }) {
                     file.delete()
                     return@forEach
                 }
             }
             if (file.isDirectory) {
-                val shouldBePreserved = directoriesToPreserve.any { it.matches(path) }
+                val shouldBePreserved = directoriesToBePreserved.any { it.matches(path) }
                 if (shouldBePreserved) {
                     return@forEach
                 }
@@ -325,7 +313,8 @@ class Generate: CliktCommand(help = GENERATE_COMMAND_HELP) {
                         }
                     }
                     val pathWrittenTo = Paths.get(destination, copy.destPath)
-                    copy.overwrite = !filesToPreserve.any{ it.matches(pathWrittenTo) }
+                    copy.overwrite = !filesToBePreserved.any{ it.matches(pathWrittenTo) }
+                                     || filesNotToBePreserved.any{ it.matches(pathWrittenTo) }
                 }
             }
         }

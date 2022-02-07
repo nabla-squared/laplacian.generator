@@ -7,12 +7,15 @@ import java.io.File
 import java.security.MessageDigest
 
 val SEPARATOR = """([^a-zA-Z0-9$\u0080-\u9fff]+|(?<=[a-z0-9])(?=[A-Z]))""".toRegex()
+val IDENTIFIERS = """^[a-zA-Z0-9]+$""".toRegex()
+val CONTIGUOUS_CAPITAL_LETTERS = """(?<=[A-Z])([A-Z])""".toRegex()
+val LOWER_CASE_LETTER = """[a-z]""".toRegex()
 
 fun splitIdentifierIntoTokens(str: String): List<String> {
-    val noParenthesis = str.matches("""^[a-zA-Z0-9]+$""".toRegex())
+    val noParenthesis = str.matches(IDENTIFIERS)
     val tokens =
-        if (noParenthesis && str.contains("""[a-z]""".toRegex()))
-           str.replace("""(?<=[A-Z])([A-Z])""".toRegex(), " $1")
+        if (noParenthesis && str.contains(LOWER_CASE_LETTER))
+           str.replace(CONTIGUOUS_CAPITAL_LETTERS, " $1")
         else str
     return tokens.split(SEPARATOR)
 }

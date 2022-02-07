@@ -47,9 +47,15 @@ data class FileCopyDetails (
     }
 
     private fun setFileAttributesTo(destFile: File) {
-        destFile.setReadable(canRead)
-        destFile.setWritable(canWrite)
-        destFile.setExecutable(canExecute)
+        if (canRead != destFile.canRead()) {
+            destFile.setReadable(canRead)
+        }
+        if (canWrite != destFile.canWrite()) {
+            destFile.setWritable(canWrite)
+        }
+        if (canExecute != destFile.canExecute()) {
+            destFile.setExecutable(canExecute)
+        }
     }
 
     override fun toString(): String = objectMapper.writeValueAsString(this)
@@ -57,7 +63,7 @@ data class FileCopyDetails (
     companion object {
         val objectMapper = ObjectMapper()
         private fun processInclude(include: FileCopyDetails, destFile: File): Unit {
-            val key = include.templateFile.canonicalPath.replace("@", "_")
+            //val key = include.templateFile.canonicalPath.replace("@", "_")
             val regex = """(?<=^|\n)(.*)@(\+?)${include.includeName}@(.*)(?=\n)([\s\S]*)\n(.*)@${include.includeName}@""".toRegex()
             val content = destFile.readText()
             val m = regex.find(content) ?: return
